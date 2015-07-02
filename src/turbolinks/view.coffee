@@ -2,23 +2,25 @@ class Turbolinks.View
   constructor: (@delegate) ->
 
   loadHTML: (html) ->
-    {title, body} = parseHTML(html)
-    loadTitle(title)
-    loadBody(body)
+    @loadSnapshot(parseHTML(html))
+
+  loadSnapshot: (snapshot) ->
+    document.title = snapshot.title
+    document.body = snapshot.body
+    window.pageXOffset = snapshot.offsets?.left ? 0
+    window.pageYOffset = snapshot.offsets?.top ? 0
+
+  saveSnapshot: ->
+    body: document.body.cloneNode(true)
+    title: document.title
+    offsets:
+      left: window.pageXOffset
+      top: window.pageYOffset
 
   # Private
-
-  loadTitle = (newTitleElement) ->
-    document.title = newTitleElement.innerText if newTitleElement
-
-  loadBody = (newBodyElement) ->
-    document.body = newBodyElement
 
   parseHTML = (html) ->
     element = document.createElement("html")
     element.innerHTML = html
-    title: element.querySelector("title")
+    title: element.querySelector("title")?.textContent
     body: element.querySelector("body")
-
-  removeElement = (element) ->
-    element?.parentNode?.removeChild(element)

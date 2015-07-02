@@ -1,12 +1,15 @@
 #= require turbolinks/browser_adapter
 #= require turbolinks/history
 #= require turbolinks/view
+#= require turbolinks/cache
 
 class Turbolinks.Controller
   constructor: (adapterConstructor) ->
     @adapter = new adapterConstructor this
     @history = new Turbolinks.History this
     @view = new Turbolinks.View this
+    @cache = new Turbolinks.Cache this
+    @url = location.toString()
 
   start: ->
     unless @started
@@ -24,6 +27,7 @@ class Turbolinks.Controller
     @adapter.visitLocation(url)
 
   loadResponse: (response) ->
+    console.log "loading response for", @url
     @view.loadHTML(response)
 
   # Adapter delegate
@@ -56,8 +60,21 @@ class Turbolinks.Controller
 
   # Private
 
+  saveSnapshot: ->
+    console.log "saving snapshot for", @url
+    snapshot = @view.saveSnapshot()
+    @cache.put(@url, snapshot)
+
+  restoreSnapshot: ->
+    if snapshot = @cache.get(@url)
+      console.log "restoring snapshot for", @url
+      @view.loadSnapshot(snapshot)
+
   locationChanged: (url) ->
+    @saveSnapshot()
+    @url = url
     @adapter.locationChanged(url)
+    @restoreSnapshot()
 
   getVisitableURLForEvent: (event) ->
     link = Turbolinks.closest(event.target, "a")
