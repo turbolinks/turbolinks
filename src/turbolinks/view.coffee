@@ -7,8 +7,9 @@ class Turbolinks.View
   loadSnapshot: (snapshot) ->
     document.title = snapshot.title
     document.body = snapshot.body
-    window.pageXOffset = snapshot.offsets?.left ? 0
-    window.pageYOffset = snapshot.offsets?.top ? 0
+    xOffset = snapshot.offsets?.left ? 0
+    yOffset = snapshot.offsets?.top ? 0
+    scrollTo(xOffset, yOffset)
 
   saveSnapshot: ->
     body: document.body.cloneNode(true)
