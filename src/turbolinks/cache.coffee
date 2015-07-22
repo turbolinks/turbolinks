@@ -2,8 +2,8 @@ class Turbolinks.Cache
   constructor: ->
     @entries = {}
 
-  put: (url, snapshot) ->
-    @entries[url] = snapshot
+  put: (location, snapshot) ->
+    @entries[location] = snapshot
 
   get: (url) ->
-    @entries[url]
+    @entries[location]

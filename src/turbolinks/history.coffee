@@ -2,19 +2,19 @@ class Turbolinks.History
   constructor: (@delegate) ->
     @state = { turbolinks: true }
 
-  push: (url) ->
+  push: (location) ->
     unless @initialized
       @update("replace", null)
       @initialized = true
 
-    @update("push", url)
-    @delegate.historyChanged(url)
+    @update("push", location)
+    @delegate.historyChanged(location)
 
-  replace: (url) ->
-    @update("replace", url)
-    @delegate.historyChanged(url)
+  replace: (location) ->
+    @update("replace", location)
+    @delegate.historyChanged(location)
 
   # Private
 
-  update: (method, url) ->
-    history[method + "State"](@state, null, url)
+  update: (method, location) ->
+    history[method + "State"](@state, null, location)

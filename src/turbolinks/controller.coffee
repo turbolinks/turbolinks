@@ -9,7 +9,7 @@ class Turbolinks.Controller
     @history = new Turbolinks.History this
     @view = new Turbolinks.View this
     @cache = new Turbolinks.Cache this
-    @url = location.toString()
+    @location = window.location.toString()
 
   start: ->
     unless @started
@@ -23,31 +23,42 @@ class Turbolinks.Controller
       removeEventListener("click", @clickCaptured, true)
       @started = false
 
-  visit: (url) ->
-    @adapter.visitLocation(url)
+  visit: (location) ->
+    @adapter.visitLocation(location)
+
+  pushHistory: (location) ->
+    @history.push(location)
+
+  replaceHistory: (location) ->
+    @history.replace(location)
 
   loadResponse: (response) ->
-    console.log "loading response for", @url
+    console.log "loading response for", @location
     @view.loadHTML(response)
 
-  # Adapter delegate
+  # Page snapshots
 
-  adapterLoadedResponse: (response) ->
-    @loadResponse(response)
+  saveSnapshot: ->
+    console.log "saving snapshot for", @location
+    snapshot = @view.saveSnapshot()
+    @cache.put(@location, snapshot)
 
-  getHistoryForAdapter: (adapter) ->
-    @history
+  restoreSnapshot: ->
+    if snapshot = @cache.get(@url)
+      console.log "restoring snapshot for", @location
+      @view.loadSnapshot(snapshot)
+      true
 
   # History delegate
 
-  historyChanged: (url) ->
-    @locationChanged(url)
+  historyChanged: (location) ->
+    @locationChanged(location)
 
   # Event handlers
 
   historyPopped: (event) =>
     if event.state?.turbolinks
-      @locationChanged(location.toString())
+      @locationChanged(window.location.toString())
 
   clickCaptured: =>
     removeEventListener("click", @clickBubbled, false)
@@ -60,22 +71,10 @@ class Turbolinks.Controller
 
   # Private
 
-  saveSnapshot: ->
-    console.log "saving snapshot for", @url
-    snapshot = @view.saveSnapshot()
-    @cache.put(@url, snapshot)
-
-  restoreSnapshot: ->
-    if snapshot = @cache.get(@url)
-      console.log "restoring snapshot for", @url
-      @view.loadSnapshot(snapshot)
-      @adapter.snapshotRestored()
-
-  locationChanged: (url) ->
+  locationChanged: (location) ->
     @saveSnapshot()
-    @url = url
-    @adapter.locationChanged(url)
-    @restoreSnapshot()
+    @location = location
+    @adapter.locationChanged(location)
 
   getVisitableURLForEvent: (event) ->
     link = Turbolinks.closest(event.target, "a")
