@@ -69,6 +69,7 @@ class Turbolinks.Controller
     if snapshot = @cache.get(@url)
       console.log "restoring snapshot for", @url
       @view.loadSnapshot(snapshot)
+      @adapter.snapshotRestored()
 
   locationChanged: (url) ->
     @saveSnapshot()

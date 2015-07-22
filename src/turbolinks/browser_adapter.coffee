@@ -7,6 +7,8 @@ class Turbolinks.BrowserAdapter
   locationChanged: (url) ->
     @request(url)
 
+  snapshotRestored: ->
+
   # Private
 
   request: (url) ->
