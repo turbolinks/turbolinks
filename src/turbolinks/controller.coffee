@@ -4,8 +4,7 @@
 #= require turbolinks/cache
 
 class Turbolinks.Controller
-  constructor: (adapterConstructor) ->
-    @adapter = new adapterConstructor this
+  constructor: ->
     @history = new Turbolinks.History this
     @view = new Turbolinks.View this
     @cache = new Turbolinks.Cache this
@@ -85,5 +84,6 @@ class Turbolinks.Controller
 
 
 do ->
-  Turbolinks.controller = new Turbolinks.Controller(Turbolinks.BrowserAdapter)
-  Turbolinks.controller.start()
+  Turbolinks.controller = controller = new Turbolinks.Controller
+  controller.adapter = new Turbolinks.BrowserAdapter(controller)
+  controller.start()
