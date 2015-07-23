@@ -64,9 +64,9 @@ class Turbolinks.Controller
     addEventListener("click", @clickBubbled, false)
 
   clickBubbled: (event) =>
-    if not event.defaultPrevented and url = @getVisitableURLForEvent(event)
+    if not event.defaultPrevented and location = @getVisitableLocationForEvent(event)
       event.preventDefault()
-      @visit(url)
+      @visit(location)
 
   # Private
 
@@ -75,7 +75,7 @@ class Turbolinks.Controller
     @location = location
     @adapter.locationChangedByActor(location, actor)
 
-  getVisitableURLForEvent: (event) ->
+  getVisitableLocationForEvent: (event) ->
     link = Turbolinks.closest(event.target, "a")
     link.href if isSameOrigin(link?.href)
 
