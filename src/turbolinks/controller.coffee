@@ -42,6 +42,9 @@ class Turbolinks.Controller
     snapshot = @view.saveSnapshot()
     @cache.put(@location, snapshot)
 
+  hasSnapshotForLocation: (location) ->
+    @cache.get(location)?
+
   restoreSnapshotByScrollingToSavedPosition: (scrollToSavedPosition) ->
     if snapshot = @cache.get(@location)
       console.log "restoring snapshot for", @location
