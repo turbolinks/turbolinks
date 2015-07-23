@@ -42,22 +42,22 @@ class Turbolinks.Controller
     snapshot = @view.saveSnapshot()
     @cache.put(@location, snapshot)
 
-  restoreSnapshotWithScrollPosition: (scrollPosition) ->
+  restoreSnapshotByScrollingToSavedPosition: (scrollToSavedPosition) ->
     if snapshot = @cache.get(@url)
       console.log "restoring snapshot for", @location
-      @view.loadSnapshotWithScrollPosition(snapshot, scrollPosition)
+      @view.loadSnapshotByScrollingToSavedPosition(snapshot, scrollToSavedPosition)
       true
 
   # History delegate
 
   historyChanged: (location) ->
-    @locationChanged(location)
+    @locationChangedByActor(location, "application")
 
   # Event handlers
 
   historyPopped: (event) =>
     if event.state?.turbolinks
-      @locationChanged(window.location.toString())
+      @locationChangedByActor(window.location.toString(), "history")
 
   clickCaptured: =>
     removeEventListener("click", @clickBubbled, false)
@@ -70,10 +70,10 @@ class Turbolinks.Controller
 
   # Private
 
-  locationChanged: (location) ->
+  locationChangedByActor: (location, actor) ->
     @saveSnapshot()
     @location = location
-    @adapter.locationChanged(location)
+    @adapter.locationChangedByActor(location, actor)
 
   getVisitableURLForEvent: (event) ->
     link = Turbolinks.closest(event.target, "a")

@@ -4,9 +4,9 @@ class Turbolinks.BrowserAdapter
   visitLocation: (location) ->
     @controller.pushHistory(location)
 
-  locationChanged: (location) ->
+  locationChangedByActor: (location, actor) ->
+    @controller.restoreSnapshotByScrollingToSavedPosition(actor is "history")
     @issueRequestForLocation(location)
-    @controller.restoreSnapshot()
 
   # Private
 
