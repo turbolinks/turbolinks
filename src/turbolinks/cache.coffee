@@ -5,5 +5,5 @@ class Turbolinks.Cache
   put: (location, snapshot) ->
     @entries[location] = snapshot
 
-  get: (url) ->
+  get: (location) ->
     @entries[location]
