@@ -2,14 +2,20 @@ class Turbolinks.View
   constructor: (@delegate) ->
 
   loadHTML: (html) ->
-    @loadSnapshot(parseHTML(html))
+    @loadSnapshotWithScrollPosition(parseHTML(html), "anchored")
 
-  loadSnapshot: (snapshot) ->
+  loadSnapshotWithScrollPosition: (snapshot, scrollPosition) ->
     document.title = snapshot.title
     document.body = snapshot.body
-    xOffset = snapshot.offsets?.left ? 0
-    yOffset = snapshot.offsets?.top ? 0
-    scrollTo(xOffset, yOffset)
+
+    if scrollPosition is "restored" and snapshot.offsets?
+      xOffset = snapshot.offsets.left ? 0
+      yOffset = snapshot.offsets.top ? 0
+      scrollTo(xOffset, yOffset)
+    else if element = (try document.querySelector(window.location.hash))
+      element.scrollIntoView()
+    else
+      scrollTo(0, 0)
 
   saveSnapshot: ->
     body: document.body.cloneNode(true)

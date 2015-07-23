@@ -42,10 +42,10 @@ class Turbolinks.Controller
     snapshot = @view.saveSnapshot()
     @cache.put(@location, snapshot)
 
-  restoreSnapshot: ->
+  restoreSnapshotWithScrollPosition: (scrollPosition) ->
     if snapshot = @cache.get(@url)
       console.log "restoring snapshot for", @location
-      @view.loadSnapshot(snapshot)
+      @view.loadSnapshotWithScrollPosition(snapshot, scrollPosition)
       true
 
   # History delegate
