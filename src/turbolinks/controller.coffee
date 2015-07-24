@@ -82,7 +82,7 @@ class Turbolinks.Controller
   # Events
 
   applicationAllowsChangingToLocation: (location) ->
-    @triggerEvent("page:before-change", data: { url: location.toString() }, cancelable: true)
+    @triggerEvent("page:before-change", data: { url: location.absoluteURL }, cancelable: true)
 
   notifyApplicationOfSnapshotRestoration: ->
     @triggerEvent("page:restore")
