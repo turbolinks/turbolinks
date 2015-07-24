@@ -13,6 +13,8 @@ class Turbolinks.History
       @started = false
 
   push: (location) ->
+    location = Turbolinks.Location.box(location)
+
     unless @initialized
       @update("replace", null)
       @initialized = true
@@ -21,6 +23,7 @@ class Turbolinks.History
     @delegate.locationChangedByActor(location, "application")
 
   replace: (location) ->
+    location = Turbolinks.Location.box(location)
     @update("replace", location)
     @delegate.locationChangedByActor(location, "application")
 
@@ -28,7 +31,7 @@ class Turbolinks.History
 
   onPopState: (event) =>
     if event.state?.turbolinks
-      location = window.location.toString()
+      location = Turbolinks.Location.box(window.location)
       @delegate.locationChangedByActor(location, "history")
 
   # Private

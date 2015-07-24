@@ -13,7 +13,7 @@ class Turbolinks.BrowserAdapter
   issueRequestForLocation: (location) ->
     @xhr?.abort()
     @xhr = new XMLHttpRequest
-    @xhr.open("GET", location, true)
+    @xhr.open("GET", location.requestURL, true)
     @xhr.setRequestHeader("Accept", "text/html, application/xhtml+xml, application/xml")
     @xhr.onload = @requestLoaded
     @xhr.onerror = @requestFailed

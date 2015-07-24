@@ -1,3 +1,4 @@
+#= require turbolinks/location
 #= require turbolinks/browser_adapter
 #= require turbolinks/history
 #= require turbolinks/view
@@ -8,7 +9,7 @@ class Turbolinks.Controller
     @history = new Turbolinks.History this
     @view = new Turbolinks.View this
     @cache = new Turbolinks.Cache this
-    @location = window.location.toString()
+    @location = Turbolinks.Location.box(window.location)
 
   start: ->
     unless @started
@@ -25,12 +26,15 @@ class Turbolinks.Controller
       @started = false
 
   visit: (location) ->
+    location = Turbolinks.Location.box(location)
     @adapter.visitLocation(location)
 
   pushHistory: (location) ->
+    location = Turbolinks.Location.box(location)
     @history.push(location)
 
   replaceHistory: (location) ->
+    location = Turbolinks.Location.box(location)
     @history.replace(location)
 
   loadResponse: (response) ->
@@ -44,6 +48,7 @@ class Turbolinks.Controller
     @cache.put(@location, snapshot)
 
   hasSnapshotForLocation: (location) ->
+    location = Turbolinks.Location.box(location)
     @cache.get(location)?
 
   restoreSnapshotByScrollingToSavedPosition: (scrollToSavedPosition) ->
@@ -93,15 +98,12 @@ class Turbolinks.Controller
     event.initEvent(eventName, true, cancelable is true)
     event.data = data
     document.dispatchEvent(event)
-    console.log "dispatched #{eventName} =>", not event.defaultPrevented
     not event.defaultPrevented
 
   getVisitableLocationForEvent: (event) ->
     link = Turbolinks.closest(event.target, "a")
-    link.href if isSameOrigin(link?.href)
-
-  isSameOrigin = (url) ->
-    url?
+    location = new Turbolinks.Location link.href
+    location if location.isSameOrigin()
 
 
 do ->

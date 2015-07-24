@@ -3,7 +3,9 @@ class Turbolinks.Cache
     @entries = {}
 
   put: (location, snapshot) ->
-    @entries[location] = snapshot
+    location = Turbolinks.Location.box(location)
+    @entries[location.toCacheKey()] = snapshot
 
   get: (location) ->
-    @entries[location]
+    location = Turbolinks.Location.box(location)
+    @entries[location.toCacheKey()]
