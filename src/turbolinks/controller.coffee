@@ -82,7 +82,7 @@ class Turbolinks.Controller
   # Events
 
   applicationAllowsChangingToLocation: (location) ->
-    @triggerEvent("page:before-change", data: { url: location }, cancelable: true)
+    @triggerEvent("page:before-change", data: { url: location.toString() }, cancelable: true)
 
   notifyApplicationOfSnapshotRestoration: ->
     @triggerEvent("page:restore")
@@ -101,9 +101,9 @@ class Turbolinks.Controller
     not event.defaultPrevented
 
   getVisitableLocationForEvent: (event) ->
-    link = Turbolinks.closest(event.target, "a")
-    location = new Turbolinks.Location link.href
-    location if location.isSameOrigin()
+    if link = Turbolinks.closest(event.target, "a[href]")
+      location = new Turbolinks.Location link.href
+      location if location.isSameOrigin()
 
 
 do ->
