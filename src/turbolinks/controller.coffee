@@ -63,8 +63,18 @@ class Turbolinks.Controller
 
   clickBubbled: (event) =>
     if not event.defaultPrevented and location = @getVisitableLocationForEvent(event)
-      event.preventDefault()
-      @visit(location)
+      if @triggerEvent("page:before-change", data: { url: location }, cancelable: true)
+        event.preventDefault()
+        @visit(location)
+
+  # Events
+
+  triggerEvent: (eventName, {cancelable, data} = {}) ->
+    event = document.createEvent("events")
+    event.initEvent(eventName, true, cancelable is true)
+    event.data = data
+    document.dispatchEvent(event)
+    not event.defaultPrevented
 
   # Private
 
