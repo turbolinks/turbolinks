@@ -12,14 +12,14 @@ class Turbolinks.Controller
 
   start: ->
     unless @started
-      addEventListener("popstate", @historyPopped, false)
       addEventListener("click", @clickCaptured, true)
+      @history.start()
       @started = true
 
   stop: ->
     if @started
-      removeEventListener("popstate", @historyPopped, false)
       removeEventListener("click", @clickCaptured, true)
+      @history.stop()
       @started = false
 
   visit: (location) ->
@@ -50,14 +50,12 @@ class Turbolinks.Controller
 
   # History delegate
 
-  historyChanged: (location) ->
-    @locationChangedByActor(location, "application")
+  locationChangedByActor: (location, actor) ->
+    @saveSnapshot()
+    @location = location
+    @adapter.locationChangedByActor(location, actor)
 
   # Event handlers
-
-  historyPopped: (event) =>
-    if event.state?.turbolinks
-      @locationChangedByActor(window.location.toString(), "history")
 
   clickCaptured: =>
     removeEventListener("click", @clickBubbled, false)
@@ -69,11 +67,6 @@ class Turbolinks.Controller
       @visit(location)
 
   # Private
-
-  locationChangedByActor: (location, actor) ->
-    @saveSnapshot()
-    @location = location
-    @adapter.locationChangedByActor(location, actor)
 
   getVisitableLocationForEvent: (event) ->
     link = Turbolinks.closest(event.target, "a")
