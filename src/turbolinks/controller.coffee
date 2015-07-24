@@ -13,12 +13,14 @@ class Turbolinks.Controller
   start: ->
     unless @started
       addEventListener("click", @clickCaptured, true)
+      addEventListener("DOMContentLoaded", @pageLoaded, false)
       @history.start()
       @started = true
 
   stop: ->
     if @started
       removeEventListener("click", @clickCaptured, true)
+      removeEventListener("DOMContentLoaded", @pageLoaded, false)
       @history.stop()
       @started = false
 
@@ -33,6 +35,7 @@ class Turbolinks.Controller
 
   loadResponse: (response) ->
     @view.loadHTML(response)
+    @notifyApplicationOfPageChange()
 
   # Page snapshots
 
@@ -46,6 +49,7 @@ class Turbolinks.Controller
   restoreSnapshotByScrollingToSavedPosition: (scrollToSavedPosition) ->
     if snapshot = @cache.get(@location)
       @view.loadSnapshotByScrollingToSavedPosition(snapshot, scrollToSavedPosition)
+      @notifyApplicationOfSnapshotRestoration()
       true
 
   # History delegate
@@ -57,26 +61,40 @@ class Turbolinks.Controller
 
   # Event handlers
 
+  pageLoaded: =>
+    @notifyApplicationOfPageChange()
+
   clickCaptured: =>
     removeEventListener("click", @clickBubbled, false)
     addEventListener("click", @clickBubbled, false)
 
   clickBubbled: (event) =>
     if not event.defaultPrevented and location = @getVisitableLocationForEvent(event)
-      if @triggerEvent("page:before-change", data: { url: location }, cancelable: true)
+      if @applicationAllowsChangingToLocation(location)
         event.preventDefault()
         @visit(location)
 
   # Events
 
+  applicationAllowsChangingToLocation: (location) ->
+    @triggerEvent("page:before-change", data: { url: location }, cancelable: true)
+
+  notifyApplicationOfSnapshotRestoration: ->
+    @triggerEvent("page:restore")
+
+  notifyApplicationOfPageChange: ->
+    @triggerEvent("page:change")
+    @triggerEvent("page:update")
+
+  # Private
+
   triggerEvent: (eventName, {cancelable, data} = {}) ->
-    event = document.createEvent("events")
+    event = document.createEvent("Events")
     event.initEvent(eventName, true, cancelable is true)
     event.data = data
     document.dispatchEvent(event)
+    console.log "dispatched #{eventName} =>", not event.defaultPrevented
     not event.defaultPrevented
-
-  # Private
 
   getVisitableLocationForEvent: (event) ->
     link = Turbolinks.closest(event.target, "a")
