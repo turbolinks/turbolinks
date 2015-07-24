@@ -32,13 +32,11 @@ class Turbolinks.Controller
     @history.replace(location)
 
   loadResponse: (response) ->
-    console.log "loading response for", @location
     @view.loadHTML(response)
 
   # Page snapshots
 
   saveSnapshot: ->
-    console.log "saving snapshot for", @location
     snapshot = @view.saveSnapshot()
     @cache.put(@location, snapshot)
 
@@ -47,7 +45,6 @@ class Turbolinks.Controller
 
   restoreSnapshotByScrollingToSavedPosition: (scrollToSavedPosition) ->
     if snapshot = @cache.get(@location)
-      console.log "restoring snapshot for", @location
       @view.loadSnapshotByScrollingToSavedPosition(snapshot, scrollToSavedPosition)
       true
 
