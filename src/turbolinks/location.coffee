@@ -10,9 +10,12 @@ class Turbolinks.Location
     linkWithAnchor.href = url.toString()
     @absoluteURL = linkWithAnchor.href
 
-    linkWithoutAnchor = linkWithAnchor.cloneNode()
-    linkWithoutAnchor.hash = ""
-    @requestURL = linkWithoutAnchor.href
+    if linkWithAnchor.hash.length < 2
+      @requestURL = @absoluteURL
+    else
+      linkWithoutAnchor = linkWithAnchor.cloneNode()
+      linkWithoutAnchor.hash = ""
+      @requestURL = linkWithoutAnchor.href
 
   getOrigin: ->
     @absoluteURL.split("/", 3).join("/")
