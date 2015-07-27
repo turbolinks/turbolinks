@@ -41,6 +41,35 @@ class Turbolinks.Controller
     @view.loadHTML(response)
     @notifyApplicationOfPageChange()
 
+  # Current request
+
+  issueRequestForLocation: (location) ->
+    @xhr?.abort()
+    @xhr = new XMLHttpRequest
+    @xhr.open("GET", location.requestURL, true)
+    @xhr.setRequestHeader("Accept", "text/html, application/xhtml+xml, application/xml")
+    @xhr.onloadend = @requestLoaded
+    @xhr.onerror = @requestFailed
+    @xhr.onabort = @requestAborted
+    @xhr.send()
+
+  abortCurrentRequest: ->
+    @xhr?.abort()
+
+  requestLoaded: =>
+    if 200 <= @xhr.status < 300
+      @adapter.requestCompletedWithResponse(@xhr.responseText)
+    else
+      @adapter.requestFailedWithStatusCode(@xhr.status, @xhr.responseText)
+    @xhr = null
+
+  requestFailed: =>
+    @adapter.requestFailedWithStatusCode(null)
+    @xhr = null
+
+  requestAborted: =>
+    @xhr = null
+
   # Page snapshots
 
   saveSnapshot: ->
