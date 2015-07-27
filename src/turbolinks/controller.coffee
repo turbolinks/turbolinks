@@ -44,8 +44,8 @@ class Turbolinks.Controller
   # Current request
 
   issueRequestForLocation: (location) ->
-    @xhr?.abort()
     location = Turbolinks.Location.box(location)
+    @abortCurrentRequest()
     @xhr = new XMLHttpRequest
     @xhr.open("GET", location.requestURL, true)
     @xhr.setRequestHeader("Accept", "text/html, application/xhtml+xml, application/xml")
