@@ -8,7 +8,7 @@ class Turbolinks.Controller
   constructor: ->
     @history = new Turbolinks.History this
     @view = new Turbolinks.View this
-    @cache = new Turbolinks.Cache this
+    @cache = new Turbolinks.Cache 10
     @location = Turbolinks.Location.box(window.location)
 
   start: ->
@@ -78,8 +78,7 @@ class Turbolinks.Controller
     @cache.put(@location, snapshot)
 
   hasSnapshotForLocation: (location) ->
-    location = Turbolinks.Location.box(location)
-    @cache.get(location)?
+    @cache.has(location)
 
   restoreSnapshotByScrollingToSavedPosition: (scrollToSavedPosition) ->
     if snapshot = @cache.get(@location)
