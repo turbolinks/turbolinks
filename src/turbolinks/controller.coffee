@@ -10,6 +10,7 @@ class Turbolinks.Controller
     @view = new Turbolinks.View this
     @cache = new Turbolinks.Cache 10
     @location = Turbolinks.Location.box(window.location)
+    @locationLoaded = true
 
   start: ->
     unless @started
@@ -39,6 +40,7 @@ class Turbolinks.Controller
 
   loadResponse: (response) ->
     @view.loadHTML(response)
+    @locationLoaded = true
     @notifyApplicationOfPageChange()
 
   # Current request
@@ -74,8 +76,9 @@ class Turbolinks.Controller
   # Page snapshots
 
   saveSnapshot: ->
-    snapshot = @view.saveSnapshot()
-    @cache.put(@location, snapshot)
+    if @locationLoaded
+      snapshot = @view.saveSnapshot()
+      @cache.put(@location, snapshot)
 
   hasSnapshotForLocation: (location) ->
     @cache.has(location)
@@ -90,6 +93,7 @@ class Turbolinks.Controller
 
   locationChangedByActor: (location, actor) ->
     @saveSnapshot()
+    @locationLoaded = false
     @location = location
     @adapter.locationChangedByActor(location, actor)
 
