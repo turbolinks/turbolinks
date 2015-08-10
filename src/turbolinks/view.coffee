@@ -1,29 +1,46 @@
+#= require turbolinks/snapshot
+
 class Turbolinks.View
   constructor: (@delegate) ->
 
   loadHTML: (html) ->
-    @loadSnapshotByScrollingToSavedPosition(parseHTML(html), "anchor")
+    snapshot = Turbolinks.Snapshot.fromHTML(html)
+    @loadSnapshotByScrollingToSavedPosition(snapshot, "anchor")
 
   loadSnapshotByScrollingToSavedPosition: (snapshot, scrollToSavedPosition) ->
-    document.title = snapshot.title
-    document.body = snapshot.body
-    @scrollToSavedPositionWithOffsets(scrollToSavedPosition, snapshot.offsets)
+    @loadSnapshot(snapshot)
+    @scrollSnapshotToSavedPosition(snapshot, scrollToSavedPosition)
 
   saveSnapshot: ->
-    body: document.body.cloneNode(true)
-    title: document.title
-    offsets:
-      left: window.pageXOffset
-      top: window.pageYOffset
+    getSnapshot(true)
 
   # Private
 
-  scrollToSavedPositionWithOffsets: (scrollToSavedPosition, snapshotOffsets) ->
+  loadSnapshot: (newSnapshot) ->
+    currentSnapshot = getSnapshot(false)
+
+    unless currentSnapshot.hasSameRemoteHeadElementsAsSnapshot(newSnapshot)
+      return window.location.reload()
+
+    for element in newSnapshot.getInlineHeadElementsNotPresentInSnapshot(currentSnapshot)
+      document.head.appendChild(element.cloneNode(true))
+
+    for element in currentSnapshot.getTemporaryHeadElements()
+      document.head.removeChild(element)
+
+    for element in newSnapshot.getTemporaryHeadElements()
+      document.head.appendChild(element.cloneNode(true))
+
+    newBody = newSnapshot.body.cloneNode(true)
+    importPermanentBodyElements(newBody, currentSnapshot.getPermanentBodyElements())
+    document.body = newBody
+
+  scrollSnapshotToSavedPosition: (snapshot, scrollToSavedPosition) ->
     location = window.location.toString()
 
     if scrollToSavedPosition and snapshotOffsets?
-      xOffset = snapshotOffsets.left ? 0
-      yOffset = snapshotOffsets.top ? 0
+      xOffset = snapshot.scrollLeft
+      yOffset = snapshot.scrollTop
       scrollTo(xOffset, yOffset)
     else if element = (try document.querySelector(window.location.hash))
       element.scrollIntoView()
@@ -32,8 +49,17 @@ class Turbolinks.View
 
     @lastScrolledLocation = location
 
-  parseHTML = (html) ->
-    element = document.createElement("html")
-    element.innerHTML = html
-    title: element.querySelector("title")?.textContent
-    body: element.querySelector("body")
+  getSnapshot = (clone) ->
+    new Turbolinks.Snapshot
+      head: maybeCloneElement(document.head, clone)
+      body: maybeCloneElement(document.body, clone)
+      scrollLeft: window.pageXOffset
+      scrollTop: window.pageYOffset
+
+  importPermanentBodyElements = (body, permanentBodyElements) ->
+    for newChild in permanentBodyElements
+      if oldChild = body.querySelector("[id='#{newChild.id}']")
+        oldChild.parentNode.replaceChild(newChild, oldChild)
+
+  maybeCloneElement = (element, clone) ->
+    if clone then element.cloneNode(true) else element
