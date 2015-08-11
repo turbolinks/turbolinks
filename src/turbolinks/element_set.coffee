@@ -4,18 +4,8 @@ class Turbolinks.ElementSet
       element: element
       value: element.outerHTML
 
-  hasElement: (element) ->
-    @findElement(element)?
-
-  findElement: (needleElement) ->
-    @getElementIndex()[needleElement.outerHTML]
-
   selectElementsMatchingSelector: (selector) ->
     elements = (element for {element, value} in @elements when Turbolinks.match(element, selector))
-    new @constructor elements
-
-  rejectElementsMatchingSelector: (selector) ->
-    elements = (element for {element, value} in @elements when not Turbolinks.match(element, selector))
     new @constructor elements
 
   getElementsNotPresentInSet: (elementSet) ->
