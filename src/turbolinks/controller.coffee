@@ -107,7 +107,7 @@ class Turbolinks.Controller
     addEventListener("click", @clickBubbled, false)
 
   clickBubbled: (event) =>
-    if not event.defaultPrevented and location = @getVisitableLocationForEvent(event)
+    if @clickEventIsSignificant(event) and location = @getVisitableLocationForNode(event.target)
       if @applicationAllowsChangingToLocation(location)
         event.preventDefault()
         @visit(location)
@@ -133,8 +133,18 @@ class Turbolinks.Controller
     document.dispatchEvent(event)
     not event.defaultPrevented
 
-  getVisitableLocationForEvent: (event) ->
-    if link = Turbolinks.closest(event.target, "a[href]")
+  clickEventIsSignificant: (event) ->
+    not (
+      event.defaultPrevented or
+      event.which > 1 or
+      event.altKey or
+      event.ctrlKey or
+      event.metaKey or
+      event.shiftKey
+    )
+
+  getVisitableLocationForNode: (node) ->
+    if link = Turbolinks.closest(node, "a[href]")
       location = new Turbolinks.Location link.href
       location if location.isSameOrigin()
 
