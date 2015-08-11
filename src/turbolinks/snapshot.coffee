@@ -14,9 +14,8 @@ class Turbolinks.Snapshot
     @scrollLeft = scrollLeft ? 0
     @scrollTop = scrollTop ? 0
 
-  hasSameRemoteHeadElementsAsSnapshot: (snapshot) ->
-    @getRemoteHeadStyleElementSet().isEqualTo(snapshot.getRemoteHeadStyleElementSet()) and
-      @getRemoteHeadScriptElementSet().isEqualTo(snapshot.getRemoteHeadScriptElementSet())
+  hasSameTrackedHeadElementsAsSnapshot: (snapshot) ->
+    @getTrackedHeadElementSet().isEqualTo(snapshot.getTrackedHeadElementSet())
 
   getInlineHeadElementsNotPresentInSnapshot: (snapshot) ->
     inlineStyleElements = @getInlineHeadStyleElementSet().getElementsNotPresentInSet(snapshot.getInlineHeadStyleElementSet())
@@ -31,23 +30,20 @@ class Turbolinks.Snapshot
 
   # Private
 
+  getTrackedHeadElementSet: ->
+    @trackedHeadElementSet ?= @getHeadElementSet().selectElementsMatchingSelector("[data-turbolinks-track=reload]")
+
   getInlineHeadStyleElementSet: ->
     @inlineHeadStyleElementSet ?= @getPermanentHeadElementSet().selectElementsMatchingSelector("style")
-
-  getRemoteHeadStyleElementSet: ->
-    @remoteHeadStyleElementSet ?= @getPermanentHeadElementSet().selectElementsMatchingSelector("link[rel=stylesheet]")
 
   getInlineHeadScriptElementSet: ->
     @inlineHeadScriptElementSet ?= @getPermanentHeadElementSet().selectElementsMatchingSelector("script:not([src])")
 
-  getRemoteHeadScriptElementSet: ->
-    @remoteHeadScriptElementSet ?= @getPermanentHeadElementSet().selectElementsMatchingSelector("script[src]")
-
   getPermanentHeadElementSet: ->
-    @permanentHeadElementSet ?= @getHeadElementSet().selectElementsMatchingSelector("style, link[rel=stylesheet], script")
+    @permanentHeadElementSet ?= @getHeadElementSet().selectElementsMatchingSelector("style, link[rel=stylesheet], script, [data-turbolinks-track=reload]")
 
   getTemporaryHeadElementSet: ->
-    @temporaryHeadElementSet ?= @getHeadElementSet().rejectElementsMatchingSelector("style, link[rel=stylesheet], script")
+    @temporaryHeadElementSet ?= @getHeadElementSet().getElementsNotPresentInSet(@getPermanentHeadElementSet())
 
   getHeadElementSet: ->
     @headElementSet ?= new Turbolinks.ElementSet @head.childNodes

@@ -19,7 +19,7 @@ class Turbolinks.View
   loadSnapshot: (newSnapshot) ->
     currentSnapshot = getSnapshot(false)
 
-    unless currentSnapshot.hasSameRemoteHeadElementsAsSnapshot(newSnapshot)
+    unless currentSnapshot.hasSameTrackedHeadElementsAsSnapshot(newSnapshot)
       return window.location.reload()
 
     for element in newSnapshot.getInlineHeadElementsNotPresentInSnapshot(currentSnapshot)
