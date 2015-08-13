@@ -1,4 +1,5 @@
 #= require turbolinks/snapshot
+#= require turbolinks/element_pool
 
 class Turbolinks.View
   constructor: (@delegate) ->
@@ -33,6 +34,7 @@ class Turbolinks.View
 
     newBody = newSnapshot.body.cloneNode(true)
     importPermanentElementsIntoBody(newBody)
+    importRecyclableElementsIntoBody(newBody)
     document.body = newBody
 
   scrollSnapshotToSavedPosition: (snapshot, scrollToSavedPosition) ->
@@ -61,8 +63,17 @@ class Turbolinks.View
       if oldChild = newBody.querySelector("[id='#{newChild.id}']")
         oldChild.parentNode.replaceChild(newChild, oldChild)
 
+  importRecyclableElementsIntoBody = (newBody) ->
+    elementPool = new Turbolinks.ElementPool getRecyclableElements(document.body)
+    for oldChild in getRecyclableElements(newBody)
+      if newChild = elementPool.retrieveMatchingElement(oldChild)
+        oldChild.parentNode.replaceChild(newChild, oldChild)
+
   getPermanentElements = (element) ->
     element.querySelectorAll("[id][data-turbolinks-permanent]")
+
+  getRecyclableElements = (element) ->
+    element.querySelectorAll("[data-turbolinks-recyclable]")
 
   maybeCloneElement = (element, clone) ->
     if clone then element.cloneNode(true) else element
