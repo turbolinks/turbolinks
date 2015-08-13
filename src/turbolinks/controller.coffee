@@ -3,6 +3,7 @@
 #= require turbolinks/history
 #= require turbolinks/view
 #= require turbolinks/cache
+#= require turbolinks/http_request
 
 class Turbolinks.Controller
   constructor: ->
@@ -46,32 +47,12 @@ class Turbolinks.Controller
   # Current request
 
   issueRequestForLocation: (location) ->
-    location = Turbolinks.Location.box(location)
     @abortCurrentRequest()
-    @xhr = new XMLHttpRequest
-    @xhr.open("GET", location.requestURL, true)
-    @xhr.setRequestHeader("Accept", "text/html, application/xhtml+xml, application/xml")
-    @xhr.onloadend = @requestLoaded
-    @xhr.onerror = @requestFailed
-    @xhr.onabort = @requestAborted
-    @xhr.send()
+    @request = new Turbolinks.HttpRequest @adapter, location
+    @request.send()
 
   abortCurrentRequest: ->
-    @xhr?.abort()
-
-  requestLoaded: =>
-    if 200 <= @xhr.status < 300
-      @adapter.requestCompletedWithResponse(@xhr.responseText)
-    else
-      @adapter.requestFailedWithStatusCode(@xhr.status, @xhr.responseText)
-    @xhr = null
-
-  requestFailed: =>
-    @adapter.requestFailedWithStatusCode(null)
-    @xhr = null
-
-  requestAborted: =>
-    @xhr = null
+    @request?.abort()
 
   # Page snapshots
 
