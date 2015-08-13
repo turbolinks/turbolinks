@@ -13,7 +13,7 @@ class Turbolinks.HttpRequest
       @sent = true
 
   abort: ->
-    if @xhr and not @sent
+    if @xhr and @sent
       @xhr.abort()
 
   # XMLHttpRequest events
