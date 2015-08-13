@@ -89,6 +89,11 @@ class Turbolinks.Controller
       @notifyApplicationOfSnapshotRestoration()
       true
 
+  # View delegate
+
+  viewInvalidated: ->
+    @adapter.pageInvalidated()
+
   # History delegate
 
   locationChangedByActor: (location, actor) ->

@@ -13,3 +13,6 @@ class Turbolinks.BrowserAdapter
 
   requestFailedWithStatusCode: (statusCode, response) ->
     console.error "FAILED REQUEST:", statusCode
+
+  pageInvalidated: ->
+    window.location.reload()

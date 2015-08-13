@@ -5,11 +5,11 @@ class Turbolinks.View
 
   loadHTML: (html) ->
     snapshot = Turbolinks.Snapshot.fromHTML(html)
-    @loadSnapshotByScrollingToSavedPosition(snapshot, "anchor")
+    @loadSnapshotByScrollingToSavedPosition(snapshot, "anchor", true)
 
-  loadSnapshotByScrollingToSavedPosition: (snapshot, scrollToSavedPosition) ->
-    @loadSnapshot(snapshot)
-    @scrollSnapshotToSavedPosition(snapshot, scrollToSavedPosition)
+  loadSnapshotByScrollingToSavedPosition: (snapshot, scrollToSavedPosition, fromHTML) ->
+    if @loadSnapshot(snapshot)
+      @scrollSnapshotToSavedPosition(snapshot, scrollToSavedPosition)
 
   saveSnapshot: ->
     getSnapshot(true)
@@ -20,7 +20,8 @@ class Turbolinks.View
     currentSnapshot = getSnapshot(false)
 
     unless currentSnapshot.hasSameTrackedHeadElementsAsSnapshot(newSnapshot)
-      return window.location.reload()
+      @delegate.viewInvalidated()
+      return false
 
     for element in newSnapshot.getInlineHeadElementsNotPresentInSnapshot(currentSnapshot)
       document.head.appendChild(element.cloneNode(true))
@@ -34,6 +35,7 @@ class Turbolinks.View
     newBody = newSnapshot.body.cloneNode(true)
     importPermanentBodyElements(newBody, currentSnapshot.getPermanentBodyElements())
     document.body = newBody
+    newSnapshot
 
   scrollSnapshotToSavedPosition: (snapshot, scrollToSavedPosition) ->
     location = window.location.toString()
