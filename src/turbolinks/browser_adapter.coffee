@@ -8,6 +8,9 @@ class Turbolinks.BrowserAdapter
     @controller.restoreSnapshotByScrollingToSavedPosition(actor is "history")
     @controller.issueRequestForLocation(location)
 
+  requestProgressed: (progress) ->
+    console.log "requestProgressed", progress
+
   requestCompletedWithResponse: (response) ->
     @controller.loadResponse(response)
 

@@ -3,12 +3,14 @@ class Turbolinks.HttpRequest
     @xhr = new XMLHttpRequest
     @xhr.open("GET", @location.requestURL, true)
     @xhr.setRequestHeader("Accept", "text/html, application/xhtml+xml, application/xml")
+    @xhr.onprogress = @requestProgressed
     @xhr.onloadend = @requestLoaded
     @xhr.onerror = @requestFailed
     @xhr.onabort = @requestAborted
 
   send: ->
     if @xhr and not @sent
+      @setProgress(0)
       @xhr.send()
       @sent = true
 
@@ -17,6 +19,12 @@ class Turbolinks.HttpRequest
       @xhr.abort()
 
   # XMLHttpRequest events
+
+  requestProgressed: (event) =>
+    if event.lengthComputable
+      @setProgress(event.loaded / event.total)
+    else
+      @incrementProgressIndeterminately()
 
   requestLoaded: =>
     if 200 <= @xhr.status < 300
@@ -34,6 +42,14 @@ class Turbolinks.HttpRequest
 
   # Private
 
+  setProgress: (progress) ->
+    @progress = progress
+    @delegate.requestProgressed?(@progress)
+
+  incrementProgressIndeterminately: ->
+    @setProgress(@progress + (1 - @progress) * .1)
+
   destroy: ->
+    @setProgress(1)
     @delegate = null
     @xhr = null
