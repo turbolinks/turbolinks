@@ -25,9 +25,6 @@ class Turbolinks.Snapshot
   getTemporaryHeadElements: ->
     @getTemporaryHeadElementSet().getElements()
 
-  getPermanentBodyElements: ->
-    element for element in @body.querySelectorAll("[id][data-turbolinks-permanent]")
-
   # Private
 
   getTrackedHeadElementSet: ->

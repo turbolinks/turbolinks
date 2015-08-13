@@ -32,7 +32,7 @@ class Turbolinks.View
       document.head.appendChild(element.cloneNode(true))
 
     newBody = newSnapshot.body.cloneNode(true)
-    importPermanentBodyElements(newBody, currentSnapshot.getPermanentBodyElements())
+    importPermanentElementsIntoBody(newBody)
     document.body = newBody
 
   scrollSnapshotToSavedPosition: (snapshot, scrollToSavedPosition) ->
@@ -56,10 +56,13 @@ class Turbolinks.View
       scrollLeft: window.pageXOffset
       scrollTop: window.pageYOffset
 
-  importPermanentBodyElements = (body, permanentBodyElements) ->
-    for newChild in permanentBodyElements
-      if oldChild = body.querySelector("[id='#{newChild.id}']")
+  importPermanentElementsIntoBody = (newBody) ->
+    for newChild in getPermanentElements(document.body)
+      if oldChild = newBody.querySelector("[id='#{newChild.id}']")
         oldChild.parentNode.replaceChild(newChild, oldChild)
+
+  getPermanentElements = (element) ->
+    element.querySelectorAll("[id][data-turbolinks-permanent]")
 
   maybeCloneElement = (element, clone) ->
     if clone then element.cloneNode(true) else element
