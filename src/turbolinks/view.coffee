@@ -6,9 +6,9 @@ class Turbolinks.View
 
   loadHTML: (html) ->
     snapshot = Turbolinks.Snapshot.fromHTML(html)
-    @loadSnapshotByScrollingToSavedPosition(snapshot, "anchor", true)
+    @loadSnapshotByScrollingToSavedPosition(snapshot, false)
 
-  loadSnapshotByScrollingToSavedPosition: (snapshot, scrollToSavedPosition, fromHTML) ->
+  loadSnapshotByScrollingToSavedPosition: (snapshot, scrollToSavedPosition) ->
     if @loadSnapshot(snapshot)
       @scrollSnapshotToSavedPosition(snapshot, scrollToSavedPosition)
 
@@ -42,10 +42,8 @@ class Turbolinks.View
   scrollSnapshotToSavedPosition: (snapshot, scrollToSavedPosition) ->
     location = window.location.toString()
 
-    if scrollToSavedPosition and snapshotOffsets?
-      xOffset = snapshot.scrollLeft
-      yOffset = snapshot.scrollTop
-      scrollTo(xOffset, yOffset)
+    if scrollToSavedPosition and snapshot.hasScrollPosition()
+      scrollTo(snapshot.scrollLeft, snapshot.scrollTop)
     else if element = (try document.querySelector(window.location.hash))
       element.scrollIntoView()
     else if @lastScrolledLocation isnt location

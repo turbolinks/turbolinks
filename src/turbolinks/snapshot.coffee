@@ -11,8 +11,11 @@ class Turbolinks.Snapshot
   constructor: ({head, body, scrollLeft, scrollTop}) ->
     @head = head
     @body = body
-    @scrollLeft = scrollLeft ? 0
-    @scrollTop = scrollTop ? 0
+    @scrollLeft = scrollLeft
+    @scrollTop = scrollTop
+
+  hasScrollPosition: ->
+    @scrollLeft? and @scrollTop?
 
   hasSameTrackedHeadElementsAsSnapshot: (snapshot) ->
     @getTrackedHeadElementSet().isEqualTo(snapshot.getTrackedHeadElementSet())
