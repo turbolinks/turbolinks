@@ -1,5 +1,6 @@
 class Turbolinks.HttpRequest
-  constructor: (@delegate, @location) ->
+  constructor: (@delegate, location) ->
+    @location = Turbolinks.Location.box(location)
     @xhr = new XMLHttpRequest
     @xhr.open("GET", @location.requestURL, true)
     @xhr.setRequestHeader("Accept", "text/html, application/xhtml+xml, application/xml")
