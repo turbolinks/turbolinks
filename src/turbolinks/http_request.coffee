@@ -14,6 +14,7 @@ class Turbolinks.HttpRequest
       @setProgress(0)
       @xhr.send()
       @sent = true
+      @delegate.requestStarted?()
 
   abort: ->
     if @xhr and @sent
@@ -24,8 +25,6 @@ class Turbolinks.HttpRequest
   requestProgressed: (event) =>
     if event.lengthComputable
       @setProgress(event.loaded / event.total)
-    else
-      @incrementProgressIndeterminately()
 
   requestLoaded: =>
     if 200 <= @xhr.status < 300
@@ -47,10 +46,8 @@ class Turbolinks.HttpRequest
     @progress = progress
     @delegate.requestProgressed?(@progress)
 
-  incrementProgressIndeterminately: ->
-    @setProgress(@progress + (1 - @progress) * .1)
-
   destroy: ->
     @setProgress(1)
+    @delegate.requestFinished?()
     @delegate = null
     @xhr = null
