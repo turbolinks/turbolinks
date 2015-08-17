@@ -130,7 +130,7 @@ class Turbolinks.Controller
     )
 
   getVisitableLocationForNode: (node) ->
-    if @nodeIsVisitable(node) and link = Turbolinks.closest(node, "a[href]")
+    if @nodeIsVisitable(node) and link = Turbolinks.closest(node, "a[href]:not([target])")
       location = new Turbolinks.Location link.href
       location if location.isSameOrigin()
 
