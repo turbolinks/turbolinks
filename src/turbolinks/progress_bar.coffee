@@ -8,10 +8,8 @@ class Turbolinks.ProgressBar
       top: 0;
       left: 0;
       height: 3px;
-      width: 0;
       background: #0076ff;
       z-index: 9999;
-      opacity: 1;
       transition: width #{DELAY}ms ease-out, opacity #{DELAY / 2}ms ease-in;
       transform: translate3d(0, 0, 0);
     }
@@ -46,13 +44,13 @@ class Turbolinks.ProgressBar
     document.head.insertBefore(@stylesheetElement, document.head.firstChild)
 
   installProgressElement: ->
-    @progressElement.style.width = ""
-    @progressElement.style.opacity = ""
+    @progressElement.style.width = 0
+    @progressElement.style.opacity = 1
     document.documentElement.insertBefore(@progressElement, document.body)
 
   fadeProgressElement: (callback) ->
     @progressElement.style.opacity = 0
-    setTimeout(callback, DELAY)
+    setTimeout(callback, DELAY * 1.5)
 
   uninstallProgressElement: ->
     document.documentElement.removeChild(@progressElement)
