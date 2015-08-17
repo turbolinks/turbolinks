@@ -10,7 +10,7 @@ class Turbolinks.ProgressBar
       height: 3px;
       background: #0076ff;
       z-index: 9999;
-      transition: width #{DELAY}ms ease-out, opacity #{DELAY / 2}ms ease-in;
+      transition: width #{DELAY}ms ease-out, opacity #{DELAY / 2}ms #{DELAY / 2}ms ease-in;
       transform: translate3d(0, 0, 0);
     }
   """
@@ -36,7 +36,7 @@ class Turbolinks.ProgressBar
         @hiding = false
 
   setValue: (@value) ->
-    @progressElement.style.width = "#{10 + (@value * 90)}%"
+    @refresh()
 
   # Private
 
@@ -47,6 +47,7 @@ class Turbolinks.ProgressBar
     @progressElement.style.width = 0
     @progressElement.style.opacity = 1
     document.documentElement.insertBefore(@progressElement, document.body)
+    @refresh()
 
   fadeProgressElement: (callback) ->
     @progressElement.style.opacity = 0
@@ -64,6 +65,10 @@ class Turbolinks.ProgressBar
 
   trickle: =>
     @setValue(@value + Math.random() / 100)
+
+  refresh: ->
+    requestAnimationFrame =>
+      @progressElement.style.width = "#{10 + (@value * 90)}%"
 
   createStylesheetElement: ->
     element = document.createElement("style")

@@ -1,6 +1,8 @@
 #= require turbolinks/progress_bar
 
 class Turbolinks.BrowserAdapter
+  PROGRESS_BAR_DELAY = 500
+
   constructor: (@controller) ->
     @progressBar = new Turbolinks.ProgressBar
 
@@ -12,7 +14,8 @@ class Turbolinks.BrowserAdapter
     @controller.issueRequestForLocation(location)
 
   requestStarted: ->
-    @progressBar.show()
+    @showProgressBarAfterDelay()
+    @progressBar.setValue(0)
 
   requestProgressed: (progress) ->
     @progressBar.setValue(progress)
@@ -24,7 +27,19 @@ class Turbolinks.BrowserAdapter
     console.error "FAILED REQUEST:", statusCode
 
   requestFinished: ->
-    @progressBar.hide()
+    @hideProgressBar()
 
   pageInvalidated: ->
     window.location.reload()
+
+  # Private
+
+  showProgressBarAfterDelay: ->
+    @progressBarTimeout = setTimeout(@showProgressBar, PROGRESS_BAR_DELAY)
+
+  showProgressBar: =>
+    @progressBar.show()
+
+  hideProgressBar: ->
+    @progressBar.hide()
+    clearTimeout(@progressBarTimeout)
