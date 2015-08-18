@@ -1,5 +1,5 @@
 class Turbolinks.ProgressBar
-  DELAY = 300
+  ANIMATION_DURATION = 300
 
   @defaultCSS: """
     .turbolinks-progress-bar {
@@ -10,7 +10,7 @@ class Turbolinks.ProgressBar
       height: 3px;
       background: #0076ff;
       z-index: 9999;
-      transition: width #{DELAY}ms ease-out, opacity #{DELAY / 2}ms #{DELAY / 2}ms ease-in;
+      transition: width #{ANIMATION_DURATION}ms ease-out, opacity #{ANIMATION_DURATION / 2}ms #{ANIMATION_DURATION / 2}ms ease-in;
       transform: translate3d(0, 0, 0);
     }
   """
@@ -51,13 +51,13 @@ class Turbolinks.ProgressBar
 
   fadeProgressElement: (callback) ->
     @progressElement.style.opacity = 0
-    setTimeout(callback, DELAY * 1.5)
+    setTimeout(callback, ANIMATION_DURATION * 1.5)
 
   uninstallProgressElement: ->
     document.documentElement.removeChild(@progressElement)
 
   startTrickling: ->
-    @trickleInterval ?= setInterval(@trickle, DELAY)
+    @trickleInterval ?= setInterval(@trickle, ANIMATION_DURATION)
 
   stopTrickling: ->
     clearInterval(@trickleInterval)
