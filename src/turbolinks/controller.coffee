@@ -29,7 +29,8 @@ class Turbolinks.Controller
 
   visit: (location) ->
     location = Turbolinks.Location.box(location)
-    @adapter.visitLocation(location)
+    if @applicationAllowsVisitingLocation(location)
+      @adapter.visitLocation(location)
 
   pushHistory: (location) ->
     location = Turbolinks.Location.box(location)
@@ -42,7 +43,8 @@ class Turbolinks.Controller
   loadResponse: (response) ->
     @view.loadHTML(response)
     @responseLoaded = true
-    @notifyApplicationOfPageChange()
+    @notifyApplicationAfterResponseLoad()
+    @notifyApplicationAfterPageLoad()
 
   # Current request
 
@@ -58,6 +60,7 @@ class Turbolinks.Controller
 
   saveSnapshot: ->
     if @responseLoaded
+      @notifyApplicationBeforeSnapshotSave()
       snapshot = @view.saveSnapshot()
       @cache.put(@location, snapshot)
 
@@ -67,7 +70,7 @@ class Turbolinks.Controller
   restoreSnapshotByScrollingToSavedPosition: (scrollToSavedPosition) ->
     if snapshot = @cache.get(@location)
       @view.loadSnapshotByScrollingToSavedPosition(snapshot, scrollToSavedPosition)
-      @notifyApplicationOfSnapshotRestoration()
+      @notifyApplicationAfterSnapshotLoad()
       true
 
   # View delegate
@@ -86,37 +89,44 @@ class Turbolinks.Controller
   # Event handlers
 
   pageLoaded: =>
-    @notifyApplicationOfPageChange()
+    @notifyApplicationAfterPageLoad()
 
   clickCaptured: =>
     removeEventListener("click", @clickBubbled, false)
     addEventListener("click", @clickBubbled, false)
 
   clickBubbled: (event) =>
-    if @clickEventIsSignificant(event) and location = @getVisitableLocationForNode(event.target)
-      if @applicationAllowsChangingToLocation(location)
-        event.preventDefault()
-        @visit(location)
+    if @clickEventIsSignificant(event)
+      link = @getVisitableLinkForNode(event.target)
+      if location = @getVisitableLocationForLink(link)
+        if @applicationAllowsFollowingLinkToLocation(link, location)
+          event.preventDefault()
+          @visit(location)
 
   # Events
 
-  applicationAllowsChangingToLocation: (location) ->
-    @triggerEvent("page:before-change", data: { url: location.absoluteURL }, cancelable: true)
+  applicationAllowsFollowingLinkToLocation: (link, location) ->
+    @dispatchEvent("turbolinks:click", target: link, data: { url: location.absoluteURL }, cancelable: true)
 
-  notifyApplicationOfSnapshotRestoration: ->
-    @triggerEvent("page:restore")
+  applicationAllowsVisitingLocation: (location) ->
+    @dispatchEvent("turbolinks:visit", data: { url: location.absoluteURL }, cancelable: true)
 
-  notifyApplicationOfPageChange: ->
-    @triggerEvent("page:change")
-    @triggerEvent("page:update")
+  notifyApplicationBeforeSnapshotSave: ->
+    @dispatchEvent("turbolinks:snapshot-save")
+
+  notifyApplicationAfterSnapshotLoad: ->
+    @dispatchEvent("turbolinks:snapshot-load")
+
+  notifyApplicationAfterResponseLoad: ->
+    @dispatchEvent("turbolinks:response-load")
+
+  notifyApplicationAfterPageLoad: ->
+    @dispatchEvent("turbolinks:load")
 
   # Private
 
-  triggerEvent: (eventName, {cancelable, data} = {}) ->
-    event = document.createEvent("Events")
-    event.initEvent(eventName, true, cancelable is true)
-    event.data = data
-    document.dispatchEvent(event)
+  dispatchEvent: ->
+    event = Turbolinks.dispatch(arguments...)
     not event.defaultPrevented
 
   clickEventIsSignificant: (event) ->
@@ -129,10 +139,13 @@ class Turbolinks.Controller
       event.shiftKey
     )
 
-  getVisitableLocationForNode: (node) ->
-    if @nodeIsVisitable(node) and link = Turbolinks.closest(node, "a[href]:not([target])")
-      location = new Turbolinks.Location link.href
-      location if location.isSameOrigin()
+  getVisitableLinkForNode: (node) ->
+    if @nodeIsVisitable(node)
+      Turbolinks.closest(node, "a[href]:not([target])")
+
+  getVisitableLocationForLink: (link) ->
+    location = new Turbolinks.Location link.href
+    location if location.isSameOrigin()
 
   nodeIsVisitable: (node) ->
     if container = Turbolinks.closest(node, "[data-turbolinks]")

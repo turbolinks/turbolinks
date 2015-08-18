@@ -16,3 +16,11 @@ Turbolinks.match = (element, selector) ->
 match = do ->
   html = document.documentElement
   html.matchesSelector ? html.webkitMatchesSelector ? html.msMatchesSelector ? html.mozMatchesSelector
+
+
+Turbolinks.dispatch = (eventName, {target, cancelable, data} = {}) ->
+  event = document.createEvent("Events")
+  event.initEvent(eventName, true, cancelable is true)
+  event.data = data
+  (target ? document).dispatchEvent(event)
+  event
