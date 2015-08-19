@@ -5,6 +5,8 @@ translateEvent = ({from, to}) ->
   document.addEventListener(from, handler, false)
 
 translateEvent from: "turbolinks:click", to: "page:before-change"
+translateEvent from: "turbolinks:request-start", to: "page:fetch"
+translateEvent from: "turbolinks:request-end", to: "page:receive"
 translateEvent from: "turbolinks:snapshot-save", to: "page:before-unload"
 translateEvent from: "turbolinks:snapshot-load", to: "page:restore"
 translateEvent from: "turbolinks:load", to: "page:change"

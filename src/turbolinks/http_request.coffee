@@ -1,13 +1,7 @@
 class Turbolinks.HttpRequest
   constructor: (@delegate, location) ->
-    @location = Turbolinks.Location.box(location)
-    @xhr = new XMLHttpRequest
-    @xhr.open("GET", @location.requestURL, true)
-    @xhr.setRequestHeader("Accept", "text/html, application/xhtml+xml, application/xml")
-    @xhr.onprogress = @requestProgressed
-    @xhr.onloadend = @requestLoaded
-    @xhr.onerror = @requestFailed
-    @xhr.onabort = @requestAborted
+    @url = Turbolinks.Location.box(location).requestURL
+    @createXHR()
 
   send: ->
     if @xhr and not @sent
@@ -27,20 +21,40 @@ class Turbolinks.HttpRequest
       @setProgress(event.loaded / event.total)
 
   requestLoaded: =>
-    if 200 <= @xhr.status < 300
-      @delegate.requestCompletedWithResponse(@xhr.responseText)
-    else
-      @delegate.requestFailedWithStatusCode(@xhr.status, @xhr.responseText)
-    @destroy()
+    @endRequest =>
+      if 200 <= @xhr.status < 300
+        @delegate.requestCompletedWithResponse(@xhr.responseText)
+      else
+        @delegate.requestFailedWithStatusCode(@xhr.status, @xhr.responseText)
 
   requestFailed: =>
-    @delegate.requestFailedWithStatusCode(null)
-    @destroy()
+    @endRequest =>
+      @delegate.requestFailedWithStatusCode(null)
 
   requestAborted: =>
-    @destroy()
+    @endRequest()
 
   # Private
+
+  createXHR: ->
+    @xhr = new XMLHttpRequest
+    @xhr.open("GET", @url, true)
+    @xhr.setRequestHeader("Accept", "text/html, application/xhtml+xml, application/xml")
+    @xhr.onprogress = @requestProgressed
+    @xhr.onloadend = @requestLoaded
+    @xhr.onerror = @requestFailed
+    @xhr.onabort = @requestAborted
+
+  endRequest: (callback) ->
+    @notifyApplicationAfterRequestEnd()
+    callback?.call(this)
+    @destroy()
+
+  notifyApplicationBeforeRequestStart: ->
+    Turbolinks.dispatch("turbolinks:request-start", data: { url: @url, xhr: @xhr })
+
+  notifyApplicationAfterRequestEnd: ->
+    Turbolinks.dispatch("turbolinks:request-end", data: { url: @url, xhr: @xhr })
 
   setProgress: (progress) ->
     @progress = progress
