@@ -103,7 +103,7 @@ class Turbolinks.Controller
           event.preventDefault()
           @visit(location)
 
-  # Events
+  # Application events
 
   applicationAllowsFollowingLinkToLocation: (link, location) ->
     @dispatchEvent("turbolinks:click", target: link, data: { url: location.absoluteURL }, cancelable: true)

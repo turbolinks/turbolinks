@@ -5,6 +5,7 @@ class Turbolinks.HttpRequest
 
   send: ->
     if @xhr and not @sent
+      @notifyApplicationBeforeRequestStart()
       @setProgress(0)
       @xhr.send()
       @sent = true
@@ -34,6 +35,14 @@ class Turbolinks.HttpRequest
   requestAborted: =>
     @endRequest()
 
+  # Application events
+
+  notifyApplicationBeforeRequestStart: ->
+    Turbolinks.dispatch("turbolinks:request-start", data: { url: @url, xhr: @xhr })
+
+  notifyApplicationAfterRequestEnd: ->
+    Turbolinks.dispatch("turbolinks:request-end", data: { url: @url, xhr: @xhr })
+
   # Private
 
   createXHR: ->
@@ -49,12 +58,6 @@ class Turbolinks.HttpRequest
     @notifyApplicationAfterRequestEnd()
     callback?.call(this)
     @destroy()
-
-  notifyApplicationBeforeRequestStart: ->
-    Turbolinks.dispatch("turbolinks:request-start", data: { url: @url, xhr: @xhr })
-
-  notifyApplicationAfterRequestEnd: ->
-    Turbolinks.dispatch("turbolinks:request-end", data: { url: @url, xhr: @xhr })
 
   setProgress: (progress) ->
     @progress = progress
