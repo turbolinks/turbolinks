@@ -10,12 +10,8 @@ closest = do ->
       node = node.parentNode
 
 
-Turbolinks.match = (element, selector) ->
-  match.call(element, selector)
-
-match = do ->
-  html = document.documentElement
-  html.matchesSelector ? html.webkitMatchesSelector ? html.msMatchesSelector ? html.mozMatchesSelector
+Turbolinks.defer = (callback) ->
+  setTimeout(callback, 1)
 
 
 Turbolinks.dispatch = (eventName, {target, cancelable, data} = {}) ->
@@ -24,3 +20,11 @@ Turbolinks.dispatch = (eventName, {target, cancelable, data} = {}) ->
   event.data = data
   (target ? document).dispatchEvent(event)
   event
+
+
+Turbolinks.match = (element, selector) ->
+  match.call(element, selector)
+
+match = do ->
+  html = document.documentElement
+  html.matchesSelector ? html.webkitMatchesSelector ? html.msMatchesSelector ? html.mozMatchesSelector
