@@ -54,7 +54,8 @@ class Turbolinks.ProgressBar
     setTimeout(callback, ANIMATION_DURATION * 1.5)
 
   uninstallProgressElement: ->
-    document.documentElement.removeChild(@progressElement)
+    if @progressElement.parentNode
+      document.documentElement.removeChild(@progressElement)
 
   startTrickling: ->
     @trickleInterval ?= setInterval(@trickle, ANIMATION_DURATION)

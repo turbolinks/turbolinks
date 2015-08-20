@@ -24,7 +24,10 @@ class Turbolinks.BrowserAdapter
     @controller.loadResponse(response)
 
   requestFailedWithStatusCode: (statusCode, response) ->
-    console.error "FAILED REQUEST:", statusCode
+    @controller.stop()
+    # TODO: Move this into the view
+    document.documentElement.innerHTML = response
+    activateScripts()
 
   requestFinished: ->
     @hideProgressBar()
@@ -43,3 +46,16 @@ class Turbolinks.BrowserAdapter
   hideProgressBar: ->
     @progressBar.hide()
     clearTimeout(@progressBarTimeout)
+
+  activateScripts = ->
+    for oldChild in document.querySelectorAll("script")
+      newChild = cloneScript(oldChild)
+      oldChild.parentNode.replaceChild(newChild, oldChild)
+
+  cloneScript = (script) ->
+    element = document.createElement("script")
+    if script.hasAttribute("src")
+      element.src = script.getAttribute("src")
+    else
+      element.textContent = script.textContent
+    element
