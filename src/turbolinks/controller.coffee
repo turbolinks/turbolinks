@@ -97,11 +97,11 @@ class Turbolinks.Controller
 
   clickBubbled: (event) =>
     if @clickEventIsSignificant(event)
-      link = @getVisitableLinkForNode(event.target)
-      if location = @getVisitableLocationForLink(link)
-        if @applicationAllowsFollowingLinkToLocation(link, location)
-          event.preventDefault()
-          @visit(location)
+      if link = @getVisitableLinkForNode(event.target)
+        if location = @getVisitableLocationForLink(link)
+          if @applicationAllowsFollowingLinkToLocation(link, location)
+            event.preventDefault()
+            @visit(location)
 
   # Application events
 
