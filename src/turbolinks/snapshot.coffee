@@ -40,8 +40,7 @@ class Turbolinks.Snapshot
     @inlineHeadScriptElementSet ?= @getPermanentHeadElementSet().selectElementsMatchingSelector("script:not([src])")
 
   getPermanentHeadElementSet: ->
-    @permanentHeadElementSet ?= @getHeadElementSet().selectElementsMatchingSelector \
-      "script, style, link[rel=stylesheet], [data-turbolinks-permanent], [data-turbolinks-track=reload]"
+    @permanentHeadElementSet ?= @getHeadElementSet().selectElementsMatchingSelector("script, style, link[href], [data-turbolinks-track=reload]")
 
   getTemporaryHeadElementSet: ->
     @temporaryHeadElementSet ?= @getHeadElementSet().getElementsNotPresentInSet(@getPermanentHeadElementSet())
