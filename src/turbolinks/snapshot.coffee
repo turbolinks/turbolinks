@@ -31,7 +31,7 @@ class Turbolinks.Snapshot
   # Private
 
   getTrackedHeadElementSet: ->
-    @trackedHeadElementSet ?= @getHeadElementSet().selectElementsMatchingSelector("[data-turbolinks-track=reload]")
+    @trackedHeadElementSet ?= @getPermanentHeadElementSet().selectElementsMatchingSelector("[data-turbolinks-track=reload]")
 
   getInlineHeadStyleElementSet: ->
     @inlineHeadStyleElementSet ?= @getPermanentHeadElementSet().selectElementsMatchingSelector("style")
@@ -40,7 +40,8 @@ class Turbolinks.Snapshot
     @inlineHeadScriptElementSet ?= @getPermanentHeadElementSet().selectElementsMatchingSelector("script:not([src])")
 
   getPermanentHeadElementSet: ->
-    @permanentHeadElementSet ?= @getHeadElementSet().selectElementsMatchingSelector("style, link[rel=stylesheet], script, [data-turbolinks-track=reload]")
+    @permanentHeadElementSet ?= @getHeadElementSet().selectElementsMatchingSelector \
+      "script, style, link[rel=stylesheet], [data-turbolinks-permanent], [data-turbolinks-track=reload]"
 
   getTemporaryHeadElementSet: ->
     @temporaryHeadElementSet ?= @getHeadElementSet().getElementsNotPresentInSet(@getPermanentHeadElementSet())
