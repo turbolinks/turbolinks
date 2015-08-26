@@ -8,14 +8,14 @@ class Turbolinks.Location
   constructor: (url = "") ->
     linkWithAnchor = document.createElement("a")
     linkWithAnchor.href = url.toString()
+
     @absoluteURL = linkWithAnchor.href
 
-    if linkWithAnchor.hash.length < 2
+    hashLength = linkWithAnchor.hash.length
+    if hashLength < 2
       @requestURL = @absoluteURL
     else
-      linkWithoutAnchor = linkWithAnchor.cloneNode()
-      linkWithoutAnchor.hash = ""
-      @requestURL = linkWithoutAnchor.href
+      @requestURL = @absoluteURL.slice(0, -hashLength)
 
   getOrigin: ->
     @absoluteURL.split("/", 3).join("/")
