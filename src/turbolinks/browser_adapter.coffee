@@ -10,11 +10,11 @@ class Turbolinks.BrowserAdapter
     @controller.pushHistory(location)
 
   locationChangedByActor: (location, actor) ->
-    @controller.restoreSnapshotByScrollingToSavedPosition(actor is "history")
+    @snapshotRestored = @controller.restoreSnapshotByScrollingToSavedPosition(actor is "history")
     @controller.issueRequestForLocation(location)
 
   requestStarted: ->
-    @showProgressBarAfterDelay()
+    @showProgressBarAfterDelay() unless @snapshotRestored
     @progressBar.setValue(0)
 
   requestProgressed: (progress) ->
