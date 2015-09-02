@@ -44,7 +44,6 @@ class Turbolinks.Controller
     @view.loadSnapshotHTML(response)
     @responseLoaded = true
     @notifyApplicationAfterResponseLoad()
-    @notifyApplicationAfterPageLoad()
 
   loadErrorResponse: (response) ->
     @view.loadDocumentHTML(response)
@@ -125,7 +124,8 @@ class Turbolinks.Controller
   startVisit: (location, action, historyChanged) ->
     @currentVisit?.cancel()
     @currentVisit = new Turbolinks.Visit this, location, action, historyChanged
-    @currentVisit.start()
+    @currentVisit.start().then =>
+      @notifyApplicationAfterPageLoad()
 
   dispatchEvent: ->
     event = Turbolinks.dispatch(arguments...)

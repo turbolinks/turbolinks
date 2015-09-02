@@ -7,8 +7,9 @@ class Turbolinks.Visit
   
   start: ->
     unless @started
-      @started = true
-      @adapter.visitStarted(this)
+      @promise = new Promise (@resolve, @reject) =>
+        @started = true
+        @adapter.visitStarted(this)
 
   cancel: ->
     if @started and not @canceled
@@ -29,13 +30,16 @@ class Turbolinks.Visit
   restoreSnapshot: ->
     unless @snapshotRestored
       @snapshotRestored = @controller.restoreSnapshotForVisit(this)
+      @resolve() unless @shouldIssueRequest()
 
   loadResponse: ->
     if @response?
       if @request.failed
         @controller.loadErrorResponse(@response)
+        @reject()
       else
         @controller.loadResponse(@response)
+        @resolve()
 
   # HTTP Request delegate
   
