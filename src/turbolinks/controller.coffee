@@ -49,15 +49,14 @@ class Turbolinks.Controller
 
   # Page snapshots
 
+  hasSnapshotForLocation: (location) ->
+    @cache.has(location)
+
   saveSnapshotForLocation: (location) ->
-    console.log "saving snapshot for location", location.toString()
     @notifyApplicationBeforeSnapshotSave()
     snapshot = @view.saveSnapshot()
     @cache.put(location, snapshot)
 
-  hasSnapshotForLocation: (location) ->
-    @cache.has(location)
-  
   restoreSnapshotForLocationWithAction: (location, action) ->
     if snapshot = @cache.get(location)
       @view.loadSnapshotWithAction(snapshot, action)
@@ -73,6 +72,7 @@ class Turbolinks.Controller
 
   historyPoppedToLocation: (location) ->
     @startVisit(location, "restore", true)
+    @location = location
 
   # Event handlers
 
@@ -115,7 +115,6 @@ class Turbolinks.Controller
 
   startVisit: (location, action, historyChanged) ->
     @currentVisit?.cancel()
-    console.log "startVisit previousLocation =", @location.toString(), "location =", location.toString(), "action =", action
     @currentVisit = new Turbolinks.Visit this, @location, location, action, historyChanged
     @currentVisit.start().then =>
       @notifyApplicationAfterPageLoad()
