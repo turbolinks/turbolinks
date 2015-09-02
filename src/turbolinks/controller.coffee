@@ -3,7 +3,7 @@
 #= require turbolinks/history
 #= require turbolinks/view
 #= require turbolinks/cache
-#= require turbolinks/http_request
+#= require turbolinks/visit
 
 class Turbolinks.Controller
   constructor: ->
@@ -30,7 +30,7 @@ class Turbolinks.Controller
   visit: (location) ->
     location = Turbolinks.Location.box(location)
     if @applicationAllowsVisitingLocation(location)
-      @adapter.visitLocation(location)
+      @startVisit(location, "advance", false)
 
   pushHistory: (location) ->
     location = Turbolinks.Location.box(location)
@@ -41,20 +41,14 @@ class Turbolinks.Controller
     @history.replace(location)
 
   loadResponse: (response) ->
-    @view.loadHTML(response)
+    @view.loadSnapshotHTML(response)
     @responseLoaded = true
     @notifyApplicationAfterResponseLoad()
     @notifyApplicationAfterPageLoad()
 
-  # Current request
-
-  issueRequestForLocation: (location) ->
-    @abortCurrentRequest()
-    @request = new Turbolinks.HttpRequest @adapter, location
-    @request.send()
-
-  abortCurrentRequest: ->
-    @request?.abort()
+  loadErrorResponse: (response) ->
+    @view.loadDocumentHTML(response)
+    @controller.stop()
 
   # Page snapshots
 
@@ -66,9 +60,10 @@ class Turbolinks.Controller
 
   hasSnapshotForLocation: (location) ->
     @cache.has(location)
-
-  restoreSnapshotByScrollingToSavedPosition: (scrollToSavedPosition) ->
-    if snapshot = @cache.get(@location)
+  
+  restoreSnapshotForVisit: (visit) ->
+    if snapshot = @cache.get(visit.location)
+      scrollToSavedPosition = visit.action is "restore"
       @view.loadSnapshotByScrollingToSavedPosition(snapshot, scrollToSavedPosition)
       @notifyApplicationAfterSnapshotLoad()
       true
@@ -84,7 +79,9 @@ class Turbolinks.Controller
     @saveSnapshot()
     @responseLoaded = false
     @location = location
-    @adapter.locationChangedByActor(location, actor)
+
+    if actor is "history"
+      @startVisit(location, "restore", true)
 
   # Event handlers
 
@@ -124,6 +121,11 @@ class Turbolinks.Controller
     @dispatchEvent("turbolinks:load")
 
   # Private
+
+  startVisit: (location, action, historyChanged) ->
+    @currentVisit?.cancel()
+    @currentVisit = new Turbolinks.Visit this, location, action, historyChanged
+    @currentVisit.start()
 
   dispatchEvent: ->
     event = Turbolinks.dispatch(arguments...)

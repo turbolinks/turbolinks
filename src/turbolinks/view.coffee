@@ -4,7 +4,11 @@
 class Turbolinks.View
   constructor: (@delegate) ->
 
-  loadHTML: (html) ->
+  loadDocumentHTML: (html) ->
+    document.documentElement.innerHTML = html
+    activateScripts()
+
+  loadSnapshotHTML: (html) ->
     snapshot = Turbolinks.Snapshot.fromHTML(html)
     @loadSnapshotByScrollingToSavedPosition(snapshot, false)
 
@@ -77,3 +81,16 @@ class Turbolinks.View
 
   maybeCloneElement = (element, clone) ->
     if clone then element.cloneNode(true) else element
+
+  activateScripts = ->
+    for oldChild in document.querySelectorAll("script")
+      newChild = cloneScript(oldChild)
+      oldChild.parentNode.replaceChild(newChild, oldChild)
+
+  cloneScript = (script) ->
+    element = document.createElement("script")
+    if script.hasAttribute("src")
+      element.src = script.getAttribute("src")
+    else
+      element.textContent = script.textContent
+    element

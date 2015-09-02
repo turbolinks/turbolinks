@@ -3,33 +3,28 @@
 class Turbolinks.BrowserAdapter
   PROGRESS_BAR_DELAY = 500
 
-  constructor: (@controller) ->
+  constructor: ->
     @progressBar = new Turbolinks.ProgressBar
 
-  visitLocation: (location) ->
-    @controller.pushHistory(location)
+  visitStarted: (visit) ->
+    visit.changeHistory()
+    visit.issueRequest()
+    visit.restoreSnapshot()
 
-  locationChangedByActor: (location, actor) ->
-    @snapshotRestored = @controller.restoreSnapshotByScrollingToSavedPosition(actor is "history")
-    @controller.issueRequestForLocation(location)
-
-  requestStarted: ->
-    @showProgressBarAfterDelay() unless @snapshotRestored
+  visitRequestStarted: (visit) ->
+    @showProgressBarAfterDelay() unless visit.snapshotRestored
     @progressBar.setValue(0)
+  
+  visitRequestProgressed: (visit) ->
+    @progressBar.setValue(visit.progress)
 
-  requestProgressed: (progress) ->
-    @progressBar.setValue(progress)
-
-  requestCompletedWithResponse: (response) ->
-    @controller.loadResponse(response)
-
-  requestFailedWithStatusCode: (statusCode, response) ->
-    @controller.stop()
-    # TODO: Move this into the view
-    document.documentElement.innerHTML = response
-    activateScripts()
-
-  requestFinished: ->
+  visitRequestCompleted: (visit) ->
+    visit.loadResponse()
+  
+  visitRequestFailedWithStatusCode: (visit, statusCode) ->
+    visit.loadResponse()
+  
+  visitRequestFinished: (visit) ->
     @hideProgressBar()
 
   pageInvalidated: ->
@@ -46,16 +41,3 @@ class Turbolinks.BrowserAdapter
   hideProgressBar: ->
     @progressBar.hide()
     clearTimeout(@progressBarTimeout)
-
-  activateScripts = ->
-    for oldChild in document.querySelectorAll("script")
-      newChild = cloneScript(oldChild)
-      oldChild.parentNode.replaceChild(newChild, oldChild)
-
-  cloneScript = (script) ->
-    element = document.createElement("script")
-    if script.hasAttribute("src")
-      element.src = script.getAttribute("src")
-    else
-      element.textContent = script.textContent
-    element

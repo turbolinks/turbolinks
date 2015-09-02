@@ -11,7 +11,7 @@ class Turbolinks.HttpRequest
       @sent = true
       @delegate.requestStarted?()
 
-  abort: ->
+  cancel: ->
     if @xhr and @sent
       @xhr.abort()
 
@@ -26,13 +26,15 @@ class Turbolinks.HttpRequest
       if 200 <= @xhr.status < 300
         @delegate.requestCompletedWithResponse(@xhr.responseText)
       else
+        @failed = true
         @delegate.requestFailedWithStatusCode(@xhr.status, @xhr.responseText)
 
   requestFailed: =>
     @endRequest =>
+      @failed = true
       @delegate.requestFailedWithStatusCode(null)
 
-  requestAborted: =>
+  requestCanceled: =>
     @endRequest()
 
   # Application events
@@ -52,7 +54,7 @@ class Turbolinks.HttpRequest
     @xhr.onprogress = @requestProgressed
     @xhr.onloadend = @requestLoaded
     @xhr.onerror = @requestFailed
-    @xhr.onabort = @requestAborted
+    @xhr.onabort = @requestCanceled
 
   endRequest: (callback) ->
     @notifyApplicationAfterRequestEnd()
