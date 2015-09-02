@@ -1,7 +1,8 @@
 #= require turbolinks/http_request
 
 class Turbolinks.Visit
-  constructor: (@controller, location, @action, @historyChanged) ->
+  constructor: (@controller, previousLocation, location, @action, @historyChanged) ->
+    @previousLocation = Turbolinks.Location.box(previousLocation)
     @location = Turbolinks.Location.box(location)
     @adapter = @controller.adapter
   
@@ -29,11 +30,13 @@ class Turbolinks.Visit
   
   restoreSnapshot: ->
     unless @snapshotRestored
-      @snapshotRestored = @controller.restoreSnapshotForVisit(this)
+      @saveSnapshot()
+      @snapshotRestored = @controller.restoreSnapshotForLocationWithAction(@location, @action)
       @resolve() unless @shouldIssueRequest()
 
   loadResponse: ->
     if @response?
+      @saveSnapshot()
       if @request.failed
         @controller.loadErrorResponse(@response)
         @reject()
@@ -65,3 +68,8 @@ class Turbolinks.Visit
 
   hasSnapshot: ->
     @controller.hasSnapshotForLocation(@location)
+
+  saveSnapshot: ->
+    unless @snapshotSaved
+      @controller.saveSnapshotForLocation(@previousLocation)
+      @snapshotSaved = true

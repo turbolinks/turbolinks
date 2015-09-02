@@ -11,7 +11,6 @@ class Turbolinks.Controller
     @view = new Turbolinks.View this
     @cache = new Turbolinks.Cache 10
     @location = Turbolinks.Location.box(window.location)
-    @responseLoaded = true
 
   start: ->
     unless @started
@@ -33,16 +32,15 @@ class Turbolinks.Controller
       @startVisit(location, "advance", false)
 
   pushHistory: (location) ->
-    location = Turbolinks.Location.box(location)
-    @history.push(location)
+    @location = Turbolinks.Location.box(location)
+    @history.push(@location)
 
   replaceHistory: (location) ->
-    location = Turbolinks.Location.box(location)
-    @history.replace(location)
+    @location = Turbolinks.Location.box(location)
+    @history.replace(@location)
 
   loadResponse: (response) ->
     @view.loadSnapshotHTML(response)
-    @responseLoaded = true
     @notifyApplicationAfterResponseLoad()
 
   loadErrorResponse: (response) ->
@@ -51,19 +49,18 @@ class Turbolinks.Controller
 
   # Page snapshots
 
-  saveSnapshot: ->
-    if @responseLoaded
-      @notifyApplicationBeforeSnapshotSave()
-      snapshot = @view.saveSnapshot()
-      @cache.put(@location, snapshot)
+  saveSnapshotForLocation: (location) ->
+    console.log "saving snapshot for location", location.toString()
+    @notifyApplicationBeforeSnapshotSave()
+    snapshot = @view.saveSnapshot()
+    @cache.put(location, snapshot)
 
   hasSnapshotForLocation: (location) ->
     @cache.has(location)
   
-  restoreSnapshotForVisit: (visit) ->
-    if snapshot = @cache.get(visit.location)
-      scrollToSavedPosition = visit.action is "restore"
-      @view.loadSnapshotByScrollingToSavedPosition(snapshot, scrollToSavedPosition)
+  restoreSnapshotForLocationWithAction: (location, action) ->
+    if snapshot = @cache.get(location)
+      @view.loadSnapshotWithAction(snapshot, action)
       @notifyApplicationAfterSnapshotLoad()
       true
 
@@ -74,13 +71,8 @@ class Turbolinks.Controller
 
   # History delegate
 
-  locationChangedByActor: (location, actor) ->
-    @saveSnapshot()
-    @responseLoaded = false
-    @location = location
-
-    if actor is "history"
-      @startVisit(location, "restore", true)
+  historyPoppedToLocation: (location) ->
+    @startVisit(location, "restore", true)
 
   # Event handlers
 
@@ -123,7 +115,8 @@ class Turbolinks.Controller
 
   startVisit: (location, action, historyChanged) ->
     @currentVisit?.cancel()
-    @currentVisit = new Turbolinks.Visit this, location, action, historyChanged
+    console.log "startVisit previousLocation =", @location.toString(), "location =", location.toString(), "action =", action
+    @currentVisit = new Turbolinks.Visit this, @location, location, action, historyChanged
     @currentVisit.start().then =>
       @notifyApplicationAfterPageLoad()
 

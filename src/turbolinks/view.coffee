@@ -10,10 +10,11 @@ class Turbolinks.View
 
   loadSnapshotHTML: (html) ->
     snapshot = Turbolinks.Snapshot.fromHTML(html)
-    @loadSnapshotByScrollingToSavedPosition(snapshot, false)
+    @loadSnapshotWithAction(snapshot, "advance")
 
-  loadSnapshotByScrollingToSavedPosition: (snapshot, scrollToSavedPosition) ->
+  loadSnapshotWithAction: (snapshot, action) ->
     if @loadSnapshot(snapshot)
+      scrollToSavedPosition = action is "restore"
       @scrollSnapshotToSavedPosition(snapshot, scrollToSavedPosition)
 
   saveSnapshot: ->
