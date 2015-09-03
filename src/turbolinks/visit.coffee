@@ -2,20 +2,26 @@
 
 class Turbolinks.Visit
   constructor: (@controller, previousLocation, location, @action, @historyChanged) ->
-    @previousLocation = Turbolinks.Location.box(previousLocation)
-    @location = Turbolinks.Location.box(location)
-    @adapter = @controller.adapter
+    @promise = new Promise (@resolve, @reject) =>
+      @previousLocation = Turbolinks.Location.box(previousLocation)
+      @location = Turbolinks.Location.box(location)
+      @adapter = @controller.adapter
   
   start: ->
     unless @started
-      @promise = new Promise (@resolve, @reject) =>
-        @started = true
-        @adapter.visitStarted(this)
+      @started = true
+      @adapter.visitStarted(this)
 
   cancel: ->
     if @started and not @canceled
       @request?.cancel()
       @canceled = true
+
+  then: ->
+    @promise.then(arguments...)
+
+  catch: ->
+    @promise.catch(arguments...)
 
   changeHistory: (method = "pushHistory") ->
     unless @historyChanged
@@ -28,11 +34,16 @@ class Turbolinks.Visit
       @request = new Turbolinks.HttpRequest this, @location
       @request.send()
   
+  hasSnapshot: ->
+    @controller.hasSnapshotForLocation(@location)
+
   restoreSnapshot: ->
     unless @snapshotRestored
       @saveSnapshot()
-      @snapshotRestored = @controller.restoreSnapshotForLocationWithAction(@location, @action)
-      @resolve() unless @shouldIssueRequest()
+      if @snapshotRestored = @controller.restoreSnapshotForLocationWithAction(@location, @action)
+        @adapter.visitSnapshotRestored?(this)
+      unless @shouldIssueRequest()
+        @resolve()
 
   loadResponse: ->
     if @response?
@@ -43,6 +54,7 @@ class Turbolinks.Visit
       else
         @controller.loadResponse(@response)
         @resolve()
+      @adapter.visitResponseLoaded?(this)
 
   # HTTP Request delegate
   
@@ -50,7 +62,7 @@ class Turbolinks.Visit
     @adapter.visitRequestStarted(this)
 
   requestProgressed: (@progress) ->
-    @adapter.visitRequestProgressed(this)
+    @adapter.visitRequestProgressed?(this)
 
   requestCompletedWithResponse: (@response) ->
     @adapter.visitRequestCompleted(this)

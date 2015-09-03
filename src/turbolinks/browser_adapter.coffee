@@ -6,6 +6,9 @@ class Turbolinks.BrowserAdapter
   constructor: ->
     @progressBar = new Turbolinks.ProgressBar
 
+  visitProposed: (visit) ->
+    visit.start()
+
   visitStarted: (visit) ->
     visit.changeHistory()
     visit.issueRequest()

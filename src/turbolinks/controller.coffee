@@ -29,7 +29,8 @@ class Turbolinks.Controller
   visit: (location) ->
     location = Turbolinks.Location.box(location)
     if @applicationAllowsVisitingLocation(location)
-      @startVisit(location, "advance", false)
+      visit = @createVisit(location, "advance", false)
+      @adapter.visitProposed(visit)
 
   pushHistory: (location) ->
     @location = Turbolinks.Location.box(location)
@@ -108,16 +109,20 @@ class Turbolinks.Controller
   notifyApplicationAfterResponseLoad: ->
     @dispatchEvent("turbolinks:response-load")
 
-  notifyApplicationAfterPageLoad: ->
+  notifyApplicationAfterPageLoad: =>
     @dispatchEvent("turbolinks:load")
 
   # Private
 
   startVisit: (location, action, historyChanged) ->
     @currentVisit?.cancel()
-    @currentVisit = new Turbolinks.Visit this, @location, location, action, historyChanged
-    @currentVisit.start().then =>
-      @notifyApplicationAfterPageLoad()
+    @currentVisit = @createVisit(location, action, historyChanged)
+    @currentVisit.start()
+
+  createVisit: (location, action, historyChanged) ->
+    visit = new Turbolinks.Visit this, @location, location, action, historyChanged
+    visit.then(@notifyApplicationAfterPageLoad)
+    visit
 
   dispatchEvent: ->
     event = Turbolinks.dispatch(arguments...)
