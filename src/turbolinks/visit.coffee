@@ -55,8 +55,7 @@ class Turbolinks.Visit
       @saveSnapshot()
       if @snapshotRestored = @controller.restoreSnapshotForLocationWithAction(@location, @action)
         @adapter.visitSnapshotRestored?(this)
-      unless @shouldIssueRequest()
-        @complete()
+        @complete() unless @shouldIssueRequest()
 
   loadResponse: ->
     if @response?
