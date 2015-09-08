@@ -55,9 +55,10 @@ class Turbolinks.Controller
   hasSnapshotForLocation: (location) ->
     @cache.has(location)
 
-  saveSnapshotForLocation: (location) ->
+  saveSnapshot: ->
     @notifyApplicationBeforeSnapshotSave()
     snapshot = @view.saveSnapshot()
+    location = @lastRenderedVisit?.location ? @location
     @cache.put(location, snapshot)
 
   restoreSnapshotForLocationWithAction: (location, action) ->
@@ -70,6 +71,9 @@ class Turbolinks.Controller
 
   viewInvalidated: ->
     @adapter.pageInvalidated()
+
+  viewRendered: ->
+    @lastRenderedVisit = @currentVisit
 
   # History delegate
 
@@ -111,7 +115,7 @@ class Turbolinks.Controller
   notifyApplicationAfterResponseLoad: ->
     @dispatchEvent("turbolinks:response-load")
 
-  notifyApplicationAfterPageLoad: =>
+  notifyApplicationAfterPageLoad: ->
     @dispatchEvent("turbolinks:load")
 
   # Private
@@ -122,9 +126,12 @@ class Turbolinks.Controller
     @currentVisit.start()
 
   createVisit: (location, action, historyChanged) ->
-    visit = new Turbolinks.Visit this, @location, location, action, historyChanged
-    visit.then(@notifyApplicationAfterPageLoad)
+    visit = new Turbolinks.Visit this, location, action, historyChanged
+    visit.then(@visitFinished)
     visit
+
+  visitFinished: =>
+    @notifyApplicationAfterPageLoad()
 
   dispatchEvent: ->
     event = Turbolinks.dispatch(arguments...)

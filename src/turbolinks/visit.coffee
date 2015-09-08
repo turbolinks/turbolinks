@@ -4,10 +4,9 @@ class Turbolinks.Visit
   ID_PREFIX = new Date().getTime()
   id = 0
 
-  constructor: (@controller, previousLocation, location, @action, @historyChanged) ->
+  constructor: (@controller, location, @action, @historyChanged) ->
     @promise = new Promise (@resolve, @reject) =>
       @identifier = "#{ID_PREFIX}:#{++id}"
-      @previousLocation = Turbolinks.Location.box(previousLocation)
       @location = Turbolinks.Location.box(location)
       @adapter = @controller.adapter
       @state = "initialized"
@@ -97,5 +96,5 @@ class Turbolinks.Visit
 
   saveSnapshot: ->
     unless @snapshotSaved
-      @controller.saveSnapshotForLocation(@previousLocation)
+      @controller.saveSnapshot()
       @snapshotSaved = true

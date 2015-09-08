@@ -13,7 +13,7 @@ class Turbolinks.View
     @loadSnapshotWithAction(snapshot, "advance")
 
   loadSnapshotWithAction: (snapshot, action) ->
-    if @loadSnapshot(snapshot)
+    if @renderSnapshot(snapshot)
       scrollToSavedPosition = action is "restore"
       @scrollSnapshotToSavedPosition(snapshot, scrollToSavedPosition)
 
@@ -22,7 +22,7 @@ class Turbolinks.View
 
   # Private
 
-  loadSnapshot: (newSnapshot) ->
+  renderSnapshot: (newSnapshot) ->
     currentSnapshot = getSnapshot(false)
 
     unless currentSnapshot.hasSameTrackedHeadElementsAsSnapshot(newSnapshot)
@@ -42,6 +42,8 @@ class Turbolinks.View
     importPermanentElementsIntoBody(newBody)
     importRecyclableElementsIntoBody(newBody)
     document.body = newBody
+
+    @delegate.viewRendered()
     newSnapshot
 
   scrollSnapshotToSavedPosition: (snapshot, scrollToSavedPosition) ->
