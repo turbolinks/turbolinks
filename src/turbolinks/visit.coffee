@@ -6,16 +6,29 @@ class Turbolinks.Visit
       @previousLocation = Turbolinks.Location.box(previousLocation)
       @location = Turbolinks.Location.box(location)
       @adapter = @controller.adapter
+      @state = "initialized"
   
   start: ->
-    unless @started
-      @started = true
+    if @state is "initialized"
+      @state = "started"
       @adapter.visitStarted(this)
 
   cancel: ->
-    if @started and not @canceled
+    if @state is "started"
       @request?.cancel()
-      @canceled = true
+      @state = "canceled"
+
+  complete: ->
+    if @state is "started"
+      @state = "completed"
+      @adapter.visitCompleted?(this)
+      @resolve()
+
+  fail: ->
+    if @state is "started"
+      @state = "failed"
+      @adapter.visitFailed?(this)
+      @reject()
 
   then: ->
     @promise.then(arguments...)
@@ -43,18 +56,19 @@ class Turbolinks.Visit
       if @snapshotRestored = @controller.restoreSnapshotForLocationWithAction(@location, @action)
         @adapter.visitSnapshotRestored?(this)
       unless @shouldIssueRequest()
-        @resolve()
+        @complete()
 
   loadResponse: ->
     if @response?
       @saveSnapshot()
       if @request.failed
         @controller.loadErrorResponse(@response)
-        @reject()
+        @adapter.visitResponseLoaded?(this)
+        @fail()
       else
         @controller.loadResponse(@response)
-        @resolve()
-      @adapter.visitResponseLoaded?(this)
+        @adapter.visitResponseLoaded?(this)
+        @complete()
 
   # HTTP Request delegate
   
