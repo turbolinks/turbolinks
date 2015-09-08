@@ -91,9 +91,6 @@ class Turbolinks.Visit
   shouldIssueRequest: ->
     @action is "advance" or not @hasSnapshot()
 
-  hasSnapshot: ->
-    @controller.hasSnapshotForLocation(@location)
-
   saveSnapshot: ->
     unless @snapshotSaved
       @controller.saveSnapshotForLocation(@previousLocation)
