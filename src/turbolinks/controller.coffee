@@ -29,8 +29,7 @@ class Turbolinks.Controller
   visit: (location) ->
     location = Turbolinks.Location.box(location)
     if @applicationAllowsVisitingLocation(location)
-      visit = @createVisit(location, "advance", false)
-      @adapter.visitProposed(visit)
+      @adapter.visitProposedToLocationWithAction(location, "advance")
 
   pushHistory: (location) ->
     @location = Turbolinks.Location.box(location)
@@ -47,6 +46,9 @@ class Turbolinks.Controller
   loadErrorResponse: (response) ->
     @view.loadDocumentHTML(response)
     @controller.stop()
+
+  startVisitToLocationWithAction: (location, action) ->
+    @startVisit(location, action)
 
   # Page snapshots
 

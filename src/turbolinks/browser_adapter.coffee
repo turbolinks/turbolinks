@@ -3,11 +3,11 @@
 class Turbolinks.BrowserAdapter
   PROGRESS_BAR_DELAY = 500
 
-  constructor: ->
+  constructor: (@controller) ->
     @progressBar = new Turbolinks.ProgressBar
 
-  visitProposed: (visit) ->
-    visit.start()
+  visitProposedToLocationWithAction: (location, action) ->
+    @controller.startVisitToLocationWithAction(location, action)
 
   visitStarted: (visit) ->
     visit.changeHistory()
