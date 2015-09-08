@@ -57,9 +57,10 @@ class Turbolinks.HttpRequest
     @xhr.onabort = @requestCanceled
 
   endRequest: (callback) ->
-    @notifyApplicationAfterRequestEnd()
-    callback?.call(this)
-    @destroy()
+    if @xhr
+      @notifyApplicationAfterRequestEnd()
+      callback?.call(this)
+      @destroy()
 
   setProgress: (progress) ->
     @progress = progress
