@@ -1,13 +1,17 @@
 #= require turbolinks/http_request
 
 class Turbolinks.Visit
+  ID_PREFIX = new Date().getTime()
+  id = 0
+
   constructor: (@controller, previousLocation, location, @action, @historyChanged) ->
     @promise = new Promise (@resolve, @reject) =>
+      @identifier = "#{ID_PREFIX}:#{++id}"
       @previousLocation = Turbolinks.Location.box(previousLocation)
       @location = Turbolinks.Location.box(location)
       @adapter = @controller.adapter
       @state = "initialized"
-  
+
   start: ->
     if @state is "initialized"
       @state = "started"
@@ -46,7 +50,7 @@ class Turbolinks.Visit
       @progress = 0
       @request = new Turbolinks.HttpRequest this, @location
       @request.send()
-  
+
   hasSnapshot: ->
     @controller.hasSnapshotForLocation(@location)
 
@@ -70,7 +74,7 @@ class Turbolinks.Visit
         @complete()
 
   # HTTP Request delegate
-  
+
   requestStarted: ->
     @adapter.visitRequestStarted(this)
 
@@ -85,9 +89,9 @@ class Turbolinks.Visit
 
   requestFinished: ->
     @adapter.visitRequestFinished(this)
-    
+
   # Private
-  
+
   shouldIssueRequest: ->
     @action is "advance" or not @hasSnapshot()
 
