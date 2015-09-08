@@ -51,7 +51,7 @@ class Turbolinks.Visit
     @controller.hasSnapshotForLocation(@location)
 
   restoreSnapshot: ->
-    unless @snapshotRestored
+    if @hasSnapshot() and not @snapshotRestored
       @saveSnapshot()
       if @snapshotRestored = @controller.restoreSnapshotForLocationWithAction(@location, @action)
         @adapter.visitSnapshotRestored?(this)
