@@ -1,4 +1,4 @@
-#= require turbolinks/http_request
+#= require ./http_request
 
 class Turbolinks.Visit
   ID_PREFIX = new Date().getTime()

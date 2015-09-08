@@ -1,4 +1,4 @@
-#= require turbolinks/progress_bar
+#= require ./progress_bar
 
 class Turbolinks.BrowserAdapter
   PROGRESS_BAR_DELAY = 500
@@ -17,16 +17,16 @@ class Turbolinks.BrowserAdapter
   visitRequestStarted: (visit) ->
     @showProgressBarAfterDelay() unless visit.snapshotRestored
     @progressBar.setValue(0)
-  
+
   visitRequestProgressed: (visit) ->
     @progressBar.setValue(visit.progress)
 
   visitRequestCompleted: (visit) ->
     visit.loadResponse()
-  
+
   visitRequestFailedWithStatusCode: (visit, statusCode) ->
     visit.loadResponse()
-  
+
   visitRequestFinished: (visit) ->
     @hideProgressBar()
 

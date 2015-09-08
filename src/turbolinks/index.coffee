@@ -1,6 +1,6 @@
 #= require_self
-#= require turbolinks/helpers
-#= require turbolinks/controller
+#= require ./helpers
+#= require ./controller
 
 @Turbolinks =
   supported: true

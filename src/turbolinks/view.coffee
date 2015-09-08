@@ -1,5 +1,5 @@
-#= require turbolinks/snapshot
-#= require turbolinks/element_pool
+#= require ./snapshot
+#= require ./element_pool
 
 class Turbolinks.View
   constructor: (@delegate) ->

@@ -1,9 +1,9 @@
-#= require turbolinks/location
-#= require turbolinks/browser_adapter
-#= require turbolinks/history
-#= require turbolinks/view
-#= require turbolinks/cache
-#= require turbolinks/visit
+#= require ./location
+#= require ./browser_adapter
+#= require ./history
+#= require ./view
+#= require ./cache
+#= require ./visit
 
 class Turbolinks.Controller
   constructor: ->

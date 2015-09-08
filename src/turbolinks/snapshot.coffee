@@ -1,4 +1,4 @@
-#= require turbolinks/element_set
+#= require ./element_set
 
 class Turbolinks.Snapshot
   @fromHTML: (html) ->
