@@ -19,6 +19,7 @@ class Turbolinks.Visit
   cancel: ->
     if @state is "started"
       @request?.cancel()
+      @cancelRender()
       @state = "canceled"
 
   complete: ->
@@ -106,3 +107,6 @@ class Turbolinks.Visit
     @frame = requestAnimationFrame =>
       @frame = null
       callback.call(this)
+
+  cancelRender: ->
+    cancelAnimationFrame(@frame) if @frame
