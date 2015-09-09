@@ -55,22 +55,24 @@ class Turbolinks.Visit
 
   restoreSnapshot: ->
     if @hasSnapshot() and not @snapshotRestored
-      @saveSnapshot()
-      if @snapshotRestored = @controller.restoreSnapshotForLocationWithAction(@location, @action)
-        @adapter.visitSnapshotRestored?(this)
-        @complete() unless @shouldIssueRequest()
+      @render ->
+        @saveSnapshot()
+        if @snapshotRestored = @controller.restoreSnapshotForLocationWithAction(@location, @action)
+          @adapter.visitSnapshotRestored?(this)
+          @complete() unless @shouldIssueRequest()
 
   loadResponse: ->
     if @response?
-      @saveSnapshot()
-      if @request.failed
-        @controller.loadErrorResponse(@response)
-        @adapter.visitResponseLoaded?(this)
-        @fail()
-      else
-        @controller.loadResponse(@response)
-        @adapter.visitResponseLoaded?(this)
-        @complete()
+      @render ->
+        @saveSnapshot()
+        if @request.failed
+          @controller.loadErrorResponse(@response)
+          @adapter.visitResponseLoaded?(this)
+          @fail()
+        else
+          @controller.loadResponse(@response)
+          @adapter.visitResponseLoaded?(this)
+          @complete()
 
   # HTTP Request delegate
 
@@ -98,3 +100,9 @@ class Turbolinks.Visit
     unless @snapshotSaved
       @controller.saveSnapshot()
       @snapshotSaved = true
+
+  render: (callback) ->
+    cancelAnimationFrame(@frame) if @frame
+    @frame = requestAnimationFrame =>
+      @frame = null
+      callback.call(this)
