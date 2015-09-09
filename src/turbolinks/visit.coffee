@@ -103,7 +103,7 @@ class Turbolinks.Visit
       @snapshotSaved = true
 
   render: (callback) ->
-    cancelAnimationFrame(@frame) if @frame
+    @cancelRender()
     @frame = requestAnimationFrame =>
       @frame = null
       callback.call(this)
