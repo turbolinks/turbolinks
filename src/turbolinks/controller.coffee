@@ -58,8 +58,7 @@ class Turbolinks.Controller
   saveSnapshot: ->
     @notifyApplicationBeforeSnapshotSave()
     snapshot = @view.saveSnapshot()
-    location = @lastRenderedVisit?.location ? @location
-    @cache.put(location, snapshot)
+    @cache.put(@lastRenderedLocation, snapshot)
 
   restoreSnapshotForLocationWithAction: (location, action) ->
     if snapshot = @cache.get(location)
@@ -73,7 +72,7 @@ class Turbolinks.Controller
     @adapter.pageInvalidated()
 
   viewRendered: ->
-    @lastRenderedVisit = @currentVisit
+    @lastRenderedLocation = @currentVisit.location
 
   # History delegate
 
@@ -84,6 +83,7 @@ class Turbolinks.Controller
   # Event handlers
 
   pageLoaded: =>
+    @lastRenderedLocation = @location
     @notifyApplicationAfterPageLoad()
 
   clickCaptured: =>
