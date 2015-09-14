@@ -26,10 +26,11 @@ class Turbolinks.Controller
       @history.stop()
       @started = false
 
-  visit: (location) ->
+  visit: (location, options = {}) ->
     location = Turbolinks.Location.box(location)
     if @applicationAllowsVisitingLocation(location)
-      @adapter.visitProposedToLocationWithAction(location, "advance")
+      action = options.action ? "advance"
+      @adapter.visitProposedToLocationWithAction(location, action)
 
   pushHistory: (location) ->
     @location = Turbolinks.Location.box(location)
@@ -96,7 +97,8 @@ class Turbolinks.Controller
         if location = @getVisitableLocationForLink(link)
           if @applicationAllowsFollowingLinkToLocation(link, location)
             event.preventDefault()
-            @visit(location)
+            action = @getActionForLink(link)
+            @visit(location, {action})
 
   # Application events
 
@@ -154,6 +156,9 @@ class Turbolinks.Controller
   getVisitableLocationForLink: (link) ->
     location = new Turbolinks.Location link.href
     location if location.isSameOrigin()
+
+  getActionForLink: (link) ->
+    link.getAttribute("data-turbolinks-action") ? "advance"
 
   nodeIsVisitable: (node) ->
     if container = Turbolinks.closest(node, "[data-turbolinks]")

@@ -40,8 +40,9 @@ class Turbolinks.Visit
   catch: ->
     @promise.catch(arguments...)
 
-  changeHistory: (method = "pushHistory") ->
+  changeHistory: ->
     unless @historyChanged
+      method = getHistoryMethodForAction(@action)
       @controller[method](@location)
       @historyChanged = true
 
@@ -93,6 +94,12 @@ class Turbolinks.Visit
     @adapter.visitRequestFinished(this)
 
   # Private
+
+  getHistoryMethodForAction = (action) ->
+    switch action
+      when "advance" then "pushHistory"
+      when "replace" then "replaceHistory"
+      when "restore" then "pushHistory"
 
   shouldIssueRequest: ->
     @action is "advance" or not @hasSnapshot()
