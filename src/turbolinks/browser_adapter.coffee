@@ -15,8 +15,12 @@ class Turbolinks.BrowserAdapter
     visit.restoreSnapshot()
 
   visitRequestStarted: (visit) ->
-    @showProgressBarAfterDelay() unless visit.snapshotRestored
     @progressBar.setValue(0)
+    unless visit.snapshotRestored
+      if visit.hasSnapshot() or visit.action isnt "restore"
+        @showProgressBarAfterDelay()
+      else
+        @showProgressBar()
 
   visitRequestProgressed: (visit) ->
     @progressBar.setValue(visit.progress)
