@@ -9,8 +9,8 @@ class Turbolinks.Controller
   constructor: ->
     @history = new Turbolinks.History this
     @view = new Turbolinks.View this
-    @cache = new Turbolinks.Cache 10
     @location = Turbolinks.Location.box(window.location)
+    @clearCache()
 
   start: ->
     unless @started
@@ -25,6 +25,9 @@ class Turbolinks.Controller
       removeEventListener("DOMContentLoaded", @pageLoaded, false)
       @history.stop()
       @started = false
+
+  clearCache: ->
+    @cache = new Turbolinks.Cache 10
 
   visit: (location, options = {}) ->
     location = Turbolinks.Location.box(location)
