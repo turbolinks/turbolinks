@@ -79,7 +79,7 @@ class Turbolinks.Visit
   # HTTP Request delegate
 
   requestStarted: ->
-    @adapter.visitRequestStarted(this)
+    @adapter.visitRequestStarted?(this)
 
   requestProgressed: (@progress) ->
     @adapter.visitRequestProgressed?(this)
@@ -91,7 +91,7 @@ class Turbolinks.Visit
     @adapter.visitRequestFailedWithStatusCode(this, statusCode)
 
   requestFinished: ->
-    @adapter.visitRequestFinished(this)
+    @adapter.visitRequestFinished?(this)
 
   # Private
 
