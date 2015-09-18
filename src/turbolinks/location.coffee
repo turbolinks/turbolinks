@@ -11,11 +11,12 @@ class Turbolinks.Location
 
     @absoluteURL = linkWithAnchor.href
 
-    hashLength = linkWithAnchor.hash.length
-    if hashLength < 2
+    anchorLength = linkWithAnchor.hash.length
+    if anchorLength < 2
       @requestURL = @absoluteURL
     else
-      @requestURL = @absoluteURL.slice(0, -hashLength)
+      @requestURL = @absoluteURL.slice(0, -anchorLength)
+      @anchor = linkWithAnchor.hash.slice(1)
 
   getOrigin: ->
     @absoluteURL.split("/", 3).join("/")

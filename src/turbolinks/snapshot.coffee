@@ -8,14 +8,9 @@ class Turbolinks.Snapshot
       head: element.querySelector("head")
       body: element.querySelector("body")
 
-  constructor: ({head, body, scrollLeft, scrollTop}) ->
+  constructor: ({head, body}) ->
     @head = head
     @body = body
-    @scrollLeft = scrollLeft
-    @scrollTop = scrollTop
-
-  hasScrollPosition: ->
-    @scrollLeft? and @scrollTop?
 
   hasSameTrackedHeadElementsAsSnapshot: (snapshot) ->
     @getTrackedHeadElementSet().isEqualTo(snapshot.getTrackedHeadElementSet())

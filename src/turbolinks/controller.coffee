@@ -2,6 +2,7 @@
 #= require ./browser_adapter
 #= require ./history
 #= require ./view
+#= require ./scroll_manager
 #= require ./cache
 #= require ./visit
 
@@ -9,6 +10,7 @@ class Turbolinks.Controller
   constructor: ->
     @history = new Turbolinks.History this
     @view = new Turbolinks.View this
+    @scrollManager = new Turbolinks.ScrollManager
     @location = Turbolinks.Location.box(window.location)
     @clearCache()
 
@@ -17,6 +19,7 @@ class Turbolinks.Controller
       addEventListener("click", @clickCaptured, true)
       addEventListener("DOMContentLoaded", @pageLoaded, false)
       @history.start()
+      @scrollManager.start()
       @started = true
 
   stop: ->
@@ -24,6 +27,7 @@ class Turbolinks.Controller
       removeEventListener("click", @clickCaptured, true)
       removeEventListener("DOMContentLoaded", @pageLoaded, false)
       @history.stop()
+      @scrollManager.stop()
       @started = false
 
   clearCache: ->
@@ -64,11 +68,25 @@ class Turbolinks.Controller
     snapshot = @view.saveSnapshot()
     @cache.put(@lastRenderedLocation, snapshot)
 
-  restoreSnapshotForLocationWithAction: (location, action) ->
+  restoreSnapshotForLocation: (location) ->
     if snapshot = @cache.get(location)
-      @view.loadSnapshotWithAction(snapshot, action)
+      @view.loadSnapshot(snapshot)
       @notifyApplicationAfterSnapshotLoad()
       true
+      
+  # Scrolling
+
+  scrollToAnchor: (anchor) ->
+    if element = document.getElementById(anchor)
+      @scrollToElement(element)
+    else
+      @scrollToPosition(0, 0)
+  
+  scrollToElement: (element) ->
+    @scrollManager.scrollToElement(element)
+  
+  scrollToPosition: (x, y) ->
+    @scrollManager.scrollToPosition(x, y)
 
   # View delegate
 

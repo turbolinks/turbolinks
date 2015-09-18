@@ -10,12 +10,10 @@ class Turbolinks.View
 
   loadSnapshotHTML: (html) ->
     snapshot = Turbolinks.Snapshot.fromHTML(html)
-    @loadSnapshotWithAction(snapshot, "advance")
+    @loadSnapshot(snapshot)
 
-  loadSnapshotWithAction: (snapshot, action) ->
-    if @renderSnapshot(snapshot)
-      scrollToSavedPosition = action is "restore"
-      @scrollSnapshotToSavedPosition(snapshot, scrollToSavedPosition)
+  loadSnapshot: (snapshot) ->
+    @renderSnapshot(snapshot)
 
   saveSnapshot: ->
     getSnapshot(true)
@@ -46,24 +44,10 @@ class Turbolinks.View
     @delegate.viewRendered()
     newSnapshot
 
-  scrollSnapshotToSavedPosition: (snapshot, scrollToSavedPosition) ->
-    location = window.location.toString()
-
-    if scrollToSavedPosition and snapshot.hasScrollPosition()
-      scrollTo(snapshot.scrollLeft, snapshot.scrollTop)
-    else if element = (try document.querySelector(window.location.hash))
-      element.scrollIntoView()
-    else if @lastScrolledLocation isnt location
-      scrollTo(0, 0)
-
-    @lastScrolledLocation = location
-
   getSnapshot = (clone) ->
     new Turbolinks.Snapshot
       head: maybeCloneElement(document.head, clone)
       body: maybeCloneElement(document.body, clone)
-      scrollLeft: window.pageXOffset
-      scrollTop: window.pageYOffset
 
   importPermanentElementsIntoBody = (newBody) ->
     for newChild in getPermanentElements(document.body)
