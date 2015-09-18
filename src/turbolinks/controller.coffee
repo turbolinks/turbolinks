@@ -8,10 +8,11 @@
 
 class Turbolinks.Controller
   constructor: ->
+    @location = Turbolinks.Location.box(window.location)
     @history = new Turbolinks.History this
     @view = new Turbolinks.View this
-    @scrollManager = new Turbolinks.ScrollManager
-    @location = Turbolinks.Location.box(window.location)
+    @scrollManager = new Turbolinks.ScrollManager this
+    @restorationData = {}
     @clearCache()
 
   start: ->
@@ -80,13 +81,19 @@ class Turbolinks.Controller
     if element = document.getElementById(anchor)
       @scrollToElement(element)
     else
-      @scrollToPosition(0, 0)
+      @scrollToPosition(x: 0, y: 0)
   
   scrollToElement: (element) ->
     @scrollManager.scrollToElement(element)
   
-  scrollToPosition: (x, y) ->
-    @scrollManager.scrollToPosition(x, y)
+  scrollToPosition: (position) ->
+    @scrollManager.scrollToPosition(position)
+  
+  # Scroll manager delegate
+
+  scrollPositionChanged: (scrollPosition) ->
+    restorationData = @getCurrentRestorationData()
+    restorationData.scrollPosition = scrollPosition
 
   # View delegate
 
@@ -98,8 +105,8 @@ class Turbolinks.Controller
 
   # History delegate
 
-  historyPoppedToLocation: (location) ->
-    @startVisit(location, "restore", true)
+  historyPoppedToLocationWithRestorationIdentifier: (location, restorationIdentifier) ->
+    @startVisit(location, "restore", true, restorationIdentifier)
     @location = location
 
   # Event handlers
@@ -143,9 +150,10 @@ class Turbolinks.Controller
 
   # Private
 
-  startVisit: (location, action, historyChanged) ->
+  startVisit: (location, action, historyChanged, restorationIdentifier) ->
     @currentVisit?.cancel()
     @currentVisit = @createVisit(location, action, historyChanged)
+    @currentVisit.restorationData = @getRestorationDataForIdentifier(restorationIdentifier)
     @currentVisit.start()
 
   createVisit: (location, action, historyChanged) ->
@@ -187,6 +195,12 @@ class Turbolinks.Controller
     else
       true
 
+  getCurrentRestorationData: ->
+    @getRestorationDataForIdentifier(@history.restorationIdentifier)
+
+  getRestorationDataForIdentifier: (identifier) ->
+    @restorationData[identifier] ?= {}
+  
 do ->
   Turbolinks.controller = controller = new Turbolinks.Controller
   controller.adapter = new Turbolinks.BrowserAdapter(controller)

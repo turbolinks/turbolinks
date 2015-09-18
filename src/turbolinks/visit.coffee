@@ -99,7 +99,7 @@ class Turbolinks.Visit
   # Scrolling
   
   scrollToTop: ->
-    @controller.scrollToPosition(0, 0)
+    @controller.scrollToPosition(x: 0, y: 0)
   
   scrollToAnchor: ->
     if @location.anchor?
@@ -108,9 +108,9 @@ class Turbolinks.Visit
       @scrollToTop()
   
   scrollToRestoredPosition: ->
-    {x, y} = @restorationData ? {}
-    if x? and y?
-      @controller.scrollToPosition(x, y)
+    position = @restorationData?.scrollPosition
+    if position?
+      @controller.scrollToPosition(position)
     else
       @scrollToTop()
 

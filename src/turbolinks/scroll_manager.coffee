@@ -1,4 +1,6 @@
 class Turbolinks.ScrollManager
+  constructor: (@delegate) ->
+    
   start: ->
     unless @started
       addEventListener("scroll", @onScroll, false)
@@ -12,7 +14,15 @@ class Turbolinks.ScrollManager
   scrollToElement: (element) ->
     element.scrollIntoView()
   
-  scrollToPosition: (x, y) ->
+  scrollToPosition: ({x, y}) ->
     window.scrollTo(x, y)
 
   onScroll: (event) =>
+    @updatePosition(x: window.pageXOffset, y: window.pageYOffset)
+
+  # Private
+
+  updatePosition: (@position) ->
+    @delegate?.scrollPositionChanged(@position)
+  
+  
