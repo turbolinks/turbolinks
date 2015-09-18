@@ -40,13 +40,13 @@ class Turbolinks.Controller
       action = options.action ? "advance"
       @adapter.visitProposedToLocationWithAction(location, action)
 
-  pushHistory: (location) ->
+  pushHistoryWithLocationAndRestorationIdentifier: (location, restorationIdentifier) ->
     @location = Turbolinks.Location.box(location)
-    @history.push(@location)
+    @history.push(@location, restorationIdentifier)
 
-  replaceHistory: (location) ->
+  replaceHistoryWithLocationAndRestorationIdentifier: (location, restorationIdentifier) ->
     @location = Turbolinks.Location.box(location)
-    @history.replace(@location)
+    @history.replace(@location, restorationIdentifier)
 
   loadResponse: (response) ->
     @view.loadSnapshotHTML(response)
@@ -106,7 +106,8 @@ class Turbolinks.Controller
   # History delegate
 
   historyPoppedToLocationWithRestorationIdentifier: (location, restorationIdentifier) ->
-    @startVisit(location, "restore", true, restorationIdentifier)
+    restorationData = @getRestorationDataForIdentifier(restorationIdentifier)
+    @startVisit(location, "restore", {restorationIdentifier, restorationData, historyChanged: true})
     @location = location
 
   # Event handlers
@@ -150,14 +151,16 @@ class Turbolinks.Controller
 
   # Private
 
-  startVisit: (location, action, historyChanged, restorationIdentifier) ->
+  startVisit: (location, action, properties) ->
     @currentVisit?.cancel()
-    @currentVisit = @createVisit(location, action, historyChanged)
-    @currentVisit.restorationData = @getRestorationDataForIdentifier(restorationIdentifier)
+    @currentVisit = @createVisit(location, action, properties)
     @currentVisit.start()
 
-  createVisit: (location, action, historyChanged) ->
-    visit = new Turbolinks.Visit this, location, action, historyChanged
+  createVisit: (location, action, {restorationIdentifier, restorationData, historyChanged} = {}) ->
+    visit = new Turbolinks.Visit this, location, action
+    visit.restorationIdentifier = restorationIdentifier ? Turbolinks.uuid()
+    visit.restorationData = restorationData
+    visit.historyChanged = historyChanged
     visit.then(@visitFinished)
     visit
 

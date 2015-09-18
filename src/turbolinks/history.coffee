@@ -3,7 +3,7 @@ class Turbolinks.History
 
   start: ->
     unless @started
-      @update("replace", null)
+      @update("replace", null, Turbolinks.uuid())
       addEventListener("popstate", @onPopState, false)
       @started = true
 
@@ -12,13 +12,13 @@ class Turbolinks.History
       removeEventListener("popstate", @onPopState, false)
       @started = false
 
-  push: (location) ->
+  push: (location, restorationIdentifier) ->
     location = Turbolinks.Location.box(location)
-    @update("push", location)
+    @update("push", location, restorationIdentifier)
 
-  replace: (location) ->
+  replace: (location, restorationIdentifier) ->
     location = Turbolinks.Location.box(location)
-    @update("replace", location)
+    @update("replace", location, restorationIdentifier)
 
   # Event handlers
 
@@ -30,11 +30,6 @@ class Turbolinks.History
 
   # Private
 
-  update: (method, location) ->
-    {@restorationIdentifier} = state = createState()
+  update: (method, location, @restorationIdentifier) ->
+    state = turbolinks: {@restorationIdentifier}
     history[method + "State"](state, null, location)
-
-  createState = ->
-    time = new Date().getTime()
-    entropy = Math.floor(Math.random() * 1000, 10) + 1
-    turbolinks: restorationIdentifier: "#{time}.#{entropy}"

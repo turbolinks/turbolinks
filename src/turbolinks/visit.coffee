@@ -1,12 +1,9 @@
 #= require ./http_request
 
 class Turbolinks.Visit
-  ID_PREFIX = new Date().getTime()
-  id = 0
-
-  constructor: (@controller, location, @action, @historyChanged) ->
+  constructor: (@controller, location, @action) ->
     @promise = new Promise (@resolve, @reject) =>
-      @identifier = "#{ID_PREFIX}:#{++id}"
+      @identifier = Turbolinks.uuid()
       @location = Turbolinks.Location.box(location)
       @adapter = @controller.adapter
       @state = "initialized"
@@ -15,7 +12,7 @@ class Turbolinks.Visit
     if @state is "initialized"
       @state = "started"
       @adapter.visitStarted(this)
-
+      
   cancel: ->
     if @state is "started"
       @request?.cancel()
@@ -43,7 +40,7 @@ class Turbolinks.Visit
   changeHistory: ->
     unless @historyChanged
       method = getHistoryMethodForAction(@action)
-      @controller[method](@location)
+      @controller[method](@location, @restorationIdentifier)
       @historyChanged = true
 
   issueRequest: ->
@@ -118,9 +115,8 @@ class Turbolinks.Visit
 
   getHistoryMethodForAction = (action) ->
     switch action
-      when "advance" then "pushHistory"
-      when "replace" then "replaceHistory"
-      when "restore" then "pushHistory"
+      when "replace" then "replaceHistoryWithLocationAndRestorationIdentifier"
+      when "advance", "restore" then "pushHistoryWithLocationAndRestorationIdentifier"
 
   shouldIssueRequest: ->
     @action is "advance" or not @hasSnapshot()
