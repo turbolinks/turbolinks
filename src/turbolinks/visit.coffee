@@ -12,7 +12,7 @@ class Turbolinks.Visit
     if @state is "initialized"
       @state = "started"
       @adapter.visitStarted(this)
-      
+
   cancel: ->
     if @state is "started"
       @request?.cancel()
@@ -94,16 +94,16 @@ class Turbolinks.Visit
     @adapter.visitRequestFinished?(this)
 
   # Scrolling
-  
+
   scrollToTop: ->
     @controller.scrollToPosition(x: 0, y: 0)
-  
+
   scrollToAnchor: ->
     if @location.anchor?
       @controller.scrollToAnchor(@location.anchor)
     else
       @scrollToTop()
-  
+
   scrollToRestoredPosition: ->
     position = @restorationData?.scrollPosition
     if position?
