@@ -47,8 +47,9 @@ class Turbolinks.Controller
     @view.loadDocumentHTML(response)
     @controller.stop()
 
-  startVisitToLocationWithAction: (location, action) ->
-    @startVisit(location, action)
+  startVisitToLocationWithAction: (location, action, restorationIdentifier) ->
+    restorationData = @getRestorationDataForIdentifier(restorationIdentifier)
+    @startVisit(location, action, {restorationData})
 
   # History
 
