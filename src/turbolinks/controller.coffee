@@ -8,7 +8,6 @@
 
 class Turbolinks.Controller
   constructor: ->
-    @location = Turbolinks.Location.box(window.location)
     @history = new Turbolinks.History this
     @view = new Turbolinks.View this
     @scrollManager = new Turbolinks.ScrollManager this
@@ -19,16 +18,16 @@ class Turbolinks.Controller
     unless @started
       addEventListener("click", @clickCaptured, true)
       addEventListener("DOMContentLoaded", @pageLoaded, false)
-      @history.start()
       @scrollManager.start()
+      @startHistory()
       @started = true
 
   stop: ->
     if @started
       removeEventListener("click", @clickCaptured, true)
       removeEventListener("DOMContentLoaded", @pageLoaded, false)
-      @history.stop()
       @scrollManager.stop()
+      @stopHistory()
       @started = false
 
   clearCache: ->
@@ -40,14 +39,6 @@ class Turbolinks.Controller
       action = options.action ? "advance"
       @adapter.visitProposedToLocationWithAction(location, action)
 
-  pushHistoryWithLocationAndRestorationIdentifier: (location, restorationIdentifier) ->
-    @location = Turbolinks.Location.box(location)
-    @history.push(@location, restorationIdentifier)
-
-  replaceHistoryWithLocationAndRestorationIdentifier: (location, restorationIdentifier) ->
-    @location = Turbolinks.Location.box(location)
-    @history.replace(@location, restorationIdentifier)
-
   loadResponse: (response) ->
     @view.loadSnapshotHTML(response)
     @notifyApplicationAfterResponseLoad()
@@ -58,6 +49,32 @@ class Turbolinks.Controller
 
   startVisitToLocationWithAction: (location, action) ->
     @startVisit(location, action)
+
+  # History
+
+  startHistory: ->
+    @location = Turbolinks.Location.box(window.location)
+    @restorationIdentifier = Turbolinks.uuid()
+    @history.start()
+    @history.replace(@location, @restorationIdentifier)
+
+  stopHistory: ->
+    @history.stop()
+
+  pushHistoryWithLocationAndRestorationIdentifier: (location, @restorationIdentifier) ->
+    @location = Turbolinks.Location.box(location)
+    @history.push(@location, @restorationIdentifier)
+
+  replaceHistoryWithLocationAndRestorationIdentifier: (location, @restorationIdentifier) ->
+    @location = Turbolinks.Location.box(location)
+    @history.replace(@location, @restorationIdentifier)
+
+  # History delegate
+
+  historyPoppedToLocationWithRestorationIdentifier: (location, @restorationIdentifier) ->
+    restorationData = @getRestorationDataForIdentifier(@restorationIdentifier)
+    @startVisit(location, "restore", {@restorationIdentifier, restorationData, historyChanged: true})
+    @location = location
 
   # Page snapshots
 
@@ -74,7 +91,7 @@ class Turbolinks.Controller
       @view.loadSnapshot(snapshot)
       @notifyApplicationAfterSnapshotLoad()
       true
-      
+
   # Scrolling
 
   scrollToAnchor: (anchor) ->
@@ -82,13 +99,13 @@ class Turbolinks.Controller
       @scrollToElement(element)
     else
       @scrollToPosition(x: 0, y: 0)
-  
+
   scrollToElement: (element) ->
     @scrollManager.scrollToElement(element)
-  
+
   scrollToPosition: (position) ->
     @scrollManager.scrollToPosition(position)
-  
+
   # Scroll manager delegate
 
   scrollPositionChanged: (scrollPosition) ->
@@ -102,13 +119,6 @@ class Turbolinks.Controller
 
   viewRendered: ->
     @lastRenderedLocation = @currentVisit.location
-
-  # History delegate
-
-  historyPoppedToLocationWithRestorationIdentifier: (location, restorationIdentifier) ->
-    restorationData = @getRestorationDataForIdentifier(restorationIdentifier)
-    @startVisit(location, "restore", {restorationIdentifier, restorationData, historyChanged: true})
-    @location = location
 
   # Event handlers
 
@@ -199,11 +209,11 @@ class Turbolinks.Controller
       true
 
   getCurrentRestorationData: ->
-    @getRestorationDataForIdentifier(@history.restorationIdentifier)
+    @getRestorationDataForIdentifier(@restorationIdentifier)
 
   getRestorationDataForIdentifier: (identifier) ->
     @restorationData[identifier] ?= {}
-  
+
 do ->
   Turbolinks.controller = controller = new Turbolinks.Controller
   controller.adapter = new Turbolinks.BrowserAdapter(controller)
