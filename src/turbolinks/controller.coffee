@@ -18,6 +18,10 @@ class Turbolinks.Controller
       addEventListener("DOMContentLoaded", @pageLoaded, false)
       @history.start()
       @started = true
+      @enabled = true
+
+  disable: ->
+    @enabled = false
 
   stop: ->
     if @started
@@ -49,7 +53,7 @@ class Turbolinks.Controller
 
   loadErrorResponse: (response) ->
     @view.loadDocumentHTML(response)
-    @controller.stop()
+    @disable()
 
   startVisitToLocationWithAction: (location, action) ->
     @startVisit(location, action)
@@ -81,8 +85,11 @@ class Turbolinks.Controller
   # History delegate
 
   historyPoppedToLocation: (location) ->
-    @startVisit(location, "restore", true)
-    @location = location
+    if @enabled
+      @startVisit(location, "restore", true)
+      @location = location
+    else
+      @adapter.pageInvalidated()
 
   # Event handlers
 
@@ -95,7 +102,7 @@ class Turbolinks.Controller
     addEventListener("click", @clickBubbled, false)
 
   clickBubbled: (event) =>
-    if @clickEventIsSignificant(event)
+    if @enabled and @clickEventIsSignificant(event)
       if link = @getVisitableLinkForNode(event.target)
         if location = @getVisitableLocationForLink(link)
           if @applicationAllowsFollowingLinkToLocation(link, location)
