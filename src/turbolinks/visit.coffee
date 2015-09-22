@@ -57,7 +57,7 @@ class Turbolinks.Visit
       @render ->
         @saveSnapshot()
         if @snapshotRestored = @controller.restoreSnapshotForLocation(@location)
-          @scrollToRestoredPosition()
+          @performScroll()
           @adapter.visitSnapshotRestored?(this)
           @complete() unless @shouldIssueRequest()
 
@@ -67,12 +67,12 @@ class Turbolinks.Visit
         @saveSnapshot()
         if @request.failed
           @controller.loadErrorResponse(@response)
-          @scrollToTop()
+          @performScroll()
           @adapter.visitResponseLoaded?(this)
           @fail()
         else
           @controller.loadResponse(@response)
-          @scrollToAnchor()
+          @performScroll()
           @adapter.visitResponseLoaded?(this)
           @complete()
 
@@ -95,21 +95,27 @@ class Turbolinks.Visit
 
   # Scrolling
 
-  scrollToTop: ->
-    @controller.scrollToPosition(x: 0, y: 0)
-
-  scrollToAnchor: ->
-    if @location.anchor?
-      @controller.scrollToAnchor(@location.anchor)
-    else
-      @scrollToTop()
+  performScroll: ->
+    unless @scrolled
+      if @action is "restore"
+        @scrollToRestoredPosition() or @scrollToTop()
+      else
+        @scrollToAnchor() or @scrollToTop()
+      @scrolled = true
 
   scrollToRestoredPosition: ->
     position = @restorationData?.scrollPosition
     if position?
       @controller.scrollToPosition(position)
-    else
-      @scrollToTop()
+      true
+
+  scrollToAnchor: ->
+    if @location.anchor?
+      @controller.scrollToAnchor(@location.anchor)
+      true
+
+  scrollToTop: ->
+    @controller.scrollToPosition(x: 0, y: 0)
 
   # Private
 
