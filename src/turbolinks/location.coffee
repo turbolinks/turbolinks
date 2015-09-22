@@ -18,6 +18,22 @@ class Turbolinks.Location
       @requestURL = @absoluteURL.slice(0, -anchorLength)
       @anchor = linkWithAnchor.hash.slice(1)
 
+  getPath: ->
+    @absoluteURL.match(/\/\/[^/]*(\/[^?;]*)/)?[1] ? "/"
+
+  getPathComponents: ->
+    @getPath().split("/").slice(1)
+
+  getLastPathComponent: ->
+    @getPathComponents().slice(-1)[0]
+
+  getExtension: ->
+    @getLastPathComponent().match(/\.[^.]*$/)?[0]
+
+  isHTML: ->
+    extension = @getExtension()
+    extension is ".html" or not extension?
+
   getOrigin: ->
     @absoluteURL.split("/", 3).join("/")
 

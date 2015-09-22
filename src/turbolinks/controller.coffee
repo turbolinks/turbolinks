@@ -205,7 +205,7 @@ class Turbolinks.Controller
 
   getVisitableLocationForLink: (link) ->
     location = new Turbolinks.Location link.href
-    location if location.isSameOrigin()
+    location if location.isSameOrigin() and location.isHTML()
 
   getActionForLink: (link) ->
     link.getAttribute("data-turbolinks-action") ? "advance"
