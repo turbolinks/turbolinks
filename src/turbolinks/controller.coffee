@@ -170,7 +170,7 @@ class Turbolinks.Controller
   createVisit: (location, action, {restorationIdentifier, restorationData, historyChanged} = {}) ->
     visit = new Turbolinks.Visit this, location, action
     visit.restorationIdentifier = restorationIdentifier ? Turbolinks.uuid()
-    visit.restorationData = restorationData
+    visit.restorationData = Turbolinks.copyObject(restorationData)
     visit.historyChanged = historyChanged
     visit.then(@visitFinished)
     visit

@@ -1,3 +1,10 @@
+Turbolinks.copyObject = (object) ->
+  result = {}
+  for key, value of object
+    result[key] = value
+  result
+
+
 Turbolinks.closest = (element, selector) ->
   closest.call(element, selector)
 
