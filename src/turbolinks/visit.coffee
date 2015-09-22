@@ -125,7 +125,10 @@ class Turbolinks.Visit
       when "advance", "restore" then "pushHistoryWithLocationAndRestorationIdentifier"
 
   shouldIssueRequest: ->
-    @action is "advance" or not @hasSnapshot()
+    if @action is "restore"
+      not @hasSnapshot()
+    else
+      true
 
   saveSnapshot: ->
     unless @snapshotSaved
