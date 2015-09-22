@@ -29,13 +29,16 @@ class Turbolinks.BrowserAdapter
     visit.loadResponse()
 
   visitRequestFailedWithStatusCode: (visit, statusCode) ->
-    visit.loadResponse()
+    if statusCode > 0
+      visit.loadResponse()
+    else
+      @reload()
 
   visitRequestFinished: (visit) ->
     @hideProgressBar()
 
   pageInvalidated: ->
-    window.location.reload()
+    @reload()
 
   # Private
 
@@ -48,3 +51,6 @@ class Turbolinks.BrowserAdapter
   hideProgressBar: ->
     @progressBar.hide()
     clearTimeout(@progressBarTimeout)
+
+  reload: ->
+    window.location.reload()

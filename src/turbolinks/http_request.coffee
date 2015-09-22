@@ -32,7 +32,7 @@ class Turbolinks.HttpRequest
   requestFailed: =>
     @endRequest =>
       @failed = true
-      @delegate.requestFailedWithStatusCode(null)
+      @delegate.requestFailedWithStatusCode(0)
 
   requestCanceled: =>
     @endRequest()
