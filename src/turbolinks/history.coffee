@@ -1,6 +1,5 @@
 class Turbolinks.History
   constructor: (@delegate) ->
-    @state = { turbolinks: true }
 
   start: ->
     unless @started
@@ -12,27 +11,24 @@ class Turbolinks.History
       removeEventListener("popstate", @onPopState, false)
       @started = false
 
-  push: (location) ->
+  push: (location, restorationIdentifier) ->
     location = Turbolinks.Location.box(location)
+    @update("push", location, restorationIdentifier)
 
-    unless @initialized
-      @update("replace", null)
-      @initialized = true
-
-    @update("push", location)
-
-  replace: (location) ->
+  replace: (location, restorationIdentifier) ->
     location = Turbolinks.Location.box(location)
-    @update("replace", location)
+    @update("replace", location, restorationIdentifier)
 
   # Event handlers
 
   onPopState: (event) =>
-    if event.state?.turbolinks
+    if turbolinks = event.state?.turbolinks
       location = Turbolinks.Location.box(window.location)
-      @delegate.historyPoppedToLocation(location)
+      restorationIdentifier = turbolinks.restorationIdentifier
+      @delegate.historyPoppedToLocationWithRestorationIdentifier(location, restorationIdentifier)
 
   # Private
 
-  update: (method, location) ->
-    history[method + "State"](@state, null, location)
+  update: (method, location, restorationIdentifier) ->
+    state = turbolinks: {restorationIdentifier}
+    history[method + "State"](state, null, location)

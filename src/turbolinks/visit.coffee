@@ -1,12 +1,9 @@
 #= require ./http_request
 
 class Turbolinks.Visit
-  ID_PREFIX = new Date().getTime()
-  id = 0
-
-  constructor: (@controller, location, @action, @historyChanged) ->
+  constructor: (@controller, location, @action) ->
     @promise = new Promise (@resolve, @reject) =>
-      @identifier = "#{ID_PREFIX}:#{++id}"
+      @identifier = Turbolinks.uuid()
       @location = Turbolinks.Location.box(location)
       @adapter = @controller.adapter
       @state = "initialized"
@@ -43,7 +40,7 @@ class Turbolinks.Visit
   changeHistory: ->
     unless @historyChanged
       method = getHistoryMethodForAction(@action)
-      @controller[method](@location)
+      @controller[method](@location, @restorationIdentifier)
       @historyChanged = true
 
   issueRequest: ->
@@ -59,7 +56,8 @@ class Turbolinks.Visit
     if @hasSnapshot() and not @snapshotRestored
       @render ->
         @saveSnapshot()
-        if @snapshotRestored = @controller.restoreSnapshotForLocationWithAction(@location, @action)
+        if @snapshotRestored = @controller.restoreSnapshotForLocation(@location)
+          @performScroll()
           @adapter.visitSnapshotRestored?(this)
           @complete() unless @shouldIssueRequest()
 
@@ -69,10 +67,12 @@ class Turbolinks.Visit
         @saveSnapshot()
         if @request.failed
           @controller.loadErrorResponse(@response)
+          @performScroll()
           @adapter.visitResponseLoaded?(this)
           @fail()
         else
           @controller.loadResponse(@response)
+          @performScroll()
           @adapter.visitResponseLoaded?(this)
           @complete()
 
@@ -93,13 +93,36 @@ class Turbolinks.Visit
   requestFinished: ->
     @adapter.visitRequestFinished?(this)
 
+  # Scrolling
+
+  performScroll: ->
+    unless @scrolled
+      if @action is "restore"
+        @scrollToRestoredPosition() or @scrollToTop()
+      else
+        @scrollToAnchor() or @scrollToTop()
+      @scrolled = true
+
+  scrollToRestoredPosition: ->
+    position = @restorationData?.scrollPosition
+    if position?
+      @controller.scrollToPosition(position)
+      true
+
+  scrollToAnchor: ->
+    if @location.anchor?
+      @controller.scrollToAnchor(@location.anchor)
+      true
+
+  scrollToTop: ->
+    @controller.scrollToPosition(x: 0, y: 0)
+
   # Private
 
   getHistoryMethodForAction = (action) ->
     switch action
-      when "advance" then "pushHistory"
-      when "replace" then "replaceHistory"
-      when "restore" then "pushHistory"
+      when "replace" then "replaceHistoryWithLocationAndRestorationIdentifier"
+      when "advance", "restore" then "pushHistoryWithLocationAndRestorationIdentifier"
 
   shouldIssueRequest: ->
     @action is "advance" or not @hasSnapshot()

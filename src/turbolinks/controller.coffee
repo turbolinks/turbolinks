@@ -2,6 +2,7 @@
 #= require ./browser_adapter
 #= require ./history
 #= require ./view
+#= require ./scroll_manager
 #= require ./cache
 #= require ./visit
 
@@ -9,14 +10,16 @@ class Turbolinks.Controller
   constructor: ->
     @history = new Turbolinks.History this
     @view = new Turbolinks.View this
-    @location = Turbolinks.Location.box(window.location)
+    @scrollManager = new Turbolinks.ScrollManager this
+    @restorationData = {}
     @clearCache()
 
   start: ->
     unless @started
       addEventListener("click", @clickCaptured, true)
       addEventListener("DOMContentLoaded", @pageLoaded, false)
-      @history.start()
+      @scrollManager.start()
+      @startHistory()
       @started = true
       @enabled = true
 
@@ -27,7 +30,8 @@ class Turbolinks.Controller
     if @started
       removeEventListener("click", @clickCaptured, true)
       removeEventListener("DOMContentLoaded", @pageLoaded, false)
-      @history.stop()
+      @scrollManager.stop()
+      @stopHistory()
       @started = false
 
   clearCache: ->
@@ -39,14 +43,6 @@ class Turbolinks.Controller
       action = options.action ? "advance"
       @adapter.visitProposedToLocationWithAction(location, action)
 
-  pushHistory: (location) ->
-    @location = Turbolinks.Location.box(location)
-    @history.push(@location)
-
-  replaceHistory: (location) ->
-    @location = Turbolinks.Location.box(location)
-    @history.replace(@location)
-
   loadResponse: (response) ->
     @view.loadSnapshotHTML(response)
     @notifyApplicationAfterResponseLoad()
@@ -55,8 +51,38 @@ class Turbolinks.Controller
     @view.loadDocumentHTML(response)
     @disable()
 
-  startVisitToLocationWithAction: (location, action) ->
-    @startVisit(location, action)
+  startVisitToLocationWithAction: (location, action, restorationIdentifier) ->
+    restorationData = @getRestorationDataForIdentifier(restorationIdentifier)
+    @startVisit(location, action, {restorationData})
+
+  # History
+
+  startHistory: ->
+    @location = Turbolinks.Location.box(window.location)
+    @restorationIdentifier = Turbolinks.uuid()
+    @history.start()
+    @history.replace(@location, @restorationIdentifier)
+
+  stopHistory: ->
+    @history.stop()
+
+  pushHistoryWithLocationAndRestorationIdentifier: (location, @restorationIdentifier) ->
+    @location = Turbolinks.Location.box(location)
+    @history.push(@location, @restorationIdentifier)
+
+  replaceHistoryWithLocationAndRestorationIdentifier: (location, @restorationIdentifier) ->
+    @location = Turbolinks.Location.box(location)
+    @history.replace(@location, @restorationIdentifier)
+
+  # History delegate
+
+  historyPoppedToLocationWithRestorationIdentifier: (location, @restorationIdentifier) ->
+    if @enabled
+      restorationData = @getRestorationDataForIdentifier(@restorationIdentifier)
+      @startVisit(location, "restore", {@restorationIdentifier, restorationData, historyChanged: true})
+      @location = location
+    else
+      @adapter.pageInvalidated()
 
   # Page snapshots
 
@@ -68,11 +94,31 @@ class Turbolinks.Controller
     snapshot = @view.saveSnapshot()
     @cache.put(@lastRenderedLocation, snapshot)
 
-  restoreSnapshotForLocationWithAction: (location, action) ->
+  restoreSnapshotForLocation: (location) ->
     if snapshot = @cache.get(location)
-      @view.loadSnapshotWithAction(snapshot, action)
+      @view.loadSnapshot(snapshot)
       @notifyApplicationAfterSnapshotLoad()
       true
+
+  # Scrolling
+
+  scrollToAnchor: (anchor) ->
+    if element = document.getElementById(anchor)
+      @scrollToElement(element)
+    else
+      @scrollToPosition(x: 0, y: 0)
+
+  scrollToElement: (element) ->
+    @scrollManager.scrollToElement(element)
+
+  scrollToPosition: (position) ->
+    @scrollManager.scrollToPosition(position)
+
+  # Scroll manager delegate
+
+  scrollPositionChanged: (scrollPosition) ->
+    restorationData = @getCurrentRestorationData()
+    restorationData.scrollPosition = scrollPosition
 
   # View delegate
 
@@ -81,15 +127,6 @@ class Turbolinks.Controller
 
   viewRendered: ->
     @lastRenderedLocation = @currentVisit.location
-
-  # History delegate
-
-  historyPoppedToLocation: (location) ->
-    if @enabled
-      @startVisit(location, "restore", true)
-      @location = location
-    else
-      @adapter.pageInvalidated()
 
   # Event handlers
 
@@ -132,13 +169,16 @@ class Turbolinks.Controller
 
   # Private
 
-  startVisit: (location, action, historyChanged) ->
+  startVisit: (location, action, properties) ->
     @currentVisit?.cancel()
-    @currentVisit = @createVisit(location, action, historyChanged)
+    @currentVisit = @createVisit(location, action, properties)
     @currentVisit.start()
 
-  createVisit: (location, action, historyChanged) ->
-    visit = new Turbolinks.Visit this, location, action, historyChanged
+  createVisit: (location, action, {restorationIdentifier, restorationData, historyChanged} = {}) ->
+    visit = new Turbolinks.Visit this, location, action
+    visit.restorationIdentifier = restorationIdentifier ? Turbolinks.uuid()
+    visit.restorationData = Turbolinks.copyObject(restorationData)
+    visit.historyChanged = historyChanged
     visit.then(@visitFinished)
     visit
 
@@ -175,6 +215,12 @@ class Turbolinks.Controller
       container.getAttribute("data-turbolinks") isnt "false"
     else
       true
+
+  getCurrentRestorationData: ->
+    @getRestorationDataForIdentifier(@restorationIdentifier)
+
+  getRestorationDataForIdentifier: (identifier) ->
+    @restorationData[identifier] ?= {}
 
 do ->
   Turbolinks.controller = controller = new Turbolinks.Controller
