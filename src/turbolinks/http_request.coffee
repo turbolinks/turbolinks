@@ -52,7 +52,7 @@ class Turbolinks.HttpRequest
     @xhr.open("GET", @url, true)
     @xhr.setRequestHeader("Accept", "text/html, application/xhtml+xml, application/xml")
     @xhr.onprogress = @requestProgressed
-    @xhr.onloadend = @requestLoaded
+    @xhr.onload = @requestLoaded
     @xhr.onerror = @requestFailed
     @xhr.onabort = @requestCanceled
 
