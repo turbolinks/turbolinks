@@ -29,10 +29,11 @@ class Turbolinks.BrowserAdapter
     visit.loadResponse()
 
   visitRequestFailedWithStatusCode: (visit, statusCode) ->
-    if statusCode > 0
-      visit.loadResponse()
-    else
-      @reload()
+    switch statusCode
+      when Turbolinks.HttpRequest.NETWORK_FAILURE, Turbolinks.HttpRequest.TIMEOUT_FAILURE
+        @reload()
+      else
+        visit.loadResponse()
 
   visitRequestFinished: (visit) ->
     @hideProgressBar()

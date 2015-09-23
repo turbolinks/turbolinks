@@ -1,4 +1,9 @@
 class Turbolinks.HttpRequest
+  @NETWORK_FAILURE = 0
+  @TIMEOUT_FAILURE = -1
+
+  @timeout = 60
+
   constructor: (@delegate, location) ->
     @url = Turbolinks.Location.box(location).requestURL
     @createXHR()
@@ -32,10 +37,16 @@ class Turbolinks.HttpRequest
   requestFailed: =>
     @endRequest =>
       @failed = true
-      @delegate.requestFailedWithStatusCode(0)
+      @delegate.requestFailedWithStatusCode(@constructor.NETWORK_FAILURE)
+
+  requestTimedOut: =>
+    @endRequest =>
+      @failed = true
+      @delegate.requestFailedWithStatusCode(@constructor.TIMEOUT_FAILURE)
 
   requestCanceled: =>
     @endRequest()
+
 
   # Application events
 
@@ -50,10 +61,12 @@ class Turbolinks.HttpRequest
   createXHR: ->
     @xhr = new XMLHttpRequest
     @xhr.open("GET", @url, true)
+    @xhr.timeout = @constructor.timeout * 1000
     @xhr.setRequestHeader("Accept", "text/html, application/xhtml+xml, application/xml")
     @xhr.onprogress = @requestProgressed
     @xhr.onload = @requestLoaded
     @xhr.onerror = @requestFailed
+    @xhr.ontimeout = @requestTimedOut
     @xhr.onabort = @requestCanceled
 
   endRequest: (callback) ->
