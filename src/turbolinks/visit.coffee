@@ -55,6 +55,8 @@ class Turbolinks.Visit
         snapshot.hasAnchor(@location.anchor)
       else
         true
+    else
+      false
 
   restoreSnapshot: ->
     if @hasSnapshot() and not @snapshotRestored
