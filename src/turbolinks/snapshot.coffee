@@ -12,6 +12,9 @@ class Turbolinks.Snapshot
     @head = head
     @body = body
 
+  hasAnchor: (anchor) ->
+    @body.querySelector(anchor)?
+
   hasSameTrackedHeadElementsAsSnapshot: (snapshot) ->
     @getTrackedHeadElementSet().isEqualTo(snapshot.getTrackedHeadElementSet())
 
