@@ -50,7 +50,7 @@ class Turbolinks.Visit
       @request.send()
 
   hasSnapshot: ->
-    if snapshot = @controller.getSnapshotForLocation(location)
+    if snapshot = @controller.getSnapshotForLocation(@location)
       if @location.anchor?
         snapshot.hasAnchor(@location.anchor)
       else
