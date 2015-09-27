@@ -40,6 +40,9 @@ class Turbolinks.Location
   isSameOrigin: ->
     @getOrigin() is (new @constructor).getOrigin()
 
+  isEqualTo: (location) ->
+    @absoluteURL is location?.absoluteURL
+
   toCacheKey: ->
     @requestURL
 

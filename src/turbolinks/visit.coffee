@@ -38,7 +38,7 @@ class Turbolinks.Visit
     @promise.catch(arguments...)
 
   changeHistory: ->
-    unless @historyChanged
+    unless @historyChanged or @location.isEqualTo(@referrer)
       method = getHistoryMethodForAction(@action)
       @controller[method](@location, @restorationIdentifier)
       @historyChanged = true
