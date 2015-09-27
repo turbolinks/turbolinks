@@ -80,7 +80,7 @@ class Turbolinks.Controller
     if @enabled
       restorationData = @getRestorationDataForIdentifier(@restorationIdentifier)
       @startVisit(location, "restore", {@restorationIdentifier, restorationData, historyChanged: true})
-      @location = location
+      @location = Turbolinks.Location.box(location)
     else
       @adapter.pageInvalidated()
 
@@ -182,6 +182,7 @@ class Turbolinks.Controller
     visit.restorationIdentifier = restorationIdentifier ? Turbolinks.uuid()
     visit.restorationData = Turbolinks.copyObject(restorationData)
     visit.historyChanged = historyChanged
+    visit.referrer = @location
     visit.then(@visitFinished)
     visit
 

@@ -46,7 +46,7 @@ class Turbolinks.Visit
   issueRequest: ->
     if @shouldIssueRequest() and not @request?
       @progress = 0
-      @request = new Turbolinks.HttpRequest this, @location
+      @request = new Turbolinks.HttpRequest this, @location, @referrer
       @request.send()
 
   hasSnapshot: ->
