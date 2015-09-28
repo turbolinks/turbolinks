@@ -38,6 +38,9 @@ class Turbolinks.BrowserAdapter
   visitRequestFinished: (visit) ->
     @hideProgressBar()
 
+  visitResponseLoaded: (visit) ->
+    visit.followRedirect()
+
   pageInvalidated: ->
     @reload()
 
