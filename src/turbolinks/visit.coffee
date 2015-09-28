@@ -85,6 +85,7 @@ class Turbolinks.Visit
 
   followRedirect: ->
     if @redirectedToLocation and not @followedRedirect
+      @location = @redirectedToLocation
       @controller.replaceHistoryWithLocationAndRestorationIdentifier(@redirectedToLocation, @restorationIdentifier)
       @followedRedirect = true
 
