@@ -41,6 +41,7 @@ class Turbolinks.View
     importRecyclableElementsIntoBody(newBody)
     document.body = newBody
 
+    focusFirstAutofocusableElement()
     @delegate.viewRendered()
     newSnapshot
 
@@ -81,3 +82,6 @@ class Turbolinks.View
     else
       element.textContent = script.textContent
     element
+
+  focusFirstAutofocusableElement = ->
+    document.body.querySelector("[autofocus]")?.focus()
