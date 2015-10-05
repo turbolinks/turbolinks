@@ -98,7 +98,7 @@ class Turbolinks.Visit
     @adapter.visitRequestProgressed?(this)
 
   requestCompletedWithResponse: (@response, redirectedToLocation) ->
-    @redirectedToLocation = Turbolinks.Location.box(redirectedToLocation)
+    @redirectedToLocation = Turbolinks.Location.box(redirectedToLocation) if redirectedToLocation?
     @adapter.visitRequestCompleted(this)
 
   requestFailedWithStatusCode: (statusCode, @response) ->
