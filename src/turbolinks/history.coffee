@@ -3,6 +3,7 @@ pageLoaded = false
 addEventListener "load", ->
   Turbolinks.defer ->
     pageLoaded = true
+, false
 
 class Turbolinks.History
   constructor: (@delegate) ->
