@@ -196,6 +196,7 @@ class Turbolinks.Controller
   clickEventIsSignificant: (event) ->
     not (
       event.defaultPrevented or
+      event.target.isContentEditable or
       event.which > 1 or
       event.altKey or
       event.ctrlKey or
