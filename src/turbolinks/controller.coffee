@@ -209,7 +209,7 @@ class Turbolinks.Controller
 
   getVisitableLocationForLink: (link) ->
     location = new Turbolinks.Location link.href
-    location if location.isSameOrigin() and location.isHTML()
+    location if @locationIsVisitable(location)
 
   getActionForLink: (link) ->
     link.getAttribute("data-turbolinks-action") ? "advance"
@@ -219,6 +219,17 @@ class Turbolinks.Controller
       container.getAttribute("data-turbolinks") isnt "false"
     else
       true
+
+  locationIsVisitable: (location) ->
+    location.isPrefixedBy(@getRootLocation()) and location.isHTML()
+
+  getRootLocation: ->
+    root = @getSetting("root") ? "/"
+    new Turbolinks.Location root
+
+  getSetting: (name) ->
+    [..., element] = document.head.querySelectorAll("meta[name='turbolinks-#{name}']")
+    element?.getAttribute("content")
 
   getCurrentRestorationData: ->
     @getRestorationDataForIdentifier(@restorationIdentifier)

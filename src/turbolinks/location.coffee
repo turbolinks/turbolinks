@@ -18,6 +18,9 @@ class Turbolinks.Location
       @requestURL = @absoluteURL.slice(0, -anchorLength)
       @anchor = linkWithAnchor.hash.slice(1)
 
+  getOrigin: ->
+    @absoluteURL.split("/", 3).join("/")
+
   getPath: ->
     @absoluteURL.match(/\/\/[^/]*(\/[^?;]*)/)?[1] ? "/"
 
@@ -34,11 +37,9 @@ class Turbolinks.Location
     extension = @getExtension()
     extension is ".html" or not extension?
 
-  getOrigin: ->
-    @absoluteURL.split("/", 3).join("/")
-
-  isSameOrigin: ->
-    @getOrigin() is (new @constructor).getOrigin()
+  isPrefixedBy: (location) ->
+    prefixURL = getPrefixURL(location)
+    @isEqualTo(location) or stringStartsWith(@absoluteURL, prefixURL)
 
   isEqualTo: (location) ->
     @absoluteURL is location?.absoluteURL
@@ -54,3 +55,17 @@ class Turbolinks.Location
 
   valueOf: ->
     @absoluteURL
+
+  # Private
+
+  getPrefixURL = (location) ->
+    addTrailingSlash(location.getOrigin() + location.getPath())
+
+  addTrailingSlash = (url) ->
+    if stringEndsWith(url, "/") then url else url + "/"
+
+  stringStartsWith = (string, prefix) ->
+    string.slice(0, prefix.length) is prefix
+
+  stringEndsWith = (string, suffix) ->
+    string.slice(-suffix.length) is suffix
