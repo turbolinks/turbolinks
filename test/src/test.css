@@ -1,0 +1,22 @@
+/*= require browser */
+
+#tests {
+  display: -webkit-flex;
+  display: flex;
+}
+
+#qunit {
+  -webkit-flex-grow: 1;
+  flex-grow: 1;
+}
+
+#tests #qunit-fixture {
+  -webkit-flex: none;
+  flex: none;
+  position: static;
+  top: auto;
+  left: auto;
+  width: 320px;
+  height: auto;
+  margin-left: 10px;
+}

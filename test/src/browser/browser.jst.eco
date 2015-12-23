@@ -1,0 +1,15 @@
+<div class="browser">
+  <div class="browser-chrome">
+    <div class="browser-titlebar">
+      <span class="browser-titlebar-title">Untitled</span>
+    </div>
+    <div class="browser-navigation">
+      <button class="browser-navigation-button browser-navigation-button-back">&lt;</button>
+      <button class="browser-navigation-button browser-navigation-button-forward">&gt;</button>
+      <input class="browser-navigation-url" type="text" readonly>
+    </div>
+  </div>
+  <div class="browser-content">
+    <iframe class="browser-content-frame" src="about:blank"></iframe>
+  </div>
+</div>

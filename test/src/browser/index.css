@@ -1,0 +1,52 @@
+.browser {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  border: 1px solid #ccc;
+}
+
+.browser-chrome {
+  -webkit-flex: none;
+  flex: none;
+  background: #f0f0f0;
+  padding: 3px 5px;
+  font-family: sans-serif;
+  font-size: .75em;
+}
+
+.browser-titlebar {
+  text-align: center;
+}
+
+.browser-titlebar-title::before {
+  display: inline-block;
+  content: "";
+}
+
+.browser-navigation {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+
+.browser-navigation-button {
+  -webkit-flex: none;
+  flex: none;
+}
+
+.browser-navigation-url {
+  width: 100%;
+}
+
+.browser-content iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.browser[data-state=loading] .browser-navigation-url {
+  background-color: transparent;
+  color: #ccc;
+}
