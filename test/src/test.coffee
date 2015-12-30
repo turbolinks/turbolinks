@@ -12,11 +12,12 @@ withBrowserSession = (callback) ->
       fixture.removeChild(element)
 
 browserSessionTest = (name, callback) ->
-  QUnit.asyncTest name, ->
-    withBrowserSession (session, done) ->
+  QUnit.test name, (assert) ->
+    done = assert.async()
+    withBrowserSession (session, teardown) ->
       callback session, ->
+        teardown()
         done()
-        QUnit.start()
 
 do ->
   {equal} = QUnit
