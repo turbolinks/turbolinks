@@ -1,32 +1,28 @@
-#= require browser
-
-withBrowserSession = (callback) ->
-  fixture = document.querySelector("#qunit-fixture")
-
-  {element} = agent = Browser.Agent.create()
-  session = new Browser.Session agent
-  fixture.appendChild(element)
-
-  requestAnimationFrame ->
-    callback session, ->
-      fixture.removeChild(element)
-
-browserSessionTest = (name, callback) ->
+replicantSessionTest = (name, callback) ->
   QUnit.test name, (assert) ->
     done = assert.async()
-    withBrowserSession (session, teardown) ->
-      callback session, ->
+    withReplicantSession (session, teardown) ->
+      callback assert, session, ->
         teardown()
         done()
 
-do ->
-  {equal} = QUnit
+withReplicantSession = (callback) ->
+  fixture = document.querySelector("#qunit-fixture")
+  element = document.createElement("replicant-frame")
+  session = element.createSession()
 
-  browserSessionTest "following a link", (session, done) ->
-    session.navigateTo "/fixtures/index.html", (location, action) ->
-      equal location, "http://localhost:9876/fixtures/index.html"
-      equal action, "load"
-      session.clickSelector "a[href]", (location, action) ->
-        equal location, "http://localhost:9876/fixtures/one.html"
-        equal action, "push"
+  element.addEventListener "replicant-initialize", ->
+    callback session, ->
+      fixture.removeChild(element)
+
+  fixture.appendChild(element)
+
+replicantSessionTest "following a link", (assert, session, done) ->
+  session.goToLocation("/fixtures/index.html").then (navigation) ->
+    assert.equal(navigation.location.pathname, "/fixtures/index.html")
+    assert.equal(navigation.action, "load")
+    session.clickSelector("a[href]").then (navigation) ->
+      session.waitForEvent("turbolinks:load").then ->
+        assert.equal(navigation.location.pathname, "/fixtures/one.html")
+        assert.equal(navigation.action, "push")
         done()

@@ -1,8 +1,10 @@
 load_paths:
-  - test/src
   - src
+  - test/src
+  - test/vendor
 
 logical_paths:
+  - replicant.js
   - test.js
   - test.css
 
