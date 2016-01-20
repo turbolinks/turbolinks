@@ -4,13 +4,16 @@ class Turbolinks.Snapshot
   @fromHTML: (html) ->
     element = document.createElement("html")
     element.innerHTML = html
+    @fromElement(element)
+
+  @fromElement: (element) ->
     new this
       head: element.querySelector("head")
       body: element.querySelector("body")
 
   constructor: ({head, body}) ->
-    @head = head
-    @body = body
+    @head = head ? document.createElement("head")
+    @body = body ? document.createElement("body")
 
   hasAnchor: (anchor) ->
     @body.querySelector("##{anchor}")?

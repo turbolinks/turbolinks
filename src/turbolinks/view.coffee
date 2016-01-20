@@ -16,12 +16,12 @@ class Turbolinks.View
     @renderSnapshot(snapshot)
 
   saveSnapshot: ->
-    getSnapshot(true)
+    Turbolinks.Snapshot.fromElement(document.documentElement.cloneNode(true))
 
   # Private
 
   renderSnapshot: (newSnapshot) ->
-    currentSnapshot = getSnapshot(false)
+    currentSnapshot = Turbolinks.Snapshot.fromElement(document.documentElement)
 
     unless currentSnapshot.hasSameTrackedHeadElementsAsSnapshot(newSnapshot)
       @delegate.viewInvalidated()
@@ -45,11 +45,6 @@ class Turbolinks.View
     @delegate.viewRendered()
     newSnapshot
 
-  getSnapshot = (clone) ->
-    new Turbolinks.Snapshot
-      head: maybeCloneElement(document.head, clone)
-      body: maybeCloneElement(document.body, clone)
-
   importPermanentElementsIntoBody = (newBody) ->
     for newChild in getPermanentElements(document.body)
       if oldChild = newBody.querySelector("[id='#{newChild.id}']")
@@ -66,9 +61,6 @@ class Turbolinks.View
 
   getRecyclableElements = (element) ->
     element.querySelectorAll("[data-turbolinks-recyclable]")
-
-  maybeCloneElement = (element, clone) ->
-    if clone then element.cloneNode(true) else element
 
   activateScripts = ->
     for oldChild in document.querySelectorAll("script")
