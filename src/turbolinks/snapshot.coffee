@@ -1,6 +1,12 @@
 #= require ./element_set
 
 class Turbolinks.Snapshot
+  @box: (snapshotOrHTML) ->
+    if snapshotOrHTML instanceof this
+      snapshotOrHTML
+    else
+      @fromHTML(snapshotOrHTML)
+
   @fromHTML: (html) ->
     element = document.createElement("html")
     element.innerHTML = html

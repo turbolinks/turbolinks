@@ -43,14 +43,6 @@ class Turbolinks.Controller
       action = options.action ? "advance"
       @adapter.visitProposedToLocationWithAction(location, action)
 
-  loadResponse: (response) ->
-    @view.loadSnapshotHTML(response)
-    @notifyApplicationAfterResponseLoad()
-
-  loadErrorResponse: (response) ->
-    @view.loadDocumentHTML(response)
-    @disable()
-
   startVisitToLocationWithAction: (location, action, restorationIdentifier) ->
     restorationData = @getRestorationDataForIdentifier(restorationIdentifier)
     @startVisit(location, action, {restorationData})
@@ -84,24 +76,15 @@ class Turbolinks.Controller
     else
       @adapter.pageInvalidated()
 
-  # Page snapshots
+  # Snapshot cache
 
-  hasSnapshotForLocation: (location) ->
-    @cache.has(location)
-
-  saveSnapshot: ->
-    @notifyApplicationBeforeSnapshotSave()
-    snapshot = @view.saveSnapshot()
-    @cache.put(@lastRenderedLocation, snapshot)
-
-  restoreSnapshotForLocation: (location) ->
-    if snapshot = @getSnapshotForLocation(location)
-      @view.loadSnapshot(snapshot)
-      @notifyApplicationAfterSnapshotLoad()
-      true
-
-  getSnapshotForLocation: (location) ->
+  getCachedSnapshotForLocation: (location) ->
     @cache.get(location)
+
+  cacheSnapshot: ->
+    @notifyApplicationBeforeCachingSnapshot()
+    snapshot = @view.getSnapshot()
+    @cache.put(@lastRenderedLocation, snapshot)
 
   # Scrolling
 
@@ -123,13 +106,17 @@ class Turbolinks.Controller
     restorationData = @getCurrentRestorationData()
     restorationData.scrollPosition = scrollPosition
 
-  # View delegate
+  # View
+
+  render: (options, callback) ->
+    @view.render(options, callback)
 
   viewInvalidated: ->
     @adapter.pageInvalidated()
 
   viewRendered: ->
     @lastRenderedLocation = @currentVisit.location
+    @notifyApplicationAfterRender()
 
   # Event handlers
 
@@ -158,14 +145,11 @@ class Turbolinks.Controller
   applicationAllowsVisitingLocation: (location) ->
     @dispatchEvent("turbolinks:visit", data: { url: location.absoluteURL }, cancelable: true)
 
-  notifyApplicationBeforeSnapshotSave: ->
-    @dispatchEvent("turbolinks:snapshot-save")
+  notifyApplicationBeforeCachingSnapshot: ->
+    @dispatchEvent("turbolinks:before-cache")
 
-  notifyApplicationAfterSnapshotLoad: ->
-    @dispatchEvent("turbolinks:snapshot-load")
-
-  notifyApplicationAfterResponseLoad: ->
-    @dispatchEvent("turbolinks:response-load")
+  notifyApplicationAfterRender: ->
+    @dispatchEvent("turbolinks:render")
 
   notifyApplicationAfterPageLoad: ->
     @dispatchEvent("turbolinks:load")

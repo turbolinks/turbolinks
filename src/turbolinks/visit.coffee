@@ -50,37 +50,34 @@ class Turbolinks.Visit
       @request = new Turbolinks.HttpRequest this, @location, @referrer
       @request.send()
 
-  hasSnapshot: ->
-    if snapshot = @controller.getSnapshotForLocation(@location)
-      if @location.anchor?
-        snapshot.hasAnchor(@location.anchor)
-      else
-        true
-    else
-      false
+  getCachedSnapshot: ->
+    snapshot = @controller.getCachedSnapshotForLocation(@location)
+    return if @location.anchor? and not snapshot?.hasAnchor(@location.anchor)
+    snapshot
 
-  restoreSnapshot: ->
-    if @hasSnapshot() and not @snapshotRestored
+  hasCachedSnapshot: ->
+    @getCachedSnapshot()?
+
+  loadCachedSnapshot: ->
+    if snapshot = @getCachedSnapshot()
+      isPreview = @shouldIssueRequest()
       @render ->
-        @saveSnapshot()
-        if @snapshotRestored = @controller.restoreSnapshotForLocation(@location)
-          @performScroll()
-          @adapter.visitSnapshotRestored?(this)
-          @complete() unless @shouldIssueRequest()
+        @cacheSnapshot()
+        @controller.render({snapshot, isPreview}, @performScroll)
+        @adapter.visitRendered?(this)
+        @complete() unless isPreview
 
   loadResponse: ->
     if @response?
       @render ->
-        @saveSnapshot()
+        @cacheSnapshot()
         if @request.failed
-          @controller.loadErrorResponse(@response)
-          @performScroll()
-          @adapter.visitResponseLoaded?(this)
+          @controller.render(html: @response, @performScroll)
+          @adapter.visitRendered?(this)
           @fail()
         else
-          @controller.loadResponse(@response)
-          @performScroll()
-          @adapter.visitResponseLoaded?(this)
+          @controller.render(snapshot: @response, @performScroll)
+          @adapter.visitRendered?(this)
           @complete()
 
   followRedirect: ->
@@ -109,7 +106,7 @@ class Turbolinks.Visit
 
   # Scrolling
 
-  performScroll: ->
+  performScroll: =>
     unless @scrolled
       if @action is "restore"
         @scrollToRestoredPosition() or @scrollToTop()
@@ -140,14 +137,14 @@ class Turbolinks.Visit
 
   shouldIssueRequest: ->
     if @action is "restore"
-      not @hasSnapshot()
+      not @hasCachedSnapshot()
     else
       true
 
-  saveSnapshot: ->
-    unless @snapshotSaved
-      @controller.saveSnapshot()
-      @snapshotSaved = true
+  cacheSnapshot: ->
+    unless @snapshotCached
+      @controller.cacheSnapshot()
+      @snapshotCached = true
 
   render: (callback) ->
     @cancelRender()

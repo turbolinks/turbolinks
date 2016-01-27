@@ -3,25 +3,29 @@
 
 class Turbolinks.View
   constructor: (@delegate) ->
+    @element = document.documentElement
 
-  loadDocumentHTML: (html) ->
-    document.documentElement.innerHTML = html
-    activateScripts()
+  getSnapshot: ({clone} = {clone: true}) ->
+    element = if clone then @element.cloneNode(true) else @element
+    Turbolinks.Snapshot.fromElement(element)
 
-  loadSnapshotHTML: (html) ->
-    snapshot = Turbolinks.Snapshot.fromHTML(html)
-    @loadSnapshot(snapshot)
-
-  loadSnapshot: (snapshot) ->
-    @renderSnapshot(snapshot)
-
-  saveSnapshot: ->
-    Turbolinks.Snapshot.fromElement(document.documentElement.cloneNode(true))
+  render: ({snapshot, html, isPreview}, callback) ->
+    @markAsPreview(isPreview)
+    if snapshot?
+      @renderSnapshot(Turbolinks.Snapshot.box(snapshot), callback)
+    else
+      @renderHTML(html, callback)
 
   # Private
 
-  renderSnapshot: (newSnapshot) ->
-    currentSnapshot = Turbolinks.Snapshot.fromElement(document.documentElement)
+  markAsPreview: (isPreview) ->
+    if isPreview
+      @element.dataset.turbolinksPreview = ""
+    else
+      delete @element.dataset.turbolinksPreview
+
+  renderSnapshot: (newSnapshot, callback) ->
+    currentSnapshot = @getSnapshot(clone: false)
 
     unless currentSnapshot.hasSameTrackedHeadElementsAsSnapshot(newSnapshot)
       @delegate.viewInvalidated()
@@ -42,8 +46,14 @@ class Turbolinks.View
     document.body = newBody
 
     focusFirstAutofocusableElement()
+    callback?()
     @delegate.viewRendered()
-    newSnapshot
+
+  renderHTML: (html, callback) ->
+    document.documentElement.innerHTML = html
+    activateScripts()
+    callback?()
+    @delegate.viewRendered()
 
   importPermanentElementsIntoBody = (newBody) ->
     for newChild in getPermanentElements(document.body)
