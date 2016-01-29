@@ -5,8 +5,8 @@ class Turbolinks.HttpRequest
   @timeout = 60
 
   constructor: (@delegate, location, referrer) ->
-    @url = Turbolinks.Location.box(location).requestURL
-    @referrer = Turbolinks.Location.box(referrer).absoluteURL
+    @url = Turbolinks.Location.wrap(location).requestURL
+    @referrer = Turbolinks.Location.wrap(referrer).absoluteURL
     @createXHR()
 
   send: ->

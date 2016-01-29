@@ -38,7 +38,7 @@ class Turbolinks.Controller
     @cache = new Turbolinks.Cache 10
 
   visit: (location, options = {}) ->
-    location = Turbolinks.Location.box(location)
+    location = Turbolinks.Location.wrap(location)
     if @applicationAllowsVisitingLocation(location)
       action = options.action ? "advance"
       @adapter.visitProposedToLocationWithAction(location, action)
@@ -50,7 +50,7 @@ class Turbolinks.Controller
   # History
 
   startHistory: ->
-    @location = Turbolinks.Location.box(window.location)
+    @location = Turbolinks.Location.wrap(window.location)
     @restorationIdentifier = Turbolinks.uuid()
     @history.start()
     @history.replace(@location, @restorationIdentifier)
@@ -59,11 +59,11 @@ class Turbolinks.Controller
     @history.stop()
 
   pushHistoryWithLocationAndRestorationIdentifier: (location, @restorationIdentifier) ->
-    @location = Turbolinks.Location.box(location)
+    @location = Turbolinks.Location.wrap(location)
     @history.push(@location, @restorationIdentifier)
 
   replaceHistoryWithLocationAndRestorationIdentifier: (location, @restorationIdentifier) ->
-    @location = Turbolinks.Location.box(location)
+    @location = Turbolinks.Location.wrap(location)
     @history.replace(@location, @restorationIdentifier)
 
   # History delegate
@@ -72,7 +72,7 @@ class Turbolinks.Controller
     if @enabled
       restorationData = @getRestorationDataForIdentifier(@restorationIdentifier)
       @startVisit(location, "restore", {@restorationIdentifier, restorationData, historyChanged: true})
-      @location = Turbolinks.Location.box(location)
+      @location = Turbolinks.Location.wrap(location)
     else
       @adapter.pageInvalidated()
 

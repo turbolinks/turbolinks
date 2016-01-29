@@ -12,7 +12,7 @@ class Turbolinks.View
   render: ({snapshot, html, isPreview}, callback) ->
     @markAsPreview(isPreview)
     if snapshot?
-      @renderSnapshot(Turbolinks.Snapshot.box(snapshot), callback)
+      @renderSnapshot(Turbolinks.Snapshot.wrap(snapshot), callback)
     else
       @renderHTML(html, callback)
 

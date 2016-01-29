@@ -40,4 +40,4 @@ class Turbolinks.Cache
       delete @snapshots[key]
 
   keyForLocation = (location) ->
-    Turbolinks.Location.box(location).toCacheKey()
+    Turbolinks.Location.wrap(location).toCacheKey()

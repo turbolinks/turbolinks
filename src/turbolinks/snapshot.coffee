@@ -1,11 +1,11 @@
 #= require ./element_set
 
 class Turbolinks.Snapshot
-  @box: (snapshotOrHTML) ->
-    if snapshotOrHTML instanceof this
-      snapshotOrHTML
+  @wrap: (value) ->
+    if value instanceof this
+      value
     else
-      @fromHTML(snapshotOrHTML)
+      @fromHTML(value)
 
   @fromHTML: (html) ->
     element = document.createElement("html")

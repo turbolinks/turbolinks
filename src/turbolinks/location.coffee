@@ -1,5 +1,5 @@
 class Turbolinks.Location
-  @box: (value) ->
+  @wrap: (value) ->
     if value instanceof this
       value
     else

@@ -4,7 +4,7 @@ class Turbolinks.Visit
   constructor: (@controller, location, @action) ->
     @promise = new Promise (@resolve, @reject) =>
       @identifier = Turbolinks.uuid()
-      @location = Turbolinks.Location.box(location)
+      @location = Turbolinks.Location.wrap(location)
       @adapter = @controller.adapter
       @state = "initialized"
       @timingMetrics = {}
@@ -99,7 +99,7 @@ class Turbolinks.Visit
     @adapter.visitRequestProgressed?(this)
 
   requestCompletedWithResponse: (@response, redirectedToLocation) ->
-    @redirectedToLocation = Turbolinks.Location.box(redirectedToLocation) if redirectedToLocation?
+    @redirectedToLocation = Turbolinks.Location.wrap(redirectedToLocation) if redirectedToLocation?
     @adapter.visitRequestCompleted(this)
 
   requestFailedWithStatusCode: (statusCode, @response) ->
