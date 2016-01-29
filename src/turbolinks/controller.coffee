@@ -151,8 +151,8 @@ class Turbolinks.Controller
   notifyApplicationAfterRender: ->
     @dispatchEvent("turbolinks:render")
 
-  notifyApplicationAfterPageLoad: ->
-    @dispatchEvent("turbolinks:load")
+  notifyApplicationAfterPageLoad: (data) ->
+    @dispatchEvent("turbolinks:load", {data})
 
   # Private
 
@@ -167,11 +167,11 @@ class Turbolinks.Controller
     visit.restorationData = Turbolinks.copyObject(restorationData)
     visit.historyChanged = historyChanged
     visit.referrer = @location
-    visit.then(@visitFinished)
+    visit.then => @visitFinished(visit)
     visit
 
-  visitFinished: =>
-    @notifyApplicationAfterPageLoad()
+  visitFinished: (visit) ->
+    @notifyApplicationAfterPageLoad(visit.getMetrics())
 
   dispatchEvent: ->
     event = Turbolinks.dispatch(arguments...)
