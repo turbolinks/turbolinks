@@ -151,8 +151,8 @@ class Turbolinks.Controller
   notifyApplicationAfterRender: ->
     @dispatchEvent("turbolinks:render")
 
-  notifyApplicationAfterPageLoad: (data) ->
-    @dispatchEvent("turbolinks:load", {data})
+  notifyApplicationAfterPageLoad: (timing = {}) ->
+    @dispatchEvent("turbolinks:load", data: { url: @location.absoluteURL, timing })
 
   # Private
 
@@ -171,7 +171,7 @@ class Turbolinks.Controller
     visit
 
   visitFinished: (visit) ->
-    @notifyApplicationAfterPageLoad(visit.getMetrics())
+    @notifyApplicationAfterPageLoad(visit.getTimingMetrics())
 
   dispatchEvent: ->
     event = Turbolinks.dispatch(arguments...)

@@ -7,11 +7,11 @@ class Turbolinks.Visit
       @location = Turbolinks.Location.box(location)
       @adapter = @controller.adapter
       @state = "initialized"
-      @metrics = {}
+      @timingMetrics = {}
 
   start: ->
     if @state is "initialized"
-      @startMetric("visit")
+      @recordTimingMetric("visitStart")
       @state = "started"
       @adapter.visitStarted(this)
 
@@ -23,7 +23,7 @@ class Turbolinks.Visit
 
   complete: ->
     if @state is "started"
-      @endMetric("visit")
+      @recordTimingMetric("visitEnd")
       @state = "completed"
       @adapter.visitCompleted?(this)
       @resolve()
@@ -92,7 +92,7 @@ class Turbolinks.Visit
   # HTTP Request delegate
 
   requestStarted: ->
-    @startMetric("request")
+    @recordTimingMetric("requestStart")
     @adapter.visitRequestStarted?(this)
 
   requestProgressed: (@progress) ->
@@ -106,7 +106,7 @@ class Turbolinks.Visit
     @adapter.visitRequestFailedWithStatusCode(this, statusCode)
 
   requestFinished: ->
-    @endMetric("request")
+    @recordTimingMetric("requestEnd")
     @adapter.visitRequestFinished?(this)
 
   # Scrolling
@@ -135,19 +135,11 @@ class Turbolinks.Visit
 
   # Instrumentation
 
-  startMetric: (name) ->
-    @metrics[name] =
-      start: new Date
+  recordTimingMetric: (name) ->
+    @timingMetrics[name] ?= new Date().getTime()
 
-  endMetric: (name) ->
-    if metric = @metrics[name]
-      metric.end = new Date
-      metric.duration = metric.end - metric.start
-
-  getMetrics: ->
-    metrics = Turbolinks.copyObject(@metrics)
-    metrics.fromCache = not @shouldIssueRequest()
-    metrics
+  getTimingMetrics: ->
+    Turbolinks.copyObject(@timingMetrics)
 
   # Private
 
