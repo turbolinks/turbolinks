@@ -38,18 +38,10 @@ class Turbolinks.Controller
     @cache = new Turbolinks.Cache 10
 
   visit: (location, options = {}) ->
-    location = Turbolinks.Location.box(location)
+    location = Turbolinks.Location.wrap(location)
     if @applicationAllowsVisitingLocation(location)
       action = options.action ? "advance"
       @adapter.visitProposedToLocationWithAction(location, action)
-
-  loadResponse: (response) ->
-    @view.loadSnapshotHTML(response)
-    @notifyApplicationAfterResponseLoad()
-
-  loadErrorResponse: (response) ->
-    @view.loadDocumentHTML(response)
-    @disable()
 
   startVisitToLocationWithAction: (location, action, restorationIdentifier) ->
     restorationData = @getRestorationDataForIdentifier(restorationIdentifier)
@@ -58,7 +50,7 @@ class Turbolinks.Controller
   # History
 
   startHistory: ->
-    @location = Turbolinks.Location.box(window.location)
+    @location = Turbolinks.Location.wrap(window.location)
     @restorationIdentifier = Turbolinks.uuid()
     @history.start()
     @history.replace(@location, @restorationIdentifier)
@@ -67,11 +59,11 @@ class Turbolinks.Controller
     @history.stop()
 
   pushHistoryWithLocationAndRestorationIdentifier: (location, @restorationIdentifier) ->
-    @location = Turbolinks.Location.box(location)
+    @location = Turbolinks.Location.wrap(location)
     @history.push(@location, @restorationIdentifier)
 
   replaceHistoryWithLocationAndRestorationIdentifier: (location, @restorationIdentifier) ->
-    @location = Turbolinks.Location.box(location)
+    @location = Turbolinks.Location.wrap(location)
     @history.replace(@location, @restorationIdentifier)
 
   # History delegate
@@ -80,28 +72,19 @@ class Turbolinks.Controller
     if @enabled
       restorationData = @getRestorationDataForIdentifier(@restorationIdentifier)
       @startVisit(location, "restore", {@restorationIdentifier, restorationData, historyChanged: true})
-      @location = Turbolinks.Location.box(location)
+      @location = Turbolinks.Location.wrap(location)
     else
       @adapter.pageInvalidated()
 
-  # Page snapshots
+  # Snapshot cache
 
-  hasSnapshotForLocation: (location) ->
-    @cache.has(location)
-
-  saveSnapshot: ->
-    @notifyApplicationBeforeSnapshotSave()
-    snapshot = @view.saveSnapshot()
-    @cache.put(@lastRenderedLocation, snapshot)
-
-  restoreSnapshotForLocation: (location) ->
-    if snapshot = @getSnapshotForLocation(location)
-      @view.loadSnapshot(snapshot)
-      @notifyApplicationAfterSnapshotLoad()
-      true
-
-  getSnapshotForLocation: (location) ->
+  getCachedSnapshotForLocation: (location) ->
     @cache.get(location)
+
+  cacheSnapshot: ->
+    @notifyApplicationBeforeCachingSnapshot()
+    snapshot = @view.getSnapshot()
+    @cache.put(@lastRenderedLocation, snapshot)
 
   # Scrolling
 
@@ -123,13 +106,17 @@ class Turbolinks.Controller
     restorationData = @getCurrentRestorationData()
     restorationData.scrollPosition = scrollPosition
 
-  # View delegate
+  # View
+
+  render: (options, callback) ->
+    @view.render(options, callback)
 
   viewInvalidated: ->
     @adapter.pageInvalidated()
 
   viewRendered: ->
     @lastRenderedLocation = @currentVisit.location
+    @notifyApplicationAfterRender()
 
   # Event handlers
 
@@ -158,17 +145,14 @@ class Turbolinks.Controller
   applicationAllowsVisitingLocation: (location) ->
     @dispatchEvent("turbolinks:visit", data: { url: location.absoluteURL }, cancelable: true)
 
-  notifyApplicationBeforeSnapshotSave: ->
-    @dispatchEvent("turbolinks:snapshot-save")
+  notifyApplicationBeforeCachingSnapshot: ->
+    @dispatchEvent("turbolinks:before-cache")
 
-  notifyApplicationAfterSnapshotLoad: ->
-    @dispatchEvent("turbolinks:snapshot-load")
+  notifyApplicationAfterRender: ->
+    @dispatchEvent("turbolinks:render")
 
-  notifyApplicationAfterResponseLoad: ->
-    @dispatchEvent("turbolinks:response-load")
-
-  notifyApplicationAfterPageLoad: ->
-    @dispatchEvent("turbolinks:load")
+  notifyApplicationAfterPageLoad: (timing = {}) ->
+    @dispatchEvent("turbolinks:load", data: { url: @location.absoluteURL, timing })
 
   # Private
 
@@ -183,11 +167,11 @@ class Turbolinks.Controller
     visit.restorationData = Turbolinks.copyObject(restorationData)
     visit.historyChanged = historyChanged
     visit.referrer = @location
-    visit.then(@visitFinished)
+    visit.then => @visitFinished(visit)
     visit
 
-  visitFinished: =>
-    @notifyApplicationAfterPageLoad()
+  visitFinished: (visit) ->
+    @notifyApplicationAfterPageLoad(visit.getTimingMetrics())
 
   dispatchEvent: ->
     event = Turbolinks.dispatch(arguments...)

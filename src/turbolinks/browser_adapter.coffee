@@ -1,6 +1,8 @@
+#= require ./http_request
 #= require ./progress_bar
 
 class Turbolinks.BrowserAdapter
+  {NETWORK_FAILURE, TIMEOUT_FAILURE} = Turbolinks.HttpRequest
   PROGRESS_BAR_DELAY = 500
 
   constructor: (@controller) ->
@@ -12,15 +14,14 @@ class Turbolinks.BrowserAdapter
   visitStarted: (visit) ->
     visit.changeHistory()
     visit.issueRequest()
-    visit.restoreSnapshot()
+    visit.loadCachedSnapshot()
 
   visitRequestStarted: (visit) ->
     @progressBar.setValue(0)
-    unless visit.snapshotRestored
-      if visit.hasSnapshot() or visit.action isnt "restore"
-        @showProgressBarAfterDelay()
-      else
-        @showProgressBar()
+    if visit.hasCachedSnapshot() or visit.action isnt "restore"
+      @showProgressBarAfterDelay()
+    else
+      @showProgressBar()
 
   visitRequestProgressed: (visit) ->
     @progressBar.setValue(visit.progress)
@@ -30,7 +31,7 @@ class Turbolinks.BrowserAdapter
 
   visitRequestFailedWithStatusCode: (visit, statusCode) ->
     switch statusCode
-      when Turbolinks.HttpRequest.NETWORK_FAILURE, Turbolinks.HttpRequest.TIMEOUT_FAILURE
+      when NETWORK_FAILURE, TIMEOUT_FAILURE
         @reload()
       else
         visit.loadResponse()
@@ -38,7 +39,7 @@ class Turbolinks.BrowserAdapter
   visitRequestFinished: (visit) ->
     @hideProgressBar()
 
-  visitResponseLoaded: (visit) ->
+  visitCompleted: (visit) ->
     visit.followRedirect()
 
   pageInvalidated: ->

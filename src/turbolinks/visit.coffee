@@ -4,12 +4,14 @@ class Turbolinks.Visit
   constructor: (@controller, location, @action) ->
     @promise = new Promise (@resolve, @reject) =>
       @identifier = Turbolinks.uuid()
-      @location = Turbolinks.Location.box(location)
+      @location = Turbolinks.Location.wrap(location)
       @adapter = @controller.adapter
       @state = "initialized"
+      @timingMetrics = {}
 
   start: ->
     if @state is "initialized"
+      @recordTimingMetric("visitStart")
       @state = "started"
       @adapter.visitStarted(this)
 
@@ -21,6 +23,7 @@ class Turbolinks.Visit
 
   complete: ->
     if @state is "started"
+      @recordTimingMetric("visitEnd")
       @state = "completed"
       @adapter.visitCompleted?(this)
       @resolve()
@@ -50,37 +53,34 @@ class Turbolinks.Visit
       @request = new Turbolinks.HttpRequest this, @location, @referrer
       @request.send()
 
-  hasSnapshot: ->
-    if snapshot = @controller.getSnapshotForLocation(@location)
-      if @location.anchor?
-        snapshot.hasAnchor(@location.anchor)
-      else
-        true
-    else
-      false
+  getCachedSnapshot: ->
+    snapshot = @controller.getCachedSnapshotForLocation(@location)
+    return if @location.anchor? and not snapshot?.hasAnchor(@location.anchor)
+    snapshot
 
-  restoreSnapshot: ->
-    if @hasSnapshot() and not @snapshotRestored
+  hasCachedSnapshot: ->
+    @getCachedSnapshot()?
+
+  loadCachedSnapshot: ->
+    if snapshot = @getCachedSnapshot()
+      isPreview = @shouldIssueRequest()
       @render ->
-        @saveSnapshot()
-        if @snapshotRestored = @controller.restoreSnapshotForLocation(@location)
-          @performScroll()
-          @adapter.visitSnapshotRestored?(this)
-          @complete() unless @shouldIssueRequest()
+        @cacheSnapshot()
+        @controller.render({snapshot, isPreview}, @performScroll)
+        @adapter.visitRendered?(this)
+        @complete() unless isPreview
 
   loadResponse: ->
     if @response?
       @render ->
-        @saveSnapshot()
+        @cacheSnapshot()
         if @request.failed
-          @controller.loadErrorResponse(@response)
-          @performScroll()
-          @adapter.visitResponseLoaded?(this)
+          @controller.render(html: @response, @performScroll)
+          @adapter.visitRendered?(this)
           @fail()
         else
-          @controller.loadResponse(@response)
-          @performScroll()
-          @adapter.visitResponseLoaded?(this)
+          @controller.render(snapshot: @response, @performScroll)
+          @adapter.visitRendered?(this)
           @complete()
 
   followRedirect: ->
@@ -92,24 +92,26 @@ class Turbolinks.Visit
   # HTTP Request delegate
 
   requestStarted: ->
+    @recordTimingMetric("requestStart")
     @adapter.visitRequestStarted?(this)
 
   requestProgressed: (@progress) ->
     @adapter.visitRequestProgressed?(this)
 
   requestCompletedWithResponse: (@response, redirectedToLocation) ->
-    @redirectedToLocation = Turbolinks.Location.box(redirectedToLocation) if redirectedToLocation?
+    @redirectedToLocation = Turbolinks.Location.wrap(redirectedToLocation) if redirectedToLocation?
     @adapter.visitRequestCompleted(this)
 
   requestFailedWithStatusCode: (statusCode, @response) ->
     @adapter.visitRequestFailedWithStatusCode(this, statusCode)
 
   requestFinished: ->
+    @recordTimingMetric("requestEnd")
     @adapter.visitRequestFinished?(this)
 
   # Scrolling
 
-  performScroll: ->
+  performScroll: =>
     unless @scrolled
       if @action is "restore"
         @scrollToRestoredPosition() or @scrollToTop()
@@ -131,6 +133,14 @@ class Turbolinks.Visit
   scrollToTop: ->
     @controller.scrollToPosition(x: 0, y: 0)
 
+  # Instrumentation
+
+  recordTimingMetric: (name) ->
+    @timingMetrics[name] ?= new Date().getTime()
+
+  getTimingMetrics: ->
+    Turbolinks.copyObject(@timingMetrics)
+
   # Private
 
   getHistoryMethodForAction = (action) ->
@@ -140,14 +150,14 @@ class Turbolinks.Visit
 
   shouldIssueRequest: ->
     if @action is "restore"
-      not @hasSnapshot()
+      not @hasCachedSnapshot()
     else
       true
 
-  saveSnapshot: ->
-    unless @snapshotSaved
-      @controller.saveSnapshot()
-      @snapshotSaved = true
+  cacheSnapshot: ->
+    unless @snapshotCached
+      @controller.cacheSnapshot()
+      @snapshotCached = true
 
   render: (callback) ->
     @cancelRender()

@@ -19,11 +19,11 @@ class Turbolinks.History
       @started = false
 
   push: (location, restorationIdentifier) ->
-    location = Turbolinks.Location.box(location)
+    location = Turbolinks.Location.wrap(location)
     @update("push", location, restorationIdentifier)
 
   replace: (location, restorationIdentifier) ->
-    location = Turbolinks.Location.box(location)
+    location = Turbolinks.Location.wrap(location)
     @update("replace", location, restorationIdentifier)
 
   # Event handlers
@@ -31,7 +31,7 @@ class Turbolinks.History
   onPopState: (event) =>
     if @shouldHandlePopState()
       if turbolinks = event.state?.turbolinks
-        location = Turbolinks.Location.box(window.location)
+        location = Turbolinks.Location.wrap(window.location)
         restorationIdentifier = turbolinks.restorationIdentifier
         @delegate.historyPoppedToLocationWithRestorationIdentifier(location, restorationIdentifier)
 

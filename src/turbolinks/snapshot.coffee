@@ -1,16 +1,25 @@
 #= require ./element_set
 
 class Turbolinks.Snapshot
+  @wrap: (value) ->
+    if value instanceof this
+      value
+    else
+      @fromHTML(value)
+
   @fromHTML: (html) ->
     element = document.createElement("html")
     element.innerHTML = html
+    @fromElement(element)
+
+  @fromElement: (element) ->
     new this
       head: element.querySelector("head")
       body: element.querySelector("body")
 
   constructor: ({head, body}) ->
-    @head = head
-    @body = body
+    @head = head ? document.createElement("head")
+    @body = body ? document.createElement("body")
 
   hasAnchor: (anchor) ->
     @body.querySelector("##{anchor}")?
