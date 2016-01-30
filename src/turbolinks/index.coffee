@@ -1,9 +1,7 @@
+#= require ./BANNER
 #= require_self
 #= require ./helpers
 #= require ./controller
-###
-<%= render_asset "turbolinks/BANNER" %>
-###
 
 @Turbolinks =
   supported: true
