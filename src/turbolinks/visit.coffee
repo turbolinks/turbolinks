@@ -2,12 +2,11 @@
 
 class Turbolinks.Visit
   constructor: (@controller, location, @action) ->
-    @promise = new Promise (@resolve, @reject) =>
-      @identifier = Turbolinks.uuid()
-      @location = Turbolinks.Location.wrap(location)
-      @adapter = @controller.adapter
-      @state = "initialized"
-      @timingMetrics = {}
+    @identifier = Turbolinks.uuid()
+    @location = Turbolinks.Location.wrap(location)
+    @adapter = @controller.adapter
+    @state = "initialized"
+    @timingMetrics = {}
 
   start: ->
     if @state is "initialized"
@@ -26,19 +25,12 @@ class Turbolinks.Visit
       @recordTimingMetric("visitEnd")
       @state = "completed"
       @adapter.visitCompleted?(this)
-      @resolve()
+      @controller.visitCompleted(this)
 
   fail: ->
     if @state is "started"
       @state = "failed"
       @adapter.visitFailed?(this)
-      @reject()
-
-  then: ->
-    @promise.then(arguments...)
-
-  catch: ->
-    @promise.catch(arguments...)
 
   changeHistory: ->
     unless @historyChanged

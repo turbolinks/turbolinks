@@ -170,10 +170,9 @@ class Turbolinks.Controller
     visit.restorationData = Turbolinks.copyObject(restorationData)
     visit.historyChanged = historyChanged
     visit.referrer = @location
-    visit.then => @visitFinished(visit)
     visit
 
-  visitFinished: (visit) ->
+  visitCompleted: (visit) ->
     @notifyApplicationAfterPageLoad(visit.getTimingMetrics())
 
   dispatchEvent: ->
