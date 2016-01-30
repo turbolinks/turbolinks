@@ -34,13 +34,9 @@ Turbolinks is designed to emulate standard browser behavior as closely as possib
 
 Internally, Turbolinks models navigation as a *visit* to a *location* with an *action*. Actions are named for the effect they have on history.
 
-### Advance and Replace
+New navigation (e.g. clicking a link) has an action of either *advance* or *replace* and creates or updates a history entry respectively. In both cases Turbolinks will request the given location over the network. If available, a cached version will be shown immediately and updated when the response arrives.
 
-New navigation (e.g. clicking a link) has an action of either *advance* or *replace* and creates or updates a history entry respectively. In either case, Turbolinks will request the given location over the network. If available, a cached version of the page will be shown immediately and updated when the response arrives.
-
-### Restore
-
-History navigation (e.g. clicking the "back" button) has an action of *restore* and returns to a previous history entry and state. If available, a cached version of the restored location will be shown immediately and *no* network request will be made to refresh it. Otherwise the location will be requested as in *advance* and *replace*. In either case, scroll position will be restored.
+History navigation (e.g. clicking the "back" button) has an action of *restore* and returns to a previous history entry. If available, a cached version of the restored location will be shown immediately and *no* network request will be made to refresh it. Otherwise a request will be performed. In either case, scroll position will be restored.
 
 ### Specifying an Action
 
@@ -81,11 +77,11 @@ Turbolinks emits events that allow you to track the navigation lifecycle and res
 
 ## Page Caching
 
-Turbolinks caches recently-visited pages in memory for instant display on the next visit. The page cache is *limited to ten entries*. The intent is not to maintain a long-lived cache of every visited page – the longer-lived the cache, the more likely its entries are to be stale. The purpose of the page cache is to    make navigation to recently-visited pages appear instant.
+Turbolinks caches the 10 most-recently-visited pages in memory for instant display on the next visit. The current page is saved to the cache just prior to it being replaced, ensuring that changes made to the DOM after the initial load will be reflected.
 
-The current page is saved to the cache just prior to it being replaced, ensuring that changes made to the DOM after the initial load will be reflected.
+Observe the `turbolinks:before-cache` event if you need to make changes or clean up any state before the page is saved.
 
-You can observe cache saving and loading with `turbolinks:snapshot-save` and `turbolinks:snapshot-load` respectively. You can clear the page cache at any time by calling `Turbolinks.clearCache()`.
+You can clear the page cache at any time by calling `Turbolinks.clearCache()`.
 
 ## Displaying Progress
 
@@ -114,7 +110,7 @@ Turbolinks can track asset URLs and reload automatically when they change. Ensur
 
 ## Opting Out
 
-Turbolinks is automatically enabled for internal links to HTML documents on the same origin. You can opt out of Turbolinks explicitly by annotating a link any of its ancestors with `data-turbolinks=false`. To reenable when an ancestor has opted out, use `data-turbolinks=true`.
+Turbolinks is automatically enabled for internal links to HTML documents on the same origin. You can opt out of Turbolinks explicitly by annotating a link or any of its ancestors with `data-turbolinks=false`. To reenable when an ancestor has opted out, use `data-turbolinks=true`.
 
 ```html
 <a href="/">Enabled</a>
