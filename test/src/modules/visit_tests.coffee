@@ -14,6 +14,15 @@ visitTest "programmatically visiting a same-origin location", (assert, session, 
       assert.equal(navigation.action, "push")
       done()
 
+visitTest "programmatically visiting a cross-origin location falls back to window.location", (assert, session, done) ->
+  session.evaluate("Turbolinks.visit('about:blank')")
+  session.waitForEvent "turbolinks:visit", (event) ->
+    session.waitForNavigation().then (navigation) ->
+      assert.equal(event.data.url, "about:blank")
+      assert.equal(navigation.location, "about:blank")
+      assert.equal(navigation.action, "load")
+      done()
+
 visitTest "canceling a visit event prevents navigation", (assert, session, done) ->
   session.clickSelector("#same-origin-link")
   session.waitForEvent "turbolinks:visit", (event) ->

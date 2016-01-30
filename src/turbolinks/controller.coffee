@@ -40,8 +40,11 @@ class Turbolinks.Controller
   visit: (location, options = {}) ->
     location = Turbolinks.Location.wrap(location)
     if @applicationAllowsVisitingLocation(location)
-      action = options.action ? "advance"
-      @adapter.visitProposedToLocationWithAction(location, action)
+      if @locationIsVisitable(location)
+        action = options.action ? "advance"
+        @adapter.visitProposedToLocationWithAction(location, action)
+      else
+        window.location = location
 
   startVisitToLocationWithAction: (location, action, restorationIdentifier) ->
     restorationData = @getRestorationDataForIdentifier(restorationIdentifier)
