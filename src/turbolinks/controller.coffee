@@ -47,8 +47,11 @@ class Turbolinks.Controller
         window.location = location
 
   startVisitToLocationWithAction: (location, action, restorationIdentifier) ->
-    restorationData = @getRestorationDataForIdentifier(restorationIdentifier)
-    @startVisit(location, action, {restorationData})
+    if Turbolinks.supported
+      restorationData = @getRestorationDataForIdentifier(restorationIdentifier)
+      @startVisit(location, action, {restorationData})
+    else
+      window.location = location
 
   # History
 

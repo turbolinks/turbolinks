@@ -4,7 +4,8 @@
 #= require ./controller
 
 @Turbolinks =
-  supported: true
+  supported: do ->
+    window.history.pushState? and window.requestAnimationFrame?
 
   visit: (location, options) ->
     Turbolinks.controller.visit(location, options)
