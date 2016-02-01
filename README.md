@@ -1,7 +1,5 @@
 # Turbolinks 5 Preview
 
-_**Note:** This is a technology preview of Turbolinks 5. The API is stable, but the documentation is incomplete._
-
 **Turbolinks makes navigating your web application faster.** Get the performance benefits of a single-page application without the added complexity of a client-side JavaScript framework. Use HTML to render your views on the server side, and link to pages as usual. Turbolinks automatically fetches the page, swaps in its `<body>`, and merges its `<head>`, all without incurring the cost of a full page load.
 
 Developed for the all-new [Basecamp 3](https://basecamp.com/3/), Turbolinks 5 is a complete rewrite that adds support for iOS and Android hybrid applications. This preview release is API-stable, but [official documentation](https://github.com/turbolinks/turbolinks/tree/docs#readme) remains a work in progress.
@@ -19,7 +17,7 @@ gem 'turbolinks', '~> 5'
 
 Simply include [`dist/turbolinks.js`](dist/turbolinks.js) in your app's JavaScript bundle.
 
-## Frequently Asked Questions
+# Frequently Asked Questions
 
 #### Why did you rewrite Turbolinks?
 
