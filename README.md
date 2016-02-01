@@ -1,15 +1,12 @@
 # Turbolinks 5 Preview
 
-**Turbolinks makes navigating your web application faster.** Get the performance benefits of a single-page application without the added complexity of a client-side JavaScript framework. Use HTML to render your views on the server side, and link to pages as usual. Turbolinks automatically fetches the page, swaps in its `<body>`, and merges its `<head>`, all without incurring the cost of a full page load.
+**Turbolinks makes navigating your web application faster.** Get the performance benefits of a single-page application without the added complexity of a client-side JavaScript framework. Use HTML to render your views on the server side and link to pages as usual. When you follow a link, Turbolinks automatically fetches the page, swaps in its `<body>`, and merges its `<head>`, all without incurring the cost of a full page load.
 
 Developed for the all-new [Basecamp 3](https://basecamp.com/3/), Turbolinks 5 is a complete rewrite that adds support for iOS and Android hybrid applications. This preview release is API-stable, but [official documentation](https://github.com/turbolinks/turbolinks/tree/docs#readme) remains a work in progress.
 
 #### Quick Installation for Rails Applications
 
-1. Add the `turbolinks` gem, version 5, to your Gemfile:
-```ruby
-gem 'turbolinks', '~> 5'
-```
+1. Add the `turbolinks` gem, version 5, to your Gemfile: `gem 'turbolinks', '~> 5'`
 2. Run `bundle install`.
 3. Add `//= require turbolinks` to your JavaScript manifest file (usually found at `app/assets/javascripts/application.js`).
 
@@ -64,4 +61,9 @@ As with previous versions of Turbolinks, you may encounter problems with third-p
 
 To work around these issues, prefer using event delegation on `document.documentElement`, `document`, or `window`, and consider using `MutationObserver` to install behavior on elements as they’re added to the page.
 
-Additionally, libraries which feature Turbolinks Classic integration may not work as expected with Turbolinks 5.
+Also note that libraries which feature Turbolinks Classic integration may not work as expected with Turbolinks 5.
+
+
+---
+
+Copyright © 2016 Basecamp, LLC
