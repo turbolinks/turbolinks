@@ -18,7 +18,7 @@ Simply include [`dist/turbolinks.js`](dist/turbolinks.js) in your app's JavaScri
 
 #### Why did you rewrite Turbolinks?
 
-At Basecamp, we’re big believers in the [hybrid approach to building native applications](https://blogcabin.37signals.com/posts/3743-hybrid-sweet-spot-native-navigation-web-content): server-generated web views wrapped in, and enhanced by, native navigation controls. And Turbolinks’ page replacement strategy is the key ingredient to making our web views fast.
+At Basecamp, we’re big believers in the [hybrid approach to building native applications](https://signalvnoise.com/posts/3743-hybrid-sweet-spot-native-navigation-web-content): server-generated web views wrapped in, and enhanced by, native navigation controls. And Turbolinks’ page replacement strategy is the key ingredient to making our web views fast.
 
 We were able to integrate Turbolinks into our hybrid apps for Basecamp 3, but not with the level of fidelity we expected from a native application. Eventually, we determined we’d need to redesign Turbolinks with more than just the browser in mind.
 
