@@ -26,7 +26,7 @@ Rewriting Turbolinks from the ground up let us isolate the browser-specific beha
 
 #### Why is it called Turbolinks 5? What happened to versions 3 and 4?
 
-Version 2.5.3 is the most recent official release of Turbolinks; version 3 has been in development for some time without an official release. We are preserving the original code base as Turbolinks Classic, and all existing issues and pull requests remain at [turbolinks/turbolinks-classic on GitHub](https://github.com/turbolinks/turbolinks-classic).
+Version 2.5.3 is the most recent official release of Turbolinks; version 3 has been in development for some time without an official release. We are preserving the original code base as Turbolinks Classic, and all existing issues and pull requests remain at [rails/turbolinks on GitHub](https://github.com/rails/turbolinks).
 
 We wanted to signify that this rewrite is a major leap with a backwards-incompatible API. While we could have gone with version 4, we thought 5 had a nice ring to it, given that it coincides with the upcoming Rails 5 release.
 
