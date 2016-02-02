@@ -4,7 +4,7 @@
 
 Developed for the all-new [Basecamp 3](https://basecamp.com/3/), Turbolinks 5 is a complete rewrite that adds support for iOS and Android hybrid applications. This preview release is API-stable, but [official documentation](https://github.com/turbolinks/turbolinks/tree/docs#readme) remains a work in progress.
 
-<img src="https://cloud.githubusercontent.com/assets/2603/12760305/618836a6-c9ab-11e5-933e-c15f056ce956.gif" width="888" height="423" alt="Turbolinks: Browser, iOS, and Android">
+<img src="https://cloud.githubusercontent.com/assets/2603/12763271/18ded8e8-c9b9-11e5-9210-791e6ca21df4.gif" alt="Turbolinks: Browser, iOS, and Android">
 
 #### Quick Installation for Rails Applications
 
