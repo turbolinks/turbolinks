@@ -8,7 +8,7 @@ Developed for the all-new [Basecamp 3](https://basecamp.com/3/), Turbolinks 5 is
 
 #### Quick Installation for Rails Applications
 
-1. Add the `turbolinks` gem, version 5, to your Gemfile: `gem 'turbolinks', '~> 5'`
+1. Add the `turbolinks` gem, version 5, to your Gemfile: `gem 'turbolinks', '~> 5.0.0.beta'`
 2. Run `bundle install`.
 3. Add `//= require turbolinks` to your JavaScript manifest file (usually found at `app/assets/javascripts/application.js`).
 
