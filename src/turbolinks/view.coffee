@@ -41,6 +41,8 @@ class Turbolinks.View
       document.head.appendChild(element.cloneNode(true))
 
     newBody = newSnapshot.body.cloneNode(true)
+    @delegate.viewWillRender(newBody)
+
     importPermanentElementsIntoBody(newBody)
     importRecyclableElementsIntoBody(newBody)
     document.body = newBody
