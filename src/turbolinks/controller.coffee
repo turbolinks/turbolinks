@@ -120,6 +120,9 @@ class Turbolinks.Controller
   viewInvalidated: ->
     @adapter.pageInvalidated()
 
+  viewWillRender: (newBody) ->
+    @notifyApplicationBeforeRender(newBody)
+
   viewRendered: ->
     @lastRenderedLocation = @currentVisit.location
     @notifyApplicationAfterRender()
@@ -153,6 +156,9 @@ class Turbolinks.Controller
 
   notifyApplicationBeforeCachingSnapshot: ->
     @dispatchEvent("turbolinks:before-cache")
+
+  notifyApplicationBeforeRender: (newBody) ->
+    @dispatchEvent("turbolinks:before-render", data: {newBody})
 
   notifyApplicationAfterRender: ->
     @dispatchEvent("turbolinks:render")
