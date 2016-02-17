@@ -149,22 +149,33 @@ class Turbolinks.Controller
   # Application events
 
   applicationAllowsFollowingLinkToLocation: (link, location) ->
-    @dispatchEvent("turbolinks:click", target: link, data: { url: location.absoluteURL }, cancelable: true)
+    event = @notifyApplicationAfterClickingLinkToLocation(link, location)
+    not event.defaultPrevented
 
   applicationAllowsVisitingLocation: (location) ->
-    @dispatchEvent("turbolinks:visit", data: { url: location.absoluteURL }, cancelable: true)
+    event = @notifyApplicationBeforeVisitingLocation(location)
+    not event.defaultPrevented
+
+  notifyApplicationAfterClickingLinkToLocation: (link, location) ->
+    Turbolinks.dispatch("turbolinks:click", target: link, data: { url: location.absoluteURL }, cancelable: true)
+
+  notifyApplicationBeforeVisitingLocation: (location) ->
+    Turbolinks.dispatch("turbolinks:before-visit", data: { url: location.absoluteURL }, cancelable: true)
+
+  notifyApplicationAfterVisitingLocation: (location) ->
+    Turbolinks.dispatch("turbolinks:visit", data: { url: location.absoluteURL })
 
   notifyApplicationBeforeCachingSnapshot: ->
-    @dispatchEvent("turbolinks:before-cache")
+    Turbolinks.dispatch("turbolinks:before-cache")
 
   notifyApplicationBeforeRender: (newBody) ->
-    @dispatchEvent("turbolinks:before-render", data: {newBody})
+    Turbolinks.dispatch("turbolinks:before-render", data: {newBody})
 
   notifyApplicationAfterRender: ->
-    @dispatchEvent("turbolinks:render")
+    Turbolinks.dispatch("turbolinks:render")
 
   notifyApplicationAfterPageLoad: (timing = {}) ->
-    @dispatchEvent("turbolinks:load", data: { url: @location.absoluteURL, timing })
+    Turbolinks.dispatch("turbolinks:load", data: { url: @location.absoluteURL, timing })
 
   # Private
 
@@ -172,6 +183,7 @@ class Turbolinks.Controller
     @currentVisit?.cancel()
     @currentVisit = @createVisit(location, action, properties)
     @currentVisit.start()
+    @notifyApplicationAfterVisitingLocation(location)
 
   createVisit: (location, action, {restorationIdentifier, restorationData, historyChanged} = {}) ->
     visit = new Turbolinks.Visit this, location, action
@@ -183,10 +195,6 @@ class Turbolinks.Controller
 
   visitCompleted: (visit) ->
     @notifyApplicationAfterPageLoad(visit.getTimingMetrics())
-
-  dispatchEvent: ->
-    event = Turbolinks.dispatch(arguments...)
-    not event.defaultPrevented
 
   clickEventIsSignificant: (event) ->
     not (
