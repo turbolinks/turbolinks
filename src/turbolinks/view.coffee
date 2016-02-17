@@ -1,5 +1,4 @@
 #= require ./snapshot
-#= require ./element_pool
 
 class Turbolinks.View
   constructor: (@delegate) ->
@@ -44,7 +43,6 @@ class Turbolinks.View
     @delegate.viewWillRender(newBody)
 
     importPermanentElementsIntoBody(newBody)
-    importRecyclableElementsIntoBody(newBody)
     document.body = newBody
 
     focusFirstAutofocusableElement()
@@ -62,17 +60,8 @@ class Turbolinks.View
       if oldChild = newBody.querySelector("[id='#{newChild.id}']")
         oldChild.parentNode.replaceChild(newChild, oldChild)
 
-  importRecyclableElementsIntoBody = (newBody) ->
-    elementPool = new Turbolinks.ElementPool getRecyclableElements(document.body)
-    for oldChild in getRecyclableElements(newBody)
-      if newChild = elementPool.retrieveMatchingElement(oldChild)
-        oldChild.parentNode.replaceChild(newChild, oldChild)
-
   getPermanentElements = (element) ->
     element.querySelectorAll("[id][data-turbolinks-permanent]")
-
-  getRecyclableElements = (element) ->
-    element.querySelectorAll("[data-turbolinks-recyclable]")
 
   activateScripts = ->
     for oldChild in document.querySelectorAll("script")
