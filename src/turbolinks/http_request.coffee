@@ -4,7 +4,7 @@ class Turbolinks.HttpRequest
 
   @timeout = 60
 
-  constructor: (@delegate, location, referrer) ->
+  constructor: (@delegate, location, referrer, @headers) ->
     @url = Turbolinks.Location.wrap(location).requestURL
     @referrer = Turbolinks.Location.wrap(referrer).absoluteURL
     @createXHR()
@@ -65,6 +65,8 @@ class Turbolinks.HttpRequest
     @xhr.timeout = @constructor.timeout * 1000
     @xhr.setRequestHeader("Accept", "text/html, application/xhtml+xml, application/xml")
     @xhr.setRequestHeader("Turbolinks-Referrer", @referrer)
+    for key, value of @headers
+      @xhr.setRequestHeader(key, value)
     @xhr.onprogress = @requestProgressed
     @xhr.onload = @requestLoaded
     @xhr.onerror = @requestFailed
