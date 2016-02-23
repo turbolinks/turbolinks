@@ -341,16 +341,14 @@ Turbolinks emits events that allow you to track the navigation lifecycle and res
 - `turbolinks:render` fires after Turbolinks renders the page. This event fires twice during an application visit to a cached location: once after rendering the cached version, and again after rendering the fresh version.
 - `turbolinks:load` fires once after the initial page load, and again after every Turbolinks visit. Access visit timing metrics with the `event.data.timing` object.
 
-
-
----
-
 # Contributing to Turbolinks
 
 Turbolinks is open-source software, freely distributable under the terms of an [MIT-style license](LICENSE). The [source code is hosted on GitHub](https://github.com/turbolinks/turbolinks).
 Development is sponsored by [Basecamp](https://basecamp.com/).
 
 We welcome contributions in the form of bug reports, pull requests, or thoughtful discussions in the [GitHub issue tracker](https://github.com/turbolinks/turbolinks/issues).
+
+Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
 
 ## Building From Source
 
@@ -365,3 +363,7 @@ $ bin/blade build
 ## Running Tests
 
 Follow the instructions for _Building From Source_ above. Then run `bin/blade runner` and visit the displayed URL in your browser. The Turbolinks test suite will start automatically.
+
+---
+
+© 2016 Basecamp, LLC
