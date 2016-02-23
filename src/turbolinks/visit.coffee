@@ -1,7 +1,7 @@
 #= require ./http_request
 
 class Turbolinks.Visit
-  constructor: (@controller, location, @action) ->
+  constructor: (@controller, location, @action, @headers) ->
     @identifier = Turbolinks.uuid()
     @location = Turbolinks.Location.wrap(location)
     @adapter = @controller.adapter
@@ -42,7 +42,7 @@ class Turbolinks.Visit
   issueRequest: ->
     if @shouldIssueRequest() and not @request?
       @progress = 0
-      @request = new Turbolinks.HttpRequest this, @location, @referrer
+      @request = new Turbolinks.HttpRequest this, @location, @referrer, @headers
       @request.send()
 
   getCachedSnapshot: ->
