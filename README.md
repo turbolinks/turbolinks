@@ -79,7 +79,7 @@ Applications using the Turbolinks iOS adapter typically handle replace visits by
 
 ## Restoration Visits
 
-Turbolinks automatically initiates a restoration visit when you navigate with the browser’s Back or Forward buttons. Applications using the iOS or Andriod adapters initiate a restoration visit when moving backward in the navigation stack.
+Turbolinks automatically initiates a restoration visit when you navigate with the browser’s Back or Forward buttons. Applications using the iOS or Android adapters initiate a restoration visit when moving backward in the navigation stack.
 
 ![Restore visit action](https://s3.amazonaws.com/turbolinks-docs/images/restore.svg)
 
