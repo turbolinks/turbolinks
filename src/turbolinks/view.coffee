@@ -19,9 +19,9 @@ class Turbolinks.View
 
   markAsPreview: (isPreview) ->
     if isPreview
-      @element.dataset.turbolinksPreview = ""
+      @element.setAttribute("data-turbolinks-preview", "")
     else
-      delete @element.dataset.turbolinksPreview
+      @element.removeAttribute("data-turbolinks-preview")
 
   renderSnapshot: (newSnapshot, callback) ->
     currentSnapshot = @getSnapshot(clone: false)
