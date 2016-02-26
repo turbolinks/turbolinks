@@ -201,7 +201,7 @@ document.addEventListener("turbolinks:load", function() {
 });
 ```
 
-Instead, you could use Custom Elements to listen for this element. This is a great way to implement and hook in third party libraries with Turbolinks as well. You could a new element in your page like so:
+Instead, you could use Custom Elements to listen for this element. This is a great way to implement and hook in third party libraries with Turbolinks as well. You could add a new element in your page like so:
 
 ``` html
 <bc-sparkline data-table="[1, 2, 3, 2, 3, 1]" />
