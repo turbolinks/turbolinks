@@ -191,7 +191,32 @@ Turbolinks may not be the only source of page updates in your application. New H
 
 You can handle all of these updates, including updates from Turbolinks page loads, in a single place with the precise lifecycle callbacks provided by [`MutationObserver`](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver) and [Custom Elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements).
 
-In particular, these APIs give you callbacks when elements are attached to and removed from the document. You can use these callbacks to perform transformations and register or tear down behavior as soon as matching elements appear on the page, regardless of how they were added.
+In particular, these APIs give you callbacks when elements are attached to and removed from the document. You can use these callbacks to perform transformations and register or tear down behavior as soon as matching elements appear on the page, regardless of how they were added. For example, if you're checking for elements on the page like so:
+
+``` javascript
+document.addEventListener("turbolinks:load", function() {
+  if (document.getElementById('sparkline')){
+    drawSparkline();
+  }
+})
+```
+
+Instead, you could use Custom Elements to listen for this element. This is a great way to implement and hook in third party libraries with Turbolinks as well. You could a new element in your page like so:
+
+``` html
+<bc-sparkline data-table="[1, 2, 3, 2, 3, 1]" />
+```
+
+Then, you'll have to use a [Custom Elements polyfill](http://webcomponents.org/polyfills/custom-elements/) to hook in to when that element is added on the page:
+
+``` javascript
+var SparklinePrototype = Object.create(HTMLElement.prototype);
+SparklinePrototype.attachedCallback = function() {
+  drawSparkline(this.dataset.table);
+};
+
+document.registerElement('bc-sparkline', { prototype: SparklinePrototype } );
+```
 
 By taking advantage of `MutationObserver`, Custom Elements, and [idempotent transformations](#making-transformations-idempotent), there’s little need to couple your application to Turbolinks’ events.
 
