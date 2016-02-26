@@ -134,7 +134,7 @@ You may be used to installing JavaScript behavior in response to the `window.onl
 In many cases, you can simply adjust your code to listen for the `turbolinks:load` event, which fires once on the initial page load and again after every Turbolinks visit.
 
 ```js
-document.addEventListener("turbolinks:load", function() {
+document.addEventListener("turbolinks:load",  {
   // ...
 })
 ```
@@ -156,7 +156,7 @@ Turbolinks saves a copy of the current page to its cache just before rendering a
 Listen for the `turbolinks:before-cache` event if you need to prepare the document before Turbolinks caches it. You can use this event to reset forms, collapse expanded UI elements, or tear down any third-party widgets so the page is ready to be displayed again.
 
 ```js
-document.addEventListener("turbolinks:before-cache", function() {
+document.addEventListener("turbolinks:before-cache",  {
   // ...
 })
 ```
@@ -195,10 +195,10 @@ In particular, these APIs give you callbacks when elements are attached to and r
 
 ``` javascript
 document.addEventListener("turbolinks:load", function() {
-  if (document.getElementById('sparkline')){
+  if (document.getElementById('sparkline')) {
     drawSparkline();
   }
-})
+});
 ```
 
 Instead, you could use Custom Elements to listen for this element. This is a great way to implement and hook in third party libraries with Turbolinks as well. You could a new element in your page like so:
