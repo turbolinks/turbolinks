@@ -293,7 +293,7 @@ The Turbolinks Rails engine performs this optimization automatically for non-GET
 
 By default, Turbolinks only visits locations with HTML extension or no extension at all (for example, `/jane.html` or `/jane`). If the location you're trying to visit has a different extension (for example, `/hello.js` or `/jane.jpeg`), Turbolinks will not visit it, instead, the browser will handle this link as it normally would.
 
-But sometimes you want Turbolinks to visit a location regardless of its extension (you might have URLs like `/jane.cooper`). Location extension check behavior can be disabled by annotating a link with `data-turbolinks-extension="false"`.
+But sometimes you want Turbolinks to visit a location regardless of its extension (you might have URLs like `/jane.cooper`). Location's extension check behavior can be disabled by annotating a link with `data-turbolinks-extension="false"`.
 
 ```html
 <a href="/jane.cooper" data-turbolinks-extension="false">Jane Cooper</a>
@@ -321,7 +321,7 @@ If _location_ is a cross-origin URL, or falls outside of the specified root (see
 
 If _action_ is unspecified, Turbolinks assumes a value of `"advance"`.
 
-If the value of _shouldCheckExtension_ is `false` (boolean) or `"false"` (string), Turbolinks will not check whether location's extension is HTML or not (see [Disabling Location extension check](#disabling-location-extension-check)). Otherwise Turbolinks assumes a value of `true` and location extension check will be performed.
+If the value of _shouldCheckExtension_ is `false` (boolean) or `"false"` (string), Turbolinks will not check whether location's extension is HTML or not (see [Disabling Location extension check](#disabling-location-extension-check)). Otherwise Turbolinks assumes a value of `true` and location's extension check will be performed.
 
 Before performing the visit, Turbolinks fires a `turbolinks:before-visit` event on `document`. Your application can listen for this event and cancel the visit with `event.preventDefault()` (see [Canceling Visits Before They Start](#canceling-visits-before-they-start)).
 
