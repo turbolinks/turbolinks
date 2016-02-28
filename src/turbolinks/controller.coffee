@@ -40,7 +40,8 @@ class Turbolinks.Controller
   visit: (location, options = {}) ->
     location = Turbolinks.Location.wrap(location)
     if @applicationAllowsVisitingLocation(location)
-      if @locationIsVisitable(location)
+      shouldCheckExtension = options.shouldCheckExtension ? true
+      if @locationIsVisitable(location, shouldCheckExtension)
         action = options.action ? "advance"
         @adapter.visitProposedToLocationWithAction(location, action)
       else
@@ -144,7 +145,8 @@ class Turbolinks.Controller
           if @applicationAllowsFollowingLinkToLocation(link, location)
             event.preventDefault()
             action = @getActionForLink(link)
-            @visit(location, {action})
+            shouldCheckExtension = @getShouldCheckExtensionForLink(link)
+            @visit(location, {action, shouldCheckExtension})
 
   # Application events
 
@@ -213,10 +215,13 @@ class Turbolinks.Controller
 
   getVisitableLocationForLink: (link) ->
     location = new Turbolinks.Location link.href
-    location if @locationIsVisitable(location)
+    location if @locationIsVisitable(location, @getShouldCheckExtensionForLink(link))
 
   getActionForLink: (link) ->
     link.getAttribute("data-turbolinks-action") ? "advance"
+
+  getShouldCheckExtensionForLink: (link) ->
+    link.getAttribute("data-turbolinks-extension") != "false"
 
   nodeIsVisitable: (node) ->
     if container = Turbolinks.closest(node, "[data-turbolinks]")
@@ -224,8 +229,8 @@ class Turbolinks.Controller
     else
       true
 
-  locationIsVisitable: (location) ->
-    location.isPrefixedBy(@getRootLocation()) and location.isHTML()
+  locationIsVisitable: (location, shouldCheckExtension = true) ->
+    location.isPrefixedBy(@getRootLocation()) and (!shouldCheckExtension || location.isHTML())
 
   getRootLocation: ->
     root = @getSetting("root") ? "/"

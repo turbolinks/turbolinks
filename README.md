@@ -289,6 +289,22 @@ If form submission results in a state change on the server that affects cached p
 
 The Turbolinks Rails engine performs this optimization automatically for non-GET XHR requests that redirect with the `redirect_to` helper.
 
+## Disabling Location Extension Check
+
+By default, Turbolinks only visits locations with HTML extension or no extension at all (for example, `/jane.html` or `/jane`). If the location you're trying to visit has a different extension (for example, `/hello.js` or `/jane.jpeg`), Turbolinks will not visit it, instead, the browser will handle this link as it normally would.
+
+But sometimes you want Turbolinks to visit a location regardless of its extension (you might have URLs like `/jane.cooper`). Location extension check behavior can be disabled by annotating a link with `data-turbolinks-extension="false"`.
+
+```html
+<a href="/jane.cooper" data-turbolinks-extension="false">Jane Cooper</a>
+```
+
+To programmatically visit a location without checking its extension, pass the `shouldCheckExtension: false` option to [`Turbolinks.visit`](#turbolinksvisit):
+
+```js
+Turbolinks.visit("/jane.cooper", { shouldCheckExtension: false })
+```
+
 # API Reference
 
 ## Turbolinks.visit
@@ -296,7 +312,7 @@ The Turbolinks Rails engine performs this optimization automatically for non-GET
 Usage:
 ```js
 Turbolinks.visit(location)
-Turbolinks.visit(location, { action: action })
+Turbolinks.visit(location, { action: action, shouldCheckExtension: shouldCheckExtension })
 ```
 
 Performs an [Application Visit](#application-visits) to the given _location_ (a string containing a URL or path) with the specified _action_ (a string, either `"advance"` or `"replace"`).
@@ -304,6 +320,8 @@ Performs an [Application Visit](#application-visits) to the given _location_ (a 
 If _location_ is a cross-origin URL, or falls outside of the specified root (see [Setting a Root Location](#setting-a-root-location)), or if the value of [`Turbolinks.supported`](#turbolinkssupported) is `false`, Turbolinks performs a full page load by setting `window.location`.
 
 If _action_ is unspecified, Turbolinks assumes a value of `"advance"`.
+
+If the value of _shouldCheckExtension_ is `false` (boolean) or `"false"` (string), Turbolinks will not check whether location's extension is HTML or not (see [Disabling Location extension check](#disabling-location-extension-check)). Otherwise Turbolinks assumes a value of `true` and location extension check will be performed.
 
 Before performing the visit, Turbolinks fires a `turbolinks:before-visit` event on `document`. Your application can listen for this event and cancel the visit with `event.preventDefault()` (see [Canceling Visits Before They Start](#canceling-visits-before-they-start)).
 
