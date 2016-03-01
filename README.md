@@ -289,6 +289,17 @@ If form submission results in a state change on the server that affects cached p
 
 The Turbolinks Rails engine performs this optimization automatically for non-GET XHR requests that redirect with the `redirect_to` helper.
 
+## Setting Custom HTTP Headers
+
+To set custom HTTP headers grab a reference to the XHR before the request is made. The `turbolinks:request-start` event will be fired after a link is clicked but before the request is executed. For example, you can set the user's ID in a custom header for every link click and programatic visit.
+
+```javascript
+document.addEventListener("turbolinks:request-start", function(event) {
+  var xhr = event.data.xhr;
+  xhr.setRequestHeader("X-User-Id", "123");
+});
+```
+
 # API Reference
 
 ## Turbolinks.visit
