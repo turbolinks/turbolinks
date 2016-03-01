@@ -46,9 +46,10 @@ class Turbolinks.Visit
       @request.send()
 
   getCachedSnapshot: ->
-    snapshot = @controller.getCachedSnapshotForLocation(@location)
-    return if @location.anchor? and not snapshot?.hasAnchor(@location.anchor)
-    snapshot
+    if snapshot = @controller.getCachedSnapshotForLocation(@location)
+      if not @location.anchor? or snapshot.hasAnchor(@location.anchor)
+        if @action is "restore" or snapshot.isPreviewable()
+          snapshot
 
   hasCachedSnapshot: ->
     @getCachedSnapshot()?
