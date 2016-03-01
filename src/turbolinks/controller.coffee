@@ -87,10 +87,14 @@ class Turbolinks.Controller
   getCachedSnapshotForLocation: (location) ->
     @cache.get(location)
 
+  shouldCacheSnapshot: ->
+    @getSetting("cache-control") isnt "no-cache"
+
   cacheSnapshot: ->
-    @notifyApplicationBeforeCachingSnapshot()
-    snapshot = @view.getSnapshot()
-    @cache.put(@lastRenderedLocation, snapshot)
+    if @shouldCacheSnapshot()
+      @notifyApplicationBeforeCachingSnapshot()
+      snapshot = @view.getSnapshot()
+      @cache.put(@lastRenderedLocation, snapshot)
 
   # Scrolling
 
