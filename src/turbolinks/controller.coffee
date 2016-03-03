@@ -42,7 +42,8 @@ class Turbolinks.Controller
     if @applicationAllowsVisitingLocation(location)
       if @locationIsVisitable(location)
         action = options.action ? "advance"
-        @adapter.visitProposedToLocationWithAction(location, action)
+        target = options.target ? null
+        @adapter.visitProposedToLocationWithAction(location, action, target)
       else
         window.location = location
 
@@ -143,8 +144,11 @@ class Turbolinks.Controller
         if location = @getVisitableLocationForLink(link)
           if @applicationAllowsFollowingLinkToLocation(link, location)
             event.preventDefault()
-            action = @getActionForLink(link)
-            @visit(location, {action})
+
+            options = {}
+            options["action"] = @getActionForLink(link)
+            options["target"] = event.target
+            @visit(location, options)
 
   # Application events
 

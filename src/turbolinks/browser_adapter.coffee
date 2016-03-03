@@ -8,7 +8,7 @@ class Turbolinks.BrowserAdapter
   constructor: (@controller) ->
     @progressBar = new Turbolinks.ProgressBar
 
-  visitProposedToLocationWithAction: (location, action) ->
+  visitProposedToLocationWithAction: (location, action, target) ->
     @controller.startVisitToLocationWithAction(location, action)
 
   visitStarted: (visit) ->
