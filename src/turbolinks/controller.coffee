@@ -88,7 +88,7 @@ class Turbolinks.Controller
     @cache.get(location)
 
   shouldCacheSnapshot: ->
-    @getSetting("cache-control") isnt "no-cache"
+    @view.getCacheControlValue() isnt "no-cache"
 
   cacheSnapshot: ->
     if @shouldCacheSnapshot()
@@ -229,15 +229,7 @@ class Turbolinks.Controller
       true
 
   locationIsVisitable: (location) ->
-    location.isPrefixedBy(@getRootLocation()) and location.isHTML()
-
-  getRootLocation: ->
-    root = @getSetting("root") ? "/"
-    new Turbolinks.Location root
-
-  getSetting: (name) ->
-    [..., element] = document.head.querySelectorAll("meta[name='turbolinks-#{name}']")
-    element?.getAttribute("content")
+    location.isPrefixedBy(@view.getRootLocation()) and location.isHTML()
 
   getCurrentRestorationData: ->
     @getRestorationDataForIdentifier(@restorationIdentifier)

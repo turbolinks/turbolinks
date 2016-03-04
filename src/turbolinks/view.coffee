@@ -4,6 +4,12 @@ class Turbolinks.View
   constructor: (@delegate) ->
     @element = document.documentElement
 
+  getRootLocation: ->
+    @getSnapshot().getRootLocation()
+
+  getCacheControlValue: ->
+    @getSnapshot().getCacheControlValue()
+
   getSnapshot: ({clone} = {clone: true}) ->
     element = if clone then @element.cloneNode(true) else @element
     Turbolinks.Snapshot.fromElement(element)

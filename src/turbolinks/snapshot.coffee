@@ -21,6 +21,13 @@ class Turbolinks.Snapshot
     @head = head ? document.createElement("head")
     @body = body ? document.createElement("body")
 
+  getRootLocation: ->
+    root = @getSetting("root") ? "/"
+    new Turbolinks.Location root
+
+  getCacheControlValue: ->
+    @getSetting("cache-control")
+
   hasAnchor: (anchor) ->
     @body.querySelector("##{anchor}")?
 
@@ -40,6 +47,10 @@ class Turbolinks.Snapshot
 
   # Private
 
+  getSetting: (name) ->
+    [..., element] = @head.querySelectorAll("meta[name='turbolinks-#{name}']")
+    element?.getAttribute("content")
+
   getTrackedHeadElementSet: ->
     @trackedHeadElementSet ?= @getPermanentHeadElementSet().selectElementsMatchingSelector("[data-turbolinks-track=reload]")
 
@@ -57,7 +68,3 @@ class Turbolinks.Snapshot
 
   getHeadElementSet: ->
     @headElementSet ?= new Turbolinks.ElementSet @head.childNodes
-
-  getCacheControlValue: ->
-    [..., element] = @head.querySelectorAll("meta[name='turbolinks-cache-control']")
-    element?.getAttribute("content")
