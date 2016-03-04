@@ -291,13 +291,15 @@ The Turbolinks Rails engine performs this optimization automatically for non-GET
 
 ## Setting Custom HTTP Headers
 
-To set custom HTTP headers grab a reference to the XHR before the request is made. The `turbolinks:request-start` event will be fired after a link is clicked but before the request is executed. For example, you can set the user's ID in a custom header for every link click and programatic visit.
+You can observe the `turbolinks:request-start` event to set custom headers on Turbolinks requests. Access the request’s XMLHttpRequest object via `event.data.xhr`, then call the [`setRequestHeader`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) method as many times as you wish.
+
+For example, you might want to include a request ID with every Turbolinks link click and programmatic visit.
 
 ```javascript
 document.addEventListener("turbolinks:request-start", function(event) {
-  var xhr = event.data.xhr;
-  xhr.setRequestHeader("X-User-Id", "123");
-});
+  var xhr = event.data.xhr
+  xhr.setRequestHeader("X-Request-Id", "123...")
+})
 ```
 
 # API Reference
