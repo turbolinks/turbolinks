@@ -35,6 +35,9 @@ class Turbolinks.Snapshot
   getTemporaryHeadElements: ->
     @getTemporaryHeadElementSet().getElements()
 
+  isPreviewable: ->
+    @getCacheControlValue() isnt "no-preview"
+
   # Private
 
   getTrackedHeadElementSet: ->
@@ -55,3 +58,6 @@ class Turbolinks.Snapshot
   getHeadElementSet: ->
     @headElementSet ?= new Turbolinks.ElementSet @head.childNodes
 
+  getCacheControlValue: ->
+    [..., element] = @head.querySelectorAll("meta[name='turbolinks-cache-control']")
+    element?.getAttribute("content")
