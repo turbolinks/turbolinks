@@ -347,8 +347,8 @@ Turbolinks emits events that allow you to track the navigation lifecycle and res
 - `turbolinks:click` fires when you click a Turbolinks-enabled link. The clicked element is the event target. Access the requested location with `event.data.url`. Cancel this event to let the click fall through to the browser as normal navigation.
 - `turbolinks:before-visit` fires before visiting a location, except when navigating by history. Access the requested location with `event.data.url`. Cancel this event to prevent navigation.
 - `turbolinks:visit` fires immediately after a visit starts.
-- `turbolinks:request-start` fires before Turbolinks issues a network request to fetch the page.
-- `turbolinks:request-end` fires after the network request completes.
+- `turbolinks:request-start` fires before Turbolinks issues a network request to fetch the page. Access the XMLHttpRequest object with `event.data.xhr`.
+- `turbolinks:request-end` fires after the network request completes. Access the XMLHttpRequest object with `event.data.xhr`.
 - `turbolinks:before-cache` fires before Turbolinks saves the current page to cache.
 - `turbolinks:before-render` fires before rendering the page. Access the new `<body>` element with `event.data.newBody`.
 - `turbolinks:render` fires after Turbolinks renders the page. This event fires twice during an application visit to a cached location: once after rendering the cached version, and again after rendering the fresh version.
