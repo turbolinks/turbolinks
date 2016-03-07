@@ -42,7 +42,8 @@ class Turbolinks.Controller
     if @applicationAllowsVisitingLocation(location)
       if @locationIsVisitable(location)
         action = options.action ? "advance"
-        target = options.target ? null
+        target = null
+        target = Turbolinks.closest(options.target, "a") if options.target?
         @adapter.visitProposedToLocationWithAction(location, action, target)
       else
         window.location = location
