@@ -63,7 +63,7 @@ class Turbolinks.HttpRequest
     @xhr = new XMLHttpRequest
     @xhr.open("GET", @url, true)
     @xhr.timeout = @constructor.timeout * 1000
-    @xhr.setRequestHeader("Accept", "text/html, application/xhtml+xml, application/xml")
+    @xhr.setRequestHeader("Accept", "text/html, application/xhtml+xml")
     @xhr.setRequestHeader("Turbolinks-Referrer", @referrer)
     @xhr.onprogress = @requestProgressed
     @xhr.onload = @requestLoaded
