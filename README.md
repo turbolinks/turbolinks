@@ -171,6 +171,23 @@ if (document.documentElement.hasAttribute("data-turbolinks-preview")) {
 }
 ```
 
+### Opting Out of Caching
+
+You can control caching behavior on a per-page basis by including a `<meta name="turbolinks-cache-control">` element in your page’s `<head>` and declaring a caching directive.
+
+Use the `no-preview` directive to specify that a cached version of the page should not be shown as a preview during an application visit. Pages marked no-preview will only be used for restoration visits.
+
+To specify that a page should not be cached at all, use the `no-cache` directive. Pages marked no-cache will always be fetched over the network, including during restoration visits.
+
+```html
+<head>
+  ...
+  <meta name="turbolinks-cache-control" content="no-cache">
+</head>
+```
+
+To completely disable caching in your application, ensure every page contains a no-cache directive.
+
 ## Making Transformations Idempotent
 
 Often you’ll want to perform client-side transformations to HTML received from the server. For example, you might want to use the browser’s knowledge of the user’s current time zone to group a collection of elements by date.
