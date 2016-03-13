@@ -57,7 +57,7 @@ Application visits result in a change to the browser’s history; the visit’s 
 
 The default visit action is _advance_. During an advance visit, Turbolinks pushes a new entry onto the browser’s history stack using [`history.pushState`](https://developer.mozilla.org/en-US/docs/Web/API/History/pushState).
 
-Applications using the Turbolinks iOS adapter typically handle advance visits by pushing a new view controller onto the navigation stack. Similarly, applications using the Android adapter typically push a new activity onto the back stack.
+Applications using the Turbolinks [iOS adapter](https://github.com/turbolinks/turbolinks-ios) typically handle advance visits by pushing a new view controller onto the navigation stack. Similarly, applications using the [Android adapter](https://github.com/turbolinks/turbolinks-android) typically push a new activity onto the back stack.
 
 ![Replace visit action](https://s3.amazonaws.com/turbolinks-docs/images/replace.svg)
 
@@ -75,11 +75,11 @@ To programmatically visit a location with the replace action, pass the `action: 
 Turbolinks.visit("/edit", { action: "replace" })
 ```
 
-Applications using the Turbolinks iOS adapter typically handle replace visits by dismissing the topmost view controller and pushing a new view controller onto the navigation stack without animation.
+Applications using the Turbolinks [iOS adapter](https://github.com/turbolinks/turbolinks-ios) typically handle replace visits by dismissing the topmost view controller and pushing a new view controller onto the navigation stack without animation.
 
 ## Restoration Visits
 
-Turbolinks automatically initiates a restoration visit when you navigate with the browser’s Back or Forward buttons. Applications using the iOS or Android adapters initiate a restoration visit when moving backward in the navigation stack.
+Turbolinks automatically initiates a restoration visit when you navigate with the browser’s Back or Forward buttons. Applications using the [iOS](https://github.com/turbolinks/turbolinks-ios) or [Android](https://github.com/turbolinks/turbolinks-android) adapters initiate a restoration visit when moving backward in the navigation stack.
 
 ![Restore visit action](https://s3.amazonaws.com/turbolinks-docs/images/restore.svg)
 
