@@ -88,7 +88,7 @@ class Turbolinks.Controller
     @cache.get(location)
 
   shouldCacheSnapshot: ->
-    @view.getCacheControlValue() isnt "no-cache"
+    @view.shouldCacheSnapshot()
 
   cacheSnapshot: ->
     if @shouldCacheSnapshot()
