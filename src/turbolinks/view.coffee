@@ -14,6 +14,9 @@ class Turbolinks.View
     element = if clone then @element.cloneNode(true) else @element
     Turbolinks.Snapshot.fromElement(element)
 
+  shouldCacheSnapshot: ->
+    @getCacheControlValue() isnt "no-cache"
+
   render: ({snapshot, html, isPreview}, callback) ->
     @markAsPreview(isPreview)
     if snapshot?
@@ -37,15 +40,21 @@ class Turbolinks.View
       return false
 
     for element in newSnapshot.getInlineHeadElementsNotPresentInSnapshot(currentSnapshot)
-      document.head.appendChild(element.cloneNode(true))
+      element = if @shouldCacheSnapshot() then element.cloneNode(true) else element
+      document.head.appendChild(element)
 
     for element in currentSnapshot.getTemporaryHeadElements()
       document.head.removeChild(element)
 
     for element in newSnapshot.getTemporaryHeadElements()
-      document.head.appendChild(element.cloneNode(true))
+      element = if @shouldCacheSnapshot() then element.cloneNode(true) else element
+      document.head.appendChild(element)
 
-    newBody = newSnapshot.body.cloneNode(true)
+    newBody = if @shouldCacheSnapshot()
+      newSnapshot.body.cloneNode(true)
+    else
+      newSnapshot.body
+
     @delegate.viewWillRender(newBody)
 
     importPermanentElementsIntoBody(newBody)
