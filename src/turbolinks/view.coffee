@@ -10,7 +10,7 @@ class Turbolinks.View
   getCacheControlValue: ->
     @getSnapshot().getCacheControlValue()
 
-  getSnapshot: ({clone} = {clone: true}) ->
+  getSnapshot: ({clone} = {clone: false}) ->
     element = if clone then @element.cloneNode(true) else @element
     Turbolinks.Snapshot.fromElement(element)
 
@@ -30,7 +30,7 @@ class Turbolinks.View
       @element.removeAttribute("data-turbolinks-preview")
 
   renderSnapshot: (newSnapshot, callback) ->
-    currentSnapshot = @getSnapshot(clone: false)
+    currentSnapshot = @getSnapshot()
 
     unless currentSnapshot.hasSameTrackedHeadElementsAsSnapshot(newSnapshot)
       @delegate.viewInvalidated()
