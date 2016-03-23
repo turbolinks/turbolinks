@@ -12,8 +12,8 @@ class Turbolinks.BrowserAdapter
     @controller.startVisitToLocationWithAction(location, action)
 
   visitStarted: (visit) ->
-    visit.changeHistory()
     visit.issueRequest()
+    visit.changeHistory()
     visit.loadCachedSnapshot()
 
   visitRequestStarted: (visit) ->
