@@ -1,0 +1,31 @@
+{
+  "name": "turbolinks",
+  "version": "0.0.2",
+  "description": "Turbolinks makes navigating your web application faster",
+  "main": "dist/turbolinks.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "bin/blade runner"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/turbolinks/turbolinks.git"
+  },
+  "keywords": [
+    "turbolinks",
+    "rails",
+    "javascript"
+  ],
+  "author": "packagethief, sstephenson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/turbolinks/turbolinks/issues"
+  },
+  "homepage": "https://github.com/turbolinks/turbolinks#readme"
+}

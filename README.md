@@ -19,6 +19,22 @@ Turbolinks works in all modern desktop and mobile browsers. It depends on the [H
 
 Include [`dist/turbolinks.js`](dist/turbolinks.js) in your application’s JavaScript bundle.
 
+### Installation Via Webpack and NPM
+
+#### Add turbolinks to package.json
+`npm install --save turbolinks`
+
+#### Update your webpack.config.js
+1. Add `turbolinks` as an entry point (`entry` section).
+2. Include this line in your module.loaders section
+```
+  module: {
+    loaders: [
+      { test: require.resolve('turbolinks'), loader: 'imports?this=>window' },
+```
+
+This [pull request](https://github.com/shakacode/react-webpack-rails-tutorial/pull/259) demonstrates the conversion of a sample project from the ruby gem of turbolinks to the npm version. You can see this app, which uses webpack and Turbolinks via npm, live at http://www.reactrails.com.
+
 ### Rails Integration
 
 The Turbolinks gem is packaged as a Rails engine and integrates seamlessly with the Rails asset pipeline. To install:
