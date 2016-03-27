@@ -1,6 +1,6 @@
 {
   "name": "turbolinks",
-  "version": "0.0.2",
+  "version": "5.0.0-beta3",
   "description": "Turbolinks makes navigating your web application faster",
   "main": "dist/turbolinks.js",
   "files": [
@@ -19,8 +19,8 @@
   },
   "keywords": [
     "turbolinks",
-    "rails",
-    "javascript"
+    "browser",
+    "pushstate"
   ],
   "author": "packagethief, sstephenson",
   "license": "MIT",
