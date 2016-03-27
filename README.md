@@ -33,7 +33,7 @@ The gem also provides server-side support for Turbolinks redirection.
 
 Your application can use the [`turbolinks` npm package](https://www.npmjs.com/package/turbolinks) to install Turbolinks in a [Webpack](http://webpack.github.io/) asset bundle.
 
-1. Add the `turbolinks` package to your application: `npm install --save turbolinks@beta`.
+1. Add the `turbolinks` package to your application: `npm install --save turbolinks`.
 2. Add `turbolinks` to the `entry` section of webpack.config.js:
 
     ```js
