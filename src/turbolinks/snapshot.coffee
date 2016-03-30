@@ -1,5 +1,3 @@
-#= require ./element_set
-
 class Turbolinks.Snapshot
   @wrap: (value) ->
     if value instanceof this
@@ -31,17 +29,6 @@ class Turbolinks.Snapshot
   hasAnchor: (anchor) ->
     @body.querySelector("##{anchor}")?
 
-  hasSameTrackedHeadElementsAsSnapshot: (snapshot) ->
-    @getTrackedHeadElementSet().isEqualTo(snapshot.getTrackedHeadElementSet())
-
-  getInlineHeadElementsNotPresentInSnapshot: (snapshot) ->
-    inlineStyleElements = @getInlineHeadStyleElementSet().getElementsNotPresentInSet(snapshot.getInlineHeadStyleElementSet())
-    inlineScriptElements = @getInlineHeadScriptElementSet().getElementsNotPresentInSet(snapshot.getInlineHeadScriptElementSet())
-    inlineStyleElements.getElements().concat(inlineScriptElements.getElements())
-
-  getTemporaryHeadElements: ->
-    @getTemporaryHeadElementSet().getElements()
-
   isPreviewable: ->
     @getCacheControlValue() isnt "no-preview"
 
@@ -50,21 +37,3 @@ class Turbolinks.Snapshot
   getSetting: (name) ->
     [..., element] = @head.querySelectorAll("meta[name='turbolinks-#{name}']")
     element?.getAttribute("content")
-
-  getTrackedHeadElementSet: ->
-    @trackedHeadElementSet ?= @getPermanentHeadElementSet().selectElementsMatchingSelector("[data-turbolinks-track=reload]")
-
-  getInlineHeadStyleElementSet: ->
-    @inlineHeadStyleElementSet ?= @getPermanentHeadElementSet().selectElementsMatchingSelector("style")
-
-  getInlineHeadScriptElementSet: ->
-    @inlineHeadScriptElementSet ?= @getPermanentHeadElementSet().selectElementsMatchingSelector("script:not([src])")
-
-  getPermanentHeadElementSet: ->
-    @permanentHeadElementSet ?= @getHeadElementSet().selectElementsMatchingSelector("script, style, link[href], [data-turbolinks-track=reload]")
-
-  getTemporaryHeadElementSet: ->
-    @temporaryHeadElementSet ?= @getHeadElementSet().getElementsNotPresentInSet(@getPermanentHeadElementSet())
-
-  getHeadElementSet: ->
-    @headElementSet ?= new Turbolinks.ElementSet @head.childNodes

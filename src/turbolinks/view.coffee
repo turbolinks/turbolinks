@@ -1,4 +1,5 @@
 #= require ./snapshot
+#= require ./renderer
 
 class Turbolinks.View
   constructor: (@delegate) ->
@@ -30,44 +31,15 @@ class Turbolinks.View
       @element.removeAttribute("data-turbolinks-preview")
 
   renderSnapshot: (newSnapshot, callback) ->
-    currentSnapshot = @getSnapshot()
-
-    unless currentSnapshot.hasSameTrackedHeadElementsAsSnapshot(newSnapshot)
-      @delegate.viewInvalidated()
-      return false
-
-    for element in newSnapshot.getInlineHeadElementsNotPresentInSnapshot(currentSnapshot)
-      document.head.appendChild(element.cloneNode(true))
-
-    for element in currentSnapshot.getTemporaryHeadElements()
-      document.head.removeChild(element)
-
-    for element in newSnapshot.getTemporaryHeadElements()
-      document.head.appendChild(element.cloneNode(true))
-
-    newBody = newSnapshot.body.cloneNode(true)
-    @delegate.viewWillRender(newBody)
-
-    importPermanentElementsIntoBody(newBody)
-    document.body = newBody
-
-    focusFirstAutofocusableElement()
-    callback?()
-    @delegate.viewRendered()
+    renderer = new Turbolinks.Renderer @getSnapshot(), newSnapshot
+    renderer.delegate = @delegate
+    renderer.render(callback)
 
   renderHTML: (html, callback) ->
     document.documentElement.innerHTML = html
     activateScripts()
     callback?()
     @delegate.viewRendered()
-
-  importPermanentElementsIntoBody = (newBody) ->
-    for newChild in getPermanentElements(document.body)
-      if oldChild = newBody.querySelector("[id='#{newChild.id}']")
-        oldChild.parentNode.replaceChild(newChild, oldChild)
-
-  getPermanentElements = (element) ->
-    element.querySelectorAll("[id][data-turbolinks-permanent]")
 
   activateScripts = ->
     for oldChild in document.querySelectorAll("script")
@@ -81,6 +53,3 @@ class Turbolinks.View
     else
       element.textContent = script.textContent
     element
-
-  focusFirstAutofocusableElement = ->
-    document.body.querySelector("[autofocus]")?.focus()
