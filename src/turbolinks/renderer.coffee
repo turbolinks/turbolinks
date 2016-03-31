@@ -14,10 +14,13 @@ class Turbolinks.Renderer
     @delegate.viewInvalidated()
 
   cloneScriptElement: (element) ->
-    activatedScriptElement = document.createElement("script")
-    activatedScriptElement.textContent = element.textContent
-    copyElementAttributes(activatedScriptElement, element)
-    activatedScriptElement
+    if element.getAttribute("data-turbolinks-eval") is "false"
+      element.cloneNode(true)
+    else
+      clonedScriptElement = document.createElement("script")
+      clonedScriptElement.textContent = element.textContent
+      copyElementAttributes(clonedScriptElement, element)
+      clonedScriptElement
 
   copyElementAttributes = (destinationElement, sourceElement) ->
     for {name, value} in sourceElement.attributes
