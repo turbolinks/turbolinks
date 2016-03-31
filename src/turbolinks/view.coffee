@@ -1,5 +1,5 @@
 #= require ./snapshot
-#= require ./renderer
+#= require ./snapshot_renderer
 
 class Turbolinks.View
   constructor: (@delegate) ->
@@ -31,7 +31,7 @@ class Turbolinks.View
       @element.removeAttribute("data-turbolinks-preview")
 
   renderSnapshot: (newSnapshot, callback) ->
-    renderer = new Turbolinks.Renderer @getSnapshot(), newSnapshot
+    renderer = new Turbolinks.SnapshotRenderer @getSnapshot(), newSnapshot
     renderer.delegate = @delegate
     renderer.render(callback)
 
