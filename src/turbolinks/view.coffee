@@ -19,7 +19,7 @@ class Turbolinks.View
   render: ({snapshot, error, isPreview}, callback) ->
     @markAsPreview(isPreview)
     if snapshot?
-      @renderSnapshot(Turbolinks.Snapshot.wrap(snapshot), callback)
+      @renderSnapshot(snapshot, callback)
     else
       @renderError(error, callback)
 
@@ -31,12 +31,8 @@ class Turbolinks.View
     else
       @element.removeAttribute("data-turbolinks-preview")
 
-  renderSnapshot: (newSnapshot, callback) ->
-    renderer = new Turbolinks.SnapshotRenderer @getSnapshot(), newSnapshot
-    renderer.delegate = @delegate
-    renderer.render(callback)
+  renderSnapshot: (snapshot, callback) ->
+    Turbolinks.SnapshotRenderer.render(@delegate, callback, @getSnapshot(), Turbolinks.Snapshot.wrap(snapshot))
 
   renderError: (error, callback) ->
-    renderer = new Turbolinks.ErrorRenderer html
-    renderer.delegate = @delegate
-    renderer.render(callback)
+    Turbolinks.ErrorRenderer.render(@delegate, callback, html)

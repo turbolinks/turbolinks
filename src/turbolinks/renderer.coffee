@@ -1,4 +1,10 @@
 class Turbolinks.Renderer
+  @render: (delegate, callback, args...) ->
+    renderer = new this args...
+    renderer.delegate = delegate
+    renderer.render(callback)
+    renderer
+
   renderView: (callback) ->
     @delegate.viewWillRender(@newBody)
     callback()
