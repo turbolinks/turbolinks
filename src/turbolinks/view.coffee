@@ -35,4 +35,4 @@ class Turbolinks.View
     Turbolinks.SnapshotRenderer.render(@delegate, callback, @getSnapshot(), Turbolinks.Snapshot.wrap(snapshot))
 
   renderError: (error, callback) ->
-    Turbolinks.ErrorRenderer.render(@delegate, callback, html)
+    Turbolinks.ErrorRenderer.render(@delegate, callback, error)

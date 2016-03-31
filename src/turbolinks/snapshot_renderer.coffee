@@ -86,4 +86,3 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
 
   findFirstAutofocusableElement: ->
     document.body.querySelector("[autofocus]")
-
