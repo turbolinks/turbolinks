@@ -6,7 +6,7 @@ class Turbolinks.ErrorRenderer extends Turbolinks.Renderer
   render: (callback) ->
     @renderView =>
       @replaceDocumentHTML()
-      @activateScriptElements()
+      @activateBodyScriptElements()
       callback()
 
   replaceDocumentHTML: ->
@@ -14,7 +14,7 @@ class Turbolinks.ErrorRenderer extends Turbolinks.Renderer
 
   activateBodyScriptElements: ->
     for replaceableElement in @getScriptElements()
-      element = @activateScriptElement(replaceableElement)
+      element = @cloneScriptElement(replaceableElement)
       replaceableElement.parentNode.replaceChild(element, replaceableElement)
 
   getScriptElements: ->

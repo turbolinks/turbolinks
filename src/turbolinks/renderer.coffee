@@ -13,7 +13,7 @@ class Turbolinks.Renderer
   invalidateView: ->
     @delegate.viewInvalidated()
 
-  activateScriptElement: (element) ->
+  cloneScriptElement: (element) ->
     activatedScriptElement = document.createElement("script")
     activatedScriptElement.textContent = element.textContent
     copyElementAttributes(activatedScriptElement, element)

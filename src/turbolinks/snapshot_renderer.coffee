@@ -37,7 +37,7 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
 
   copyNewHeadScriptElements: ->
     for element in @getNewHeadScriptElements()
-      document.head.appendChild(@activateScriptElement(element))
+      document.head.appendChild(@cloneScriptElement(element))
 
   removeCurrentHeadProvisionalElements: ->
     for element in @getCurrentHeadProvisionalElements()
@@ -54,7 +54,7 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
 
   activateBodyScriptElements: ->
     for replaceableElement in @getNewBodyScriptElements()
-      element = @activateScriptElement(replaceableElement)
+      element = @cloneScriptElement(replaceableElement)
       replaceableElement.parentNode.replaceChild(element, replaceableElement)
 
   assignNewBody: ->
