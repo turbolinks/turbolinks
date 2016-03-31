@@ -1,5 +1,6 @@
 #= require ./snapshot
 #= require ./snapshot_renderer
+#= require ./error_renderer
 
 class Turbolinks.View
   constructor: (@delegate) ->
@@ -15,12 +16,12 @@ class Turbolinks.View
     element = if clone then @element.cloneNode(true) else @element
     Turbolinks.Snapshot.fromElement(element)
 
-  render: ({snapshot, html, isPreview}, callback) ->
+  render: ({snapshot, error, isPreview}, callback) ->
     @markAsPreview(isPreview)
     if snapshot?
       @renderSnapshot(Turbolinks.Snapshot.wrap(snapshot), callback)
     else
-      @renderHTML(html, callback)
+      @renderError(error, callback)
 
   # Private
 
@@ -35,21 +36,7 @@ class Turbolinks.View
     renderer.delegate = @delegate
     renderer.render(callback)
 
-  renderHTML: (html, callback) ->
-    document.documentElement.innerHTML = html
-    activateScripts()
-    callback?()
-    @delegate.viewRendered()
-
-  activateScripts = ->
-    for oldChild in document.querySelectorAll("script")
-      newChild = cloneScript(oldChild)
-      oldChild.parentNode.replaceChild(newChild, oldChild)
-
-  cloneScript = (script) ->
-    element = document.createElement("script")
-    if script.hasAttribute("src")
-      element.src = script.getAttribute("src")
-    else
-      element.textContent = script.textContent
-    element
+  renderError: (error, callback) ->
+    renderer = new Turbolinks.ErrorRenderer html
+    renderer.delegate = @delegate
+    renderer.render(callback)

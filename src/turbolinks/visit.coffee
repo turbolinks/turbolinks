@@ -68,7 +68,7 @@ class Turbolinks.Visit
       @render ->
         @cacheSnapshot()
         if @request.failed
-          @controller.render(html: @response, @performScroll)
+          @controller.render(error: @response, @performScroll)
           @adapter.visitRendered?(this)
           @fail()
         else
