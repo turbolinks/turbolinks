@@ -304,9 +304,9 @@ Annotate asset elements with `data-turbolinks-track="reload"` and include a vers
 </head>
 ```
 
-Note that Turbolinks will only consider tracked assets in `<head>` and not elsewhere on the page. 
+You can use asset tracking with any HTML element, such as `<link>`, `<script>`, or even `<meta>`. An element annotated with `data-turbolinks-track="reload"` will trigger a full reload if it changes in any way, e.g. if its attributes are not identical, or if the element is present on one page but not on the next.
 
-Any HTML tag - `<link>`, `<script>`, or even `<meta>` and others - can use this feature. Any element annotated with `data-turbolinks-track="reload"` will trigger a full reload if the element changes in any way (i.e. its attributes are not identical).
+Note that Turbolinks will only consider tracked assets in `<head>` and not elsewhere on the page.
 
 ## Setting a Root Location
 
