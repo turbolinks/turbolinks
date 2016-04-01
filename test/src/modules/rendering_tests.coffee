@@ -109,7 +109,15 @@ renderingTest "error pages", (assert, session, done) ->
       done()
 
 getAssetElements = (document = document) ->
-  [document.querySelectorAll("head > script, head > style, head > link[rel=stylesheet]")...]
+  selectChildren document.head, (el) -> match(el, "script, style, link[rel=stylesheet]")
 
 getProvisionalElements = (document = document) ->
-  [document.querySelectorAll("head > :not(script):not(style):not(link[rel=stylesheet])")...]
+  selectChildren document.head, (el) -> not match(el, "script, style, link[rel=stylesheet]")
+
+selectChildren = (element, test) ->
+  node for node in element.childNodes when node.nodeType is Node.ELEMENT_NODE and test(node)
+
+match = (element, selector) ->
+  html = document.documentElement
+  fn = html.matchesSelector ? html.webkitMatchesSelector ? html.msMatchesSelector ? html.mozMatchesSelector
+  fn.call(element, selector)
