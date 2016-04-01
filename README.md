@@ -172,7 +172,7 @@ When possible, avoid using the `turbolinks:load` event to add event listeners di
 
 Your browser automatically loads and evaluates any `<script>` elements present on the initial page load.
 
-When you navigate to a new page, Turbolinks looks for any `<script>` elements in the new page’s `<head>` that aren’t present on the current page. Then it appends them to the current `<head>` where they’re loaded and evaluated by the browser.
+When you navigate to a new page, Turbolinks looks for any `<script>` elements in the new page’s `<head>` that aren’t present on the current page. Then it appends them to the current `<head>` where they’re loaded and evaluated by the browser. You can use this to load additional JavaScript files on-demand.
 
 Turbolinks evaluates `<script>` elements in a page’s `<body>` each time it renders the page. You can use inline body scripts to set up per-page JavaScript state or bootstrap client-side models. To install behavior, or to perform more complex operations when the page changes, avoid script elements and use the `turbolinks:load` event instead.
 
