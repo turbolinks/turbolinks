@@ -8,13 +8,9 @@ class Turbolinks.View
 
   getRootLocation: ->
     @getSnapshot().getRootLocation()
-
-  getCacheControlValue: ->
-    @getSnapshot().getCacheControlValue()
-
-  getSnapshot: ({clone} = {clone: false}) ->
-    element = if clone then @element.cloneNode(true) else @element
-    Turbolinks.Snapshot.fromElement(element)
+    
+  getSnapshot: ->
+    Turbolinks.Snapshot.fromElement(@element)
 
   render: ({snapshot, error, isPreview}, callback) ->
     @markAsPreview(isPreview)

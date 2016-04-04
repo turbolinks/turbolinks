@@ -5,7 +5,7 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
   constructor: (@currentSnapshot, @newSnapshot) ->
     @currentHeadDetails = new Turbolinks.HeadDetails @currentSnapshot.head
     @newHeadDetails = new Turbolinks.HeadDetails @newSnapshot.head
-    @newBody = @newSnapshot.body.cloneNode(true)
+    @newBody = @newSnapshot.body
 
   render: (callback) ->
     if @trackedElementsAreIdentical()
@@ -33,11 +33,11 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
 
   copyNewHeadStylesheetElements: ->
     for element in @getNewHeadStylesheetElements()
-      document.head.appendChild(element.cloneNode(true))
+      document.head.appendChild(element)
 
   copyNewHeadScriptElements: ->
     for element in @getNewHeadScriptElements()
-      document.head.appendChild(@cloneScriptElement(element))
+      document.head.appendChild(@createScriptElement(element))
 
   removeCurrentHeadProvisionalElements: ->
     for element in @getCurrentHeadProvisionalElements()
@@ -45,7 +45,7 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
 
   copyNewHeadProvisionalElements: ->
     for element in @getNewHeadProvisionalElements()
-      document.head.appendChild(element.cloneNode(true))
+      document.head.appendChild(element)
 
   importBodyPermanentElements: ->
     for replaceableElement in @getNewBodyPermanentElements()
@@ -54,7 +54,7 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
 
   activateBodyScriptElements: ->
     for replaceableElement in @getNewBodyScriptElements()
-      element = @cloneScriptElement(replaceableElement)
+      element = @createScriptElement(replaceableElement)
       replaceableElement.parentNode.replaceChild(element, replaceableElement)
 
   assignNewBody: ->

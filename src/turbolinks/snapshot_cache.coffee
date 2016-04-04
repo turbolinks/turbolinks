@@ -1,4 +1,4 @@
-class Turbolinks.Cache
+class Turbolinks.SnapshotCache
   constructor: (@size) ->
     @keys = []
     @snapshots = {}

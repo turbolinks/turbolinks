@@ -19,6 +19,11 @@ class Turbolinks.Snapshot
     @head = head ? document.createElement("head")
     @body = body ? document.createElement("body")
 
+  clone: ->
+    new Snapshot
+      head: @head.cloneNode(true)
+      body: @body.cloneNode(true)
+
   getRootLocation: ->
     root = @getSetting("root") ? "/"
     new Turbolinks.Location root
@@ -31,6 +36,9 @@ class Turbolinks.Snapshot
 
   isPreviewable: ->
     @getCacheControlValue() isnt "no-preview"
+
+  isCacheable: ->
+    @getCacheControlValue() isnt "no-cache"
 
   # Private
 
