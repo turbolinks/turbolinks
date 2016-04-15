@@ -1,4 +1,5 @@
 pageLoaded = false
+locationStack = []
 
 addEventListener "load", ->
   Turbolinks.defer ->
@@ -11,6 +12,8 @@ class Turbolinks.History
   start: ->
     unless @started
       addEventListener("popstate", @onPopState, false)
+      location = Turbolinks.Location.wrap(window.location)
+      locationStack.push(location)
       @started = true
 
   stop: ->
@@ -20,16 +23,27 @@ class Turbolinks.History
 
   push: (location, restorationIdentifier) ->
     location = Turbolinks.Location.wrap(location)
+    locationStack.push(location)
     @update("push", location, restorationIdentifier)
 
   replace: (location, restorationIdentifier) ->
     location = Turbolinks.Location.wrap(location)
     @update("replace", location, restorationIdentifier)
 
+  back: (location, restorationIdentifier) ->
+    location = Turbolinks.Location.wrap(location)
+    
+    previousUrl = locationStack[locationStack.length - 2]
+    if previousUrl?.absoluteURL == location.absoluteURL
+      window.history.go(-1)
+    else
+      @update("push", location, restorationIdentifier)
+
   # Event handlers
 
   onPopState: (event) =>
     if @shouldHandlePopState()
+      locationStack.pop()
       if turbolinks = event.state?.turbolinks
         location = Turbolinks.Location.wrap(window.location)
         restorationIdentifier = turbolinks.restorationIdentifier
