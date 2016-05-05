@@ -238,6 +238,7 @@ class Turbolinks.Controller
     @restorationData[identifier] ?= {}
 
 do ->
-  Turbolinks.controller = controller = new Turbolinks.Controller
-  controller.adapter = new Turbolinks.BrowserAdapter(controller)
-  controller.start()
+  if Turbolinks.supported
+    Turbolinks.controller = controller = new Turbolinks.Controller
+    controller.adapter = new Turbolinks.BrowserAdapter(controller)
+    controller.start()
