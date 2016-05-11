@@ -79,5 +79,5 @@ class Turbolinks.ProgressBar
 
   createProgressElement: ->
     element = document.createElement("div")
-    element.classList.add("turbolinks-progress-bar")
+    element.className = "turbolinks-progress-bar"
     element
