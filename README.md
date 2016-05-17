@@ -35,6 +35,7 @@ Your application can use the [`turbolinks` npm package](https://www.npmjs.com/pa
 
 1. Add the `turbolinks` package to your application: `npm install --save turbolinks`.
 2. Require Turbolinks in your JavaScript bundle: `var Turbolinks = require("turbolinks")`.
+3. If you’re using the [turbolinks-ios](https://github.com/turbolinks/turbolinks-ios) or [turbolinks-android](https://github.com/turbolinks/turbolinks-android) adapter, define `Turbolinks` on `window` so it’s available to them globally: `window.Turbolinks = Turbolinks`.
 
 # Navigating with Turbolinks
 
