@@ -29,31 +29,12 @@ Your Ruby on Rails application can use the [`turbolinks` RubyGem](https://github
 
 The gem also provides server-side support for Turbolinks redirection.
 
-### Installation Using Webpack
+### Installation Using npm
 
-Your application can use the [`turbolinks` npm package](https://www.npmjs.com/package/turbolinks) to install Turbolinks in a [Webpack](http://webpack.github.io/) asset bundle.
+Your application can use the [`turbolinks` npm package](https://www.npmjs.com/package/turbolinks) to install Turbolinks as a module for build tools like [webpack](http://webpack.github.io/).
 
 1. Add the `turbolinks` package to your application: `npm install --save turbolinks`.
-2. Install the [imports loader](https://github.com/webpack/imports-loader) module for webpack: `npm install --save imports-loader`. 
-3. Add `turbolinks` to the `entry` section of webpack.config.js:
-
-    ```js
-    entry: {
-      vendor: [ ...,
-        'turbolinks',
-      ],
-    },
-    ```
-
-4. Set up Turbolinks in the `module.loaders` section of webpack.config.js:
-
-    ```js
-    module: {
-      loaders: [ ...,
-        { test: require.resolve('turbolinks'), loader: 'imports?this=>window' },
-      ],
-    },
-    ```
+2. Require Turbolinks in your JavaScript bundle: `var Turbolinks = require("turbolinks")`.
 
 # Navigating with Turbolinks
 
