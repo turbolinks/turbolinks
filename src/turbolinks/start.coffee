@@ -5,20 +5,14 @@ Turbolinks.start = ->
 
 installTurbolinks = ->
   window.Turbolinks ?= Turbolinks
-  window.Turbolinks is Turbolinks
+  moduleIsInstalled()
 
 createController = ->
   controller = new Turbolinks.Controller
   controller.adapter = new Turbolinks.BrowserAdapter(controller)
   controller
 
-isModule = ->
-  isCommonJSModule() or isAMDModule()
+moduleIsInstalled = ->
+  window.Turbolinks is Turbolinks
 
-isCommonJSModule = ->
-  typeof module is "object" and module.exports
-
-isAMDModule = ->
-  typeof define is "function" and define.amd
-
-Turbolinks.start() unless isModule()
+Turbolinks.start() if moduleIsInstalled()
