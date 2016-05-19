@@ -19,6 +19,8 @@ Turbolinks works in all modern desktop and mobile browsers. It depends on the [H
 
 Include [`dist/turbolinks.js`](dist/turbolinks.js) in your application’s JavaScript bundle.
 
+Turbolinks automatically initializes itself when loaded via a standalone `<script>` tag or a traditional concatenated JavaScript bundle. If you load Turbolinks as a CommonJS or AMD module, first require the module, then call the provided `start()` function.
+
 ### Installation Using Ruby on Rails
 
 Your Ruby on Rails application can use the [`turbolinks` RubyGem](https://github.com/turbolinks/turbolinks-rails) to install Turbolinks. This gem contains a Rails engine which integrates seamlessly with the Rails asset pipeline.
@@ -34,8 +36,12 @@ The gem also provides server-side support for Turbolinks redirection.
 Your application can use the [`turbolinks` npm package](https://www.npmjs.com/package/turbolinks) to install Turbolinks as a module for build tools like [webpack](http://webpack.github.io/).
 
 1. Add the `turbolinks` package to your application: `npm install --save turbolinks`.
-2. Require Turbolinks in your JavaScript bundle: `var Turbolinks = require("turbolinks")`.
-3. If you’re using the [turbolinks-ios](https://github.com/turbolinks/turbolinks-ios) or [turbolinks-android](https://github.com/turbolinks/turbolinks-android) adapter, define `Turbolinks` on `window` so it’s available to them globally: `window.Turbolinks = Turbolinks`.
+2. Require and start Turbolinks in your JavaScript bundle:
+
+    ```js
+    var Turbolinks = require("turbolinks")
+    Turbolinks.start()
+    ```
 
 # Navigating with Turbolinks
 

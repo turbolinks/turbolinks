@@ -3,6 +3,7 @@
 #= require_self
 #= require ./helpers
 #= require ./controller
+#= require ./start
 
 @Turbolinks =
   supported: do ->
