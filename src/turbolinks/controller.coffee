@@ -237,8 +237,3 @@ class Turbolinks.Controller
 
   getRestorationDataForIdentifier: (identifier) ->
     @restorationData[identifier] ?= {}
-
-do ->
-  Turbolinks.controller = controller = new Turbolinks.Controller
-  controller.adapter = new Turbolinks.BrowserAdapter(controller)
-  controller.start()

@@ -19,6 +19,8 @@ Turbolinks works in all modern desktop and mobile browsers. It depends on the [H
 
 Include [`dist/turbolinks.js`](dist/turbolinks.js) in your application’s JavaScript bundle.
 
+Turbolinks automatically initializes itself when loaded via a standalone `<script>` tag or a traditional concatenated JavaScript bundle. If you load Turbolinks as a CommonJS or AMD module, first require the module, then call the provided `start()` function.
+
 ### Installation Using Ruby on Rails
 
 Your Ruby on Rails application can use the [`turbolinks` RubyGem](https://github.com/turbolinks/turbolinks-rails) to install Turbolinks. This gem contains a Rails engine which integrates seamlessly with the Rails asset pipeline.
@@ -29,30 +31,16 @@ Your Ruby on Rails application can use the [`turbolinks` RubyGem](https://github
 
 The gem also provides server-side support for Turbolinks redirection.
 
-### Installation Using Webpack
+### Installation Using npm
 
-Your application can use the [`turbolinks` npm package](https://www.npmjs.com/package/turbolinks) to install Turbolinks in a [Webpack](http://webpack.github.io/) asset bundle.
+Your application can use the [`turbolinks` npm package](https://www.npmjs.com/package/turbolinks) to install Turbolinks as a module for build tools like [webpack](http://webpack.github.io/).
 
 1. Add the `turbolinks` package to your application: `npm install --save turbolinks`.
-2. Install the [imports loader](https://github.com/webpack/imports-loader) module for webpack: `npm install --save imports-loader`. 
-3. Add `turbolinks` to the `entry` section of webpack.config.js:
+2. Require and start Turbolinks in your JavaScript bundle:
 
     ```js
-    entry: {
-      vendor: [ ...,
-        'turbolinks',
-      ],
-    },
-    ```
-
-4. Set up Turbolinks in the `module.loaders` section of webpack.config.js:
-
-    ```js
-    module: {
-      loaders: [ ...,
-        { test: require.resolve('turbolinks'), loader: 'imports?this=>window' },
-      ],
-    },
+    var Turbolinks = require("turbolinks")
+    Turbolinks.start()
     ```
 
 # Navigating with Turbolinks
