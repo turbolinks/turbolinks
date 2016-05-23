@@ -14,7 +14,7 @@ class Turbolinks.ErrorRenderer extends Turbolinks.Renderer
 
   activateBodyScriptElements: ->
     for replaceableElement in @getScriptElements()
-      element = @cloneScriptElement(replaceableElement)
+      element = @createScriptElement(replaceableElement)
       replaceableElement.parentNode.replaceChild(element, replaceableElement)
 
   getScriptElements: ->

@@ -3,7 +3,7 @@
 #= require ./history
 #= require ./view
 #= require ./scroll_manager
-#= require ./cache
+#= require ./snapshot_cache
 #= require ./visit
 
 class Turbolinks.Controller
@@ -35,7 +35,7 @@ class Turbolinks.Controller
       @started = false
 
   clearCache: ->
-    @cache = new Turbolinks.Cache 10
+    @cache = new Turbolinks.SnapshotCache 10
 
   visit: (location, options = {}) ->
     location = Turbolinks.Location.wrap(location)
@@ -85,16 +85,17 @@ class Turbolinks.Controller
   # Snapshot cache
 
   getCachedSnapshotForLocation: (location) ->
-    @cache.get(location)
+    snapshot = @cache.get(location)
+    snapshot.clone() if snapshot
 
   shouldCacheSnapshot: ->
-    @view.getCacheControlValue() isnt "no-cache"
+    @view.getSnapshot().isCacheable()
 
   cacheSnapshot: ->
     if @shouldCacheSnapshot()
       @notifyApplicationBeforeCachingSnapshot()
-      snapshot = @view.getSnapshot(clone: true)
-      @cache.put(@lastRenderedLocation, snapshot)
+      snapshot = @view.getSnapshot()
+      @cache.put(@lastRenderedLocation, snapshot.clone())
 
   # Scrolling
 
