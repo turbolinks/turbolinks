@@ -14,3 +14,7 @@
 
   clearCache: ->
     Turbolinks.controller.clearCache()
+
+  setProgressBarDelay: (delay) ->
+    if Turbolinks.controller.adapter.hasOwnProperty("progressBarDelay")
+      Turbolinks.controller.adapter.progressBarDelay = delay
