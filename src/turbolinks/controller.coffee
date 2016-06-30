@@ -15,7 +15,7 @@ class Turbolinks.Controller
     @clearCache()
 
   start: ->
-    unless @started
+    if Turbolinks.supported and not @started
       addEventListener("click", @clickCaptured, true)
       addEventListener("DOMContentLoaded", @pageLoaded, false)
       @scrollManager.start()
