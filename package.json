@@ -1,6 +1,6 @@
 {
   "name": "turbolinks",
-  "version": "5.0.0-beta5",
+  "version": "5.0.0",
   "description": "Turbolinks makes navigating your web application faster",
   "main": "dist/turbolinks.js",
   "files": [
