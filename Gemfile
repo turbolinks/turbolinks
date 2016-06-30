@@ -8,4 +8,4 @@ gem 'eco'
 gem 'uglifier'
 
 gem 'blade', '~> 0.5.2'
-gem 'blade-sauce_labs_plugin', github: 'javan/blade-sauce_labs_plugin'
+gem 'blade-sauce_labs_plugin', git: 'https://github.com/javan/blade-sauce_labs_plugin.git'
