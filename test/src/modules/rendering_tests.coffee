@@ -108,6 +108,21 @@ renderingTest "error pages", (assert, session, done) ->
       assert.equal(session.element.document.body.textContent, "Not found")
       done()
 
+renderingTest "set data-turbolinks-preview", (assert, session, done) ->
+  session.clickSelector "#same-origin-link", ->
+    session.waitForEvent "turbolinks:render", ->
+      session.goBack()
+      session.waitForEvent "turbolinks:render", ->
+        assert.ok(session.element.document.documentElement.hasAttribute("data-turbolinks-preview"))
+        session.clickSelector "#same-origin-link", ->
+          session.waitForEvent "turbolinks:render", ->
+            assert.notOk(session.element.document.documentElement.hasAttribute("data-turbolinks-preview"))
+            session.goBack()
+            session.waitForEvent "turbolinks:render", ->
+              session.goForward()
+              assert.ok(session.element.document.documentElement.hasAttribute("data-turbolinks-preview"))
+              done()
+
 getAssetElements = (document = document) ->
   selectChildren document.head, (el) -> match(el, "script, style, link[rel=stylesheet]")
 
