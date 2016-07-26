@@ -15,7 +15,7 @@ class Turbolinks.Controller
     @clearCache()
 
   start: ->
-    unless @started
+    if Turbolinks.supported and not @started
       addEventListener("click", @clickCaptured, true)
       addEventListener("DOMContentLoaded", @pageLoaded, false)
       @scrollManager.start()
@@ -217,7 +217,7 @@ class Turbolinks.Controller
       Turbolinks.closest(node, "a[href]:not([target])")
 
   getVisitableLocationForLink: (link) ->
-    location = new Turbolinks.Location link.href
+    location = new Turbolinks.Location link.getAttribute("href")
     location if @locationIsVisitable(location)
 
   getActionForLink: (link) ->
