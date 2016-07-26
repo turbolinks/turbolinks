@@ -43,4 +43,5 @@ class Turbolinks.History
 
   update: (method, location, restorationIdentifier) ->
     state = turbolinks: {restorationIdentifier}
-    history[method + "State"](state, null, location)
+    hist = window.hasOwnProperty("turbolinksHistory") ? turbolinksHistory : history
+    hist[method + "State"](state, null, location)
