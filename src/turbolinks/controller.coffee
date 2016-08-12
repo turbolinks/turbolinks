@@ -71,6 +71,11 @@ class Turbolinks.Controller
   replaceHistoryWithLocationAndRestorationIdentifier: (location, @restorationIdentifier) ->
     @location = Turbolinks.Location.wrap(location)
     @history.replace(@location, @restorationIdentifier)
+    
+  backHistoryWithLocationAndRestorationIdentifier: (location, @restorationIdentifier) ->
+    @location = Turbolinks.Location.wrap(location)
+    @history.back(@location, @restorationIdentifier)
+    
 
   # History delegate
 
