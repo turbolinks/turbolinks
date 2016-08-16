@@ -374,6 +374,15 @@ Turbolinks.clearCache()
 
 Removes all entries from the Turbolinks page cache. Call this when state has changed on the server that may affect cached pages.
 
+## Turbolinks.setProgressBarDelay
+
+Usage:
+```js
+Turbolinks.setProgressBarDelay(0)
+```
+
+Sets the delay after which the [progress bar](#displaying-progress)  will appear, in miliseconds.
+
 ## Turbolinks.supported
 
 Usage:
