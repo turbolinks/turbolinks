@@ -1,21 +1,16 @@
-pageLoaded = false
-
-addEventListener "load", ->
-  Turbolinks.defer ->
-    pageLoaded = true
-, false
-
 class Turbolinks.History
   constructor: (@delegate) ->
 
   start: ->
     unless @started
       addEventListener("popstate", @onPopState, false)
+      addEventListener("load", @onPageLoad, false)
       @started = true
 
   stop: ->
     if @started
       removeEventListener("popstate", @onPopState, false)
+      removeEventListener("load", @onPageLoad, false)
       @started = false
 
   push: (location, restorationIdentifier) ->
@@ -35,11 +30,18 @@ class Turbolinks.History
         restorationIdentifier = turbolinks.restorationIdentifier
         @delegate.historyPoppedToLocationWithRestorationIdentifier(location, restorationIdentifier)
 
+  onPageLoad: (event) =>
+    Turbolinks.defer =>
+      @pageLoaded = true
+
   # Private
 
   shouldHandlePopState: ->
     # Safari dispatches a popstate event after window's load event, ignore it
-    pageLoaded is true
+    @pageIsLoaded()
+
+  pageIsLoaded: ->
+    @pageLoaded or document.readyState is "complete"
 
   update: (method, location, restorationIdentifier) ->
     state = turbolinks: {restorationIdentifier}
