@@ -48,4 +48,4 @@ class Turbolinks.HeadDetails
 
   elementIsStylesheet = (element) ->
     tagName = element.tagName.toLowerCase()
-    tagName is "style" or (tagName is "link" and element.getAttribute("rel") is "stylesheet")
+    tagName is "style" and element.getAttribute("data-turbolinks-track") is "progress" or (tagName is "link" and element.getAttribute("rel") is "stylesheet")

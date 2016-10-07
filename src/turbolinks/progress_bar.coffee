@@ -56,6 +56,7 @@ class Turbolinks.ProgressBar
   uninstallProgressElement: ->
     if @progressElement.parentNode
       document.documentElement.removeChild(@progressElement)
+      document.head.removeChild(@stylesheetElement)
 
   startTrickling: ->
     @trickleInterval ?= setInterval(@trickle, ANIMATION_DURATION)
@@ -73,7 +74,7 @@ class Turbolinks.ProgressBar
 
   createStylesheetElement: ->
     element = document.createElement("style")
-    element.type = "text/css"
+    element.setAttribute("data-turbolinks-track", "progress")
     element.textContent = @constructor.defaultCSS
     element
 

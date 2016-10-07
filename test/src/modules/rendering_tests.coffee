@@ -53,6 +53,18 @@ renderingTest "accumulates asset elements in head", (assert, session, done) ->
         assert.deepEqual(newElements, finalElements)
         done()
 
+renderingTest "always reload style elements in head", (assert, session, done) ->
+  originalElements = getAssetElements(session.element.document)
+  session.clickSelector "#additional-style-link", ->
+    session.waitForEvent "turbolinks:render", ->
+      newElements = getAssetElements(session.element.document)
+      assert.notDeepEqual(originalElements, newElements)
+      session.goBack()
+      session.waitForEvent "turbolinks:render", ->
+        finalElements = getAssetElements(session.element.document)
+        assert.notDeepEqual(newElements, finalElements)
+        done()
+
 renderingTest "replaces provisional elements in head", (assert, session, done) ->
   assert.notOk(session.element.document.querySelector("meta[name=test]"))
   originalElements = getProvisionalElements(session.element.document)
