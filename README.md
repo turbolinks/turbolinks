@@ -43,6 +43,44 @@ Your application can use the [`turbolinks` npm package](https://www.npmjs.com/pa
     Turbolinks.start()
     ```
 
+#### Table of Contents
+
+[Navigating with Turbolinks](#navigating-with-turbolinks)
+- [Each Navigation is a Visit](#each-navigation-is-a-visit)
+- [Application Visits](#application-visits)
+- [Restoration Visits](#restoration-visits)
+- [Canceling Visits Before They Start](#canceling-visits-before-they-start)
+- [Disabling Turbolinks on Specific Links](#disabling-turbolinks-on-specific-links)
+
+[Building Your Turbolinks Application](#building-your-turbolinks-application)
+- [Running JavaScript When a Page Loads](#running-javascript-when-a-page-loads)
+- [Working with Script Elements](#working-with-script-elements)
+- [Understanding Caching](#understanding-caching)
+  - [Preparing the Page to be Cached](#preparing-the-page-to-be-cached)
+  - [Detecting When a Preview is Visible](#detecting-when-a-preview-is-visible)
+  - [Opting Out of Caching](#opting-out-of-caching)
+- [Making Transformations Idempotent](#making-transformations-idempotent)
+- [Responding to Page Updates](#responding-to-page-updates)
+- [Persisting Elements Across Page Loads](#persisting-elements-across-page-loads)
+
+[Advanced Usage](#advanced-usage)
+- [Displaying Progress](#displaying-progress)
+- [Reloading When Assets Change](#reloading-when-assets-change)
+- [Setting a Root Location](#setting-a-root-location)
+- [Following Redirects](#following-redirects)
+- [Redirecting After a Form Submission](#redirecting-after-a-form-submission)
+- [Setting Custom HTTP Headers](#setting-custom-http-headers)
+
+[API Reference](#api-reference)
+- [Turbolinks.visit](#turbolinksvisit)
+- [Turbolinks.clearCache](#turbolinksclearcache)
+- [Turbolinks.supported](#turbolinkssupported)
+- [Full List of Events](#full-list-of-events)
+
+[Contributing to Turbolinks](#contributing-to-turbolinks)
+- [Building From Source](#building-from-source)
+- [Running Tests](#running-tests)
+
 # Navigating with Turbolinks
 
 Turbolinks intercepts all clicks on `<a href>` links to the same domain. When you click an eligible link, Turbolinks prevents the browser from following it. Instead, Turbolinks changes the browser’s URL using the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History), requests the new page using [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest), and then renders the HTML response.
