@@ -9,6 +9,9 @@ class Turbolinks.View
   getRootLocation: ->
     @getSnapshot().getRootLocation()
 
+  getElementForAnchor: (anchor) ->
+    @getSnapshot().getElementForAnchor(anchor)
+
   getSnapshot: ->
     Turbolinks.Snapshot.fromElement(@element)
 
