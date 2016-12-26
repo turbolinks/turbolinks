@@ -29,7 +29,7 @@ class Turbolinks.HttpRequest
 
   requestLoaded: =>
     @endRequest =>
-      if 200 <= @xhr.status < 300
+      if 200 <= @xhr.status < 300 or @xhr.status = 403 or @xhr.status = 404 or @xhr.status = 500
         @delegate.requestCompletedWithResponse(@xhr.responseText, @xhr.getResponseHeader("Turbolinks-Location"))
       else
         @failed = true
