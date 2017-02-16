@@ -45,6 +45,18 @@ navigationTest "following a cross-origin unannotated link", (assert, session, do
     assert.equal(navigation.action, "load")
     done()
 
+navigationTest "following a same-origin [target] link", (assert, session, done) ->
+  session.clickSelector "#same-origin-targeted-link", (navigation) ->
+    assert.equal(navigation.location.pathname, "/fixtures/one.html")
+    assert.equal(navigation.action, "load")
+    done()
+
+navigationTest "following a same-origin [download] link", (assert, session, done) ->
+  session.clickSelector "#same-origin-download-link", (navigation) ->
+    assert.equal(navigation.location.pathname, "/fixtures/one.html")
+    assert.equal(navigation.action, "load")
+    done()
+
 navigationTest "following a same-origin link inside an SVG element", (assert, session, done) ->
   session.clickSelector "#same-origin-link-inside-svg-element", (navigation) ->
     assert.equal(navigation.location.pathname, "/fixtures/one.html")
