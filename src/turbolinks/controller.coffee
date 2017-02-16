@@ -214,7 +214,7 @@ class Turbolinks.Controller
 
   getVisitableLinkForNode: (node) ->
     if @nodeIsVisitable(node)
-      Turbolinks.closest(node, "a[href]:not([target])")
+      Turbolinks.closest(node, "a[href]:not([target]):not([download])")
 
   getVisitableLocationForLink: (link) ->
     location = new Turbolinks.Location link.getAttribute("href")
