@@ -1,7 +1,7 @@
 #= require ./http_request
 
 class Turbolinks.Visit
-  constructor: (@controller, location, @action) ->
+  constructor: (@controller, location, @options) ->
     @identifier = Turbolinks.uuid()
     @location = Turbolinks.Location.wrap(location)
     @adapter = @controller.adapter
@@ -34,7 +34,7 @@ class Turbolinks.Visit
 
   changeHistory: ->
     unless @historyChanged
-      actionForHistory = if @location.isEqualTo(@referrer) then "replace" else @action
+      actionForHistory = if @location.isEqualTo(@referrer) then "replace" else @options.action
       method = getHistoryMethodForAction(actionForHistory)
       @controller[method](@location, @restorationIdentifier)
       @historyChanged = true
@@ -48,7 +48,7 @@ class Turbolinks.Visit
   getCachedSnapshot: ->
     if snapshot = @controller.getCachedSnapshotForLocation(@location)
       if not @location.anchor? or snapshot.hasAnchor(@location.anchor)
-        if @action is "restore" or snapshot.isPreviewable()
+        if @options.action is "restore" or snapshot.isPreviewable()
           snapshot
 
   hasCachedSnapshot: ->
@@ -106,7 +106,9 @@ class Turbolinks.Visit
 
   performScroll: =>
     unless @scrolled
-      if @action is "restore"
+      if @options.scroll is "noscroll"
+        @scrolled = true
+      else if @options.action is "restore"
         @scrollToRestoredPosition() or @scrollToTop()
       else
         @scrollToAnchor() or @scrollToTop()
@@ -142,7 +144,7 @@ class Turbolinks.Visit
       when "advance", "restore" then "pushHistoryWithLocationAndRestorationIdentifier"
 
   shouldIssueRequest: ->
-    if @action is "restore"
+    if @options.action is "restore"
       not @hasCachedSnapshot()
     else
       true
