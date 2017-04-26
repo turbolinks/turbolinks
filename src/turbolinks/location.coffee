@@ -22,7 +22,7 @@ class Turbolinks.Location
     @absoluteURL.split("/", 3).join("/")
 
   getPath: ->
-    @absoluteURL.match(/\/\/[^/]*(\/[^?;]*)/)?[1] ? "/"
+    @requestURL.match(/\/\/[^/]*(\/[^?;]*)/)?[1] ? "/"
 
   getPathComponents: ->
     @getPath().split("/").slice(1)
