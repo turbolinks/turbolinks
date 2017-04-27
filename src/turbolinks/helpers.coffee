@@ -20,6 +20,12 @@ closest = do ->
 Turbolinks.defer = (callback) ->
   setTimeout(callback, 1)
 
+Turbolinks.throttle = (fn) ->
+  request = null
+  (args...) ->
+    request ?= requestAnimationFrame =>
+      request = null
+      fn.apply(this, args)
 
 Turbolinks.dispatch = (eventName, {target, cancelable, data} = {}) ->
   event = document.createEvent("Events")

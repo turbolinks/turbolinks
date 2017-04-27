@@ -1,5 +1,6 @@
 class Turbolinks.ScrollManager
   constructor: (@delegate) ->
+    @onScroll = Turbolinks.throttle(@onScroll).bind(this)
 
   start: ->
     unless @started
@@ -18,7 +19,7 @@ class Turbolinks.ScrollManager
   scrollToPosition: ({x, y}) ->
     window.scrollTo(x, y)
 
-  onScroll: (event) =>
+  onScroll: (event) ->
     @updatePosition(x: window.pageXOffset, y: window.pageYOffset)
 
   # Private
