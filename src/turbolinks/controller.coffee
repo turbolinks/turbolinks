@@ -17,7 +17,10 @@ class Turbolinks.Controller
   start: ->
     unless @started
       addEventListener("click", @clickCaptured, true)
-      addEventListener("DOMContentLoaded", @pageLoaded, false)
+      if document.readyState is "loading"
+        addEventListener("DOMContentLoaded", @pageLoaded, false)
+      else
+        @pageLoaded()
       @scrollManager.start()
       @startHistory()
       @started = true
