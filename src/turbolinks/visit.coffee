@@ -108,6 +108,8 @@ class Turbolinks.Visit
     unless @scrolled
       if @action is "restore"
         @scrollToRestoredPosition() or @scrollToTop()
+      else if @action is "noscroll"
+        # no-op
       else
         @scrollToAnchor() or @scrollToTop()
       @scrolled = true
@@ -138,7 +140,7 @@ class Turbolinks.Visit
 
   getHistoryMethodForAction = (action) ->
     switch action
-      when "replace" then "replaceHistoryWithLocationAndRestorationIdentifier"
+      when "replace", "noscroll" then "replaceHistoryWithLocationAndRestorationIdentifier"
       when "advance", "restore" then "pushHistoryWithLocationAndRestorationIdentifier"
 
   shouldIssueRequest: ->
