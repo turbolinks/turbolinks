@@ -39,8 +39,8 @@ navigationTest "following a same-origin data-turbolinks=true link inside a data-
     assert.equal(navigation.action, "push")
     done()
 
-navigationTest "following a same-origin link with ID hash", (assert, session, done) ->
-  session.clickSelector "#same-origin-id-link", (navigation) ->
+navigationTest "following a same-origin anchored link", (assert, session, done) ->
+  session.clickSelector "#same-origin-anchored-link", (navigation) ->
     session.waitForEvent "turbolinks:load", ->
       assert.equal(navigation.location.pathname, "/fixtures/one.html")
       assert.equal(navigation.location.hash, "#element-id")
