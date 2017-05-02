@@ -470,4 +470,4 @@ Follow the instructions for _Building From Source_ above. Then run `bin/blade ru
 
 ---
 
-© 2016 Basecamp, LLC
+© 2017 Basecamp, LLC
