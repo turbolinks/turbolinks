@@ -18,7 +18,7 @@ class Turbolinks.Controller
     if Turbolinks.supported and not @started
       addEventListener("click", @clickCaptured, true)
       @startHistory()
-      if document.readyState is "loading"
+      if @domIsReady
         addEventListener("DOMContentLoaded", @pageLoaded, false)
       else
         @pageLoaded()
@@ -214,6 +214,12 @@ class Turbolinks.Controller
       event.metaKey or
       event.shiftKey
     )
+
+  domIsReady: ->
+    # We previously just used readyState interactive, but this can happen too
+    # early in IE10.
+    document.readyState == 'complete' or
+    (document.readyState != 'loading' and !document.documentElement.doScroll)
 
   getVisitableLinkForNode: (node) ->
     if @nodeIsVisitable(node)
