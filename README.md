@@ -443,7 +443,7 @@ Turbolinks emits events that allow you to track the navigation lifecycle and res
 
 * `turbolinks:render` fires after Turbolinks renders the page. This event fires twice during an application visit to a cached location: once after rendering the cached version, and again after rendering the fresh version.
 
-* `turbolinks:load` fires once the first time Turbolinks is loaded, and again after every Turbolinks visit. Access visit timing metrics with the `event.data.timing` object.
+* `turbolinks:load` fires once after the initial page load, and again after every Turbolinks visit. Access visit timing metrics with the `event.data.timing` object.
 
 # Contributing to Turbolinks
 
