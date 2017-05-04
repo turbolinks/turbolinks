@@ -82,6 +82,14 @@ class Turbolinks.Visit
       @controller.replaceHistoryWithLocationAndRestorationIdentifier(@redirectedToLocation, @restorationIdentifier)
       @followedRedirect = true
 
+  goToSamePageAnchor: ->
+    if @locationHasSamePageAnchor()
+      @render ->
+        @cacheSnapshot()
+        @performScroll()
+        @adapter.visitRendered?(this)
+        @complete()
+
   # HTTP Request delegate
 
   requestStarted: ->
@@ -144,8 +152,13 @@ class Turbolinks.Visit
   shouldIssueRequest: ->
     if @action is "restore"
       not @hasCachedSnapshot()
+    else if @locationHasSamePageAnchor()
+      false
     else
       true
+
+  locationHasSamePageAnchor: ->
+    @location.anchor? and @location.requestURL is @referrer.requestURL
 
   cacheSnapshot: ->
     unless @snapshotCached
