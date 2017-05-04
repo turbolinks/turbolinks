@@ -6,17 +6,16 @@ class Turbolinks.Location
       new this value
 
   constructor: (url = "") ->
-    linkWithAnchor = document.createElement("a")
-    linkWithAnchor.href = url.toString()
+    link = document.createElement("a")
+    link.href = url.toString()
 
-    @absoluteURL = linkWithAnchor.href
+    @absoluteURL = link.href
+    @anchor = @absoluteURL.match(/#(.*)$/)?[1] ? null
 
-    anchorLength = linkWithAnchor.hash.length
-    if anchorLength < 2
-      @requestURL = @absoluteURL
+    @requestURL = if @anchor?
+      @absoluteURL.slice(0, -(@anchor.length + 1))
     else
-      @requestURL = @absoluteURL.slice(0, -anchorLength)
-      @anchor = linkWithAnchor.hash.slice(1)
+      @absoluteURL
 
   getOrigin: ->
     @absoluteURL.split("/", 3).join("/")
