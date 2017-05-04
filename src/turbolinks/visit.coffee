@@ -59,9 +59,13 @@ class Turbolinks.Visit
       isPreview = @shouldIssueRequest()
       @render ->
         @cacheSnapshot()
-        @controller.render({snapshot, isPreview}, @performScroll)
-        @adapter.visitRendered?(this)
-        @complete() unless isPreview
+        if @locationHasSamePageAnchor()
+          @performScroll()
+          @adapter.visitRendered?(this)
+        else
+          @controller.render({snapshot, isPreview}, @performScroll)
+          @adapter.visitRendered?(this)
+          @complete() unless isPreview
 
   loadResponse: ->
     if @response?
