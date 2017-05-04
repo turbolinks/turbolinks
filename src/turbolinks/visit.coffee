@@ -88,7 +88,6 @@ class Turbolinks.Visit
         @cacheSnapshot()
         @performScroll()
         @adapter.visitRendered?(this)
-        @complete()
 
   # HTTP Request delegate
 
