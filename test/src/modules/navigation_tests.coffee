@@ -45,6 +45,7 @@ navigationTest "following a same-origin anchored link", (assert, session, done) 
       assert.equal(navigation.location.pathname, "/fixtures/one.html")
       assert.equal(navigation.location.hash, "#element-id")
       assert.equal(navigation.action, "push")
+      assert.scrolledTo(session.element.document.getElementById('element-id'))
       done()
 
 navigationTest "following a cross-origin unannotated link", (assert, session, done) ->
