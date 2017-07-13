@@ -28,11 +28,12 @@ Turbolinks.throttle = (fn) ->
       fn.apply(this, args)
 
 Turbolinks.dispatch = (eventName, {target, cancelable, data} = {}) ->
-  event = document.createEvent("Events")
-  event.initEvent(eventName, true, cancelable is true)
-  event.data = data ? {}
-  (target ? document).dispatchEvent(event)
-  event
+  if Turbolinks.supported
+    event = document.createEvent("Events")
+    event.initEvent(eventName, true, cancelable is true)
+    event.data = data ? {}
+    (target ? document).dispatchEvent(event)
+    event
 
 
 Turbolinks.match = (element, selector) ->

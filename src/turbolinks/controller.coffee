@@ -40,7 +40,7 @@ class Turbolinks.Controller
   visit: (location, options = {}) ->
     location = Turbolinks.Location.wrap(location)
     if @applicationAllowsVisitingLocation(location)
-      if @locationIsVisitable(location)
+      if Turbolinks.supported and @locationIsVisitable(location)
         action = options.action ? "advance"
         @adapter.visitProposedToLocationWithAction(location, action)
       else
@@ -159,7 +159,7 @@ class Turbolinks.Controller
 
   applicationAllowsVisitingLocation: (location) ->
     event = @notifyApplicationBeforeVisitingLocation(location)
-    not event.defaultPrevented
+    not Turbolinks.supported or not event.defaultPrevented
 
   notifyApplicationAfterClickingLinkToLocation: (link, location) ->
     Turbolinks.dispatch("turbolinks:click", target: link, data: { url: location.absoluteURL }, cancelable: true)
