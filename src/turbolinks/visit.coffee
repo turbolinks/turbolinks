@@ -72,6 +72,7 @@ class Turbolinks.Visit
           @adapter.visitRendered?(this)
           @fail()
         else
+          @followRedirect()
           @controller.render(snapshot: @response, @performScroll)
           @adapter.visitRendered?(this)
           @complete()
