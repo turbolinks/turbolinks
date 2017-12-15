@@ -58,7 +58,7 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
       replaceableElement.parentNode.replaceChild(element, replaceableElement)
 
   assignNewBody: ->
-    document.body = @newBody
+    document.documentElement.replaceChild(@newBody, document.body)
 
   focusFirstAutofocusableElement: ->
     @findFirstAutofocusableElement()?.focus()
