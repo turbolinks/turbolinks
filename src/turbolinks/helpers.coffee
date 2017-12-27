@@ -30,6 +30,9 @@ Turbolinks.throttle = (fn) ->
 Turbolinks.dispatch = (eventName, {target, cancelable, data} = {}) ->
   event = document.createEvent("Events")
   event.initEvent(eventName, true, cancelable is true)
+  event.preventDefault = ->
+    Object.defineProperty this, 'defaultPrevented', get: ->
+      true
   event.data = data ? {}
   (target ? document).dispatchEvent(event)
   event
