@@ -27,12 +27,30 @@ Turbolinks.throttle = (fn) ->
       request = null
       fn.apply(this, args)
 
+
 Turbolinks.dispatch = (eventName, {target, cancelable, data} = {}) ->
   event = document.createEvent("Events")
   event.initEvent(eventName, true, cancelable is true)
   event.data = data ? {}
+
+  # Fix setting `defaultPrevented` when `preventDefault()` is called
+  # http://stackoverflow.com/questions/23349191/event-preventdefault-is-not-working-in-ie-11-for-custom-events
+  if event.cancelable and not preventDefaultSupported
+    { preventDefault } = event
+    event.preventDefault = ->
+      result = preventDefault.call(this)
+      unless this.defaultPrevented
+        Object.defineProperty(this, "defaultPrevented", get: -> true)
+      result
+
   (target ? document).dispatchEvent(event)
   event
+
+preventDefaultSupported = do ->
+  event = document.createEvent("Events")
+  event.initEvent("test", true, true)
+  event.preventDefault()
+  event.defaultPrevented
 
 
 Turbolinks.match = (element, selector) ->
