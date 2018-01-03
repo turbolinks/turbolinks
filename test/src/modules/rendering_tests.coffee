@@ -102,6 +102,26 @@ renderingTest "does not evaluate data-turbolinks-eval=false scripts", (assert, s
       assert.equal(session.element.window.bodyScriptEvaluationCount, null)
       done()
 
+renderingTest "focusses an autofocus field", (assert, session, done) ->
+  session.clickSelector "#same-origin-link", ->
+    session.waitForEvent "turbolinks:render", ->
+      doc = session.element.document
+      assert.equal(doc.querySelector('[autofocus]'), doc.activeElement)
+      done()
+
+renderingTest "does not autofocus a field on a preview", (assert, session, done) ->
+  session.clickSelector "#same-origin-link", ->
+    session.waitForEvent "turbolinks:load", ->
+      session.goBack()
+      session.waitForEvent "turbolinks:load", ->
+        session.clickSelector "#same-origin-link", ->
+          session.waitForEvent "turbolinks:render", ->
+            doc = session.element.document
+            assert.notEqual(doc.activeElement, doc.querySelector('[autofocus]'))
+            session.waitForEvent "turbolinks:render", ->
+              assert.equal(doc.activeElement, doc.querySelector('[autofocus]'))
+              done()
+
 renderingTest "error pages", (assert, session, done) ->
   session.clickSelector "#nonexistent-link", ->
     session.waitForEvent "turbolinks:render", ->

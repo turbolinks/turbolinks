@@ -56,12 +56,12 @@ class Turbolinks.Visit
 
   loadCachedSnapshot: ->
     if snapshot = @getCachedSnapshot()
-      isPreview = @shouldIssueRequest()
+      snapshot.isPreview = @shouldIssueRequest()
       @render ->
         @cacheSnapshot()
-        @controller.render({snapshot, isPreview}, @performScroll)
+        @controller.render({snapshot}, @performScroll)
         @adapter.visitRendered?(this)
-        @complete() unless isPreview
+        @complete() unless snapshot.isPreview
 
   loadResponse: ->
     if @response?

@@ -8,12 +8,12 @@ class Turbolinks.View
 
   getRootLocation: ->
     @getSnapshot().getRootLocation()
-    
+
   getSnapshot: ->
     Turbolinks.Snapshot.fromElement(@element)
 
-  render: ({snapshot, error, isPreview}, callback) ->
-    @markAsPreview(isPreview)
+  render: ({snapshot, error}, callback) ->
+    @markAsPreview(snapshot?.isPreview)
     if snapshot?
       @renderSnapshot(snapshot, callback)
     else

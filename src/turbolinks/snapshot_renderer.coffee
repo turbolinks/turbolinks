@@ -12,7 +12,7 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
       @mergeHead()
       @renderView =>
         @replaceBody()
-        @focusFirstAutofocusableElement()
+        @focusFirstAutofocusableElement() unless @newSnapshot.isPreview
         callback()
     else
       @invalidateView()
