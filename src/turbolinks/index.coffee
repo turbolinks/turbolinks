@@ -16,3 +16,8 @@
 
   clearCache: ->
     Turbolinks.controller.clearCache()
+
+  changeURL: (location) ->
+    Turbolinks
+      .controller
+      .pushHistoryWithLocationAndRestorationIdentifier(location, Turbolinks.uuid())
