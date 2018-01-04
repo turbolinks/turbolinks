@@ -3,6 +3,7 @@
 #= require_self
 #= require ./helpers
 #= require ./controller
+#= require ./script_warning
 #= require ./start
 
 @Turbolinks =
