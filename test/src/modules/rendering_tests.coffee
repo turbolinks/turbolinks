@@ -1,4 +1,4 @@
-QUnit.module "Rendering"
+QUnit.module "Rendering", beforeEach: -> window.focus()
 
 renderingTest = (name, callback) ->
   sessionTest name, (assert, session, done) ->
