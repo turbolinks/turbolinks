@@ -2,7 +2,7 @@
 #= require ./head_details
 
 class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
-  constructor: (@currentSnapshot, @newSnapshot) ->
+  constructor: (@currentSnapshot, @newSnapshot, @isPreview) ->
     @currentHeadDetails = new Turbolinks.HeadDetails @currentSnapshot.head
     @newHeadDetails = new Turbolinks.HeadDetails @newSnapshot.head
     @newBody = @newSnapshot.body
@@ -12,7 +12,7 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
       @mergeHead()
       @renderView =>
         @replaceBody()
-        @focusFirstAutofocusableElement()
+        @focusFirstAutofocusableElement() unless @isPreview
         callback()
     else
       @invalidateView()
