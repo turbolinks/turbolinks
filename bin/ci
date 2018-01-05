@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -e
+
+$(base64 --decode <<< ZXhwb3J0IFNBVUNFX1VTRVJOQU1FPXR1cmJvbGlua3MK)
+$(base64 --decode <<< ZXhwb3J0IFNBVUNFX0FDQ0VTU19LRVk9YjQzNjE3MDgtZDA2NC00NzdmLThhOGEtMzVmMGUxNjk5ZDZjCg==)
+
+bin/blade ci

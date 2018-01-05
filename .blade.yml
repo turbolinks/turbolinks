@@ -13,3 +13,10 @@ build:
     - turbolinks.js
   path: dist
   js_compressor: uglifier
+
+plugins:
+  sauce_labs:
+    browsers:
+      Google Chrome:
+        os: Mac
+        version: -1
