@@ -8,14 +8,14 @@ class Turbolinks.View
 
   getRootLocation: ->
     @getSnapshot().getRootLocation()
-    
+
   getSnapshot: ->
     Turbolinks.Snapshot.fromElement(@element)
 
   render: ({snapshot, error, isPreview}, callback) ->
     @markAsPreview(isPreview)
     if snapshot?
-      @renderSnapshot(snapshot, callback)
+      @renderSnapshot(snapshot, isPreview, callback)
     else
       @renderError(error, callback)
 
@@ -27,8 +27,8 @@ class Turbolinks.View
     else
       @element.removeAttribute("data-turbolinks-preview")
 
-  renderSnapshot: (snapshot, callback) ->
-    Turbolinks.SnapshotRenderer.render(@delegate, callback, @getSnapshot(), Turbolinks.Snapshot.wrap(snapshot))
+  renderSnapshot: (snapshot, isPreview, callback) ->
+    Turbolinks.SnapshotRenderer.render(@delegate, callback, @getSnapshot(), Turbolinks.Snapshot.wrap(snapshot), isPreview)
 
   renderError: (error, callback) ->
     Turbolinks.ErrorRenderer.render(@delegate, callback, error)
