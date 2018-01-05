@@ -13,6 +13,7 @@ class Turbolinks.Controller
     @scrollManager = new Turbolinks.ScrollManager this
     @restorationData = {}
     @clearCache()
+    @setProgressBarDelay(500)
 
   start: ->
     if Turbolinks.supported and not @started
@@ -52,6 +53,9 @@ class Turbolinks.Controller
       @startVisit(location, action, {restorationData})
     else
       window.location = location
+
+  setProgressBarDelay: (delay) ->
+    @progressBarDelay = delay
 
   # History
 
