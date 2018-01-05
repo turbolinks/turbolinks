@@ -55,6 +55,7 @@ Your application can use the [`turbolinks` npm package](https://www.npmjs.com/pa
 [Building Your Turbolinks Application](#building-your-turbolinks-application)
 - [Running JavaScript When a Page Loads](#running-javascript-when-a-page-loads)
 - [Working with Script Elements](#working-with-script-elements)
+  - [Loading Your Application’s JavaScript Bundle](#loading-your-applications-javascript-bundle)
 - [Understanding Caching](#understanding-caching)
   - [Preparing the Page to be Cached](#preparing-the-page-to-be-cached)
   - [Detecting When a Preview is Visible](#detecting-when-a-preview-is-visible)
@@ -199,11 +200,26 @@ When possible, avoid using the `turbolinks:load` event to add event listeners di
 
 Your browser automatically loads and evaluates any `<script>` elements present on the initial page load.
 
-When you navigate to a new page, Turbolinks looks for any `<script>` elements in the new page’s `<head>` that aren’t present on the current page. Then it appends them to the current `<head>` where they’re loaded and evaluated by the browser. You can use this to load additional JavaScript files on-demand.
+When you navigate to a new page, Turbolinks looks for any `<script>` elements in the new page’s `<head>` which aren’t present on the current page. Then it appends them to the current `<head>` where they’re loaded and evaluated by the browser. You can use this to load additional JavaScript files on-demand.
 
 Turbolinks evaluates `<script>` elements in a page’s `<body>` each time it renders the page. You can use inline body scripts to set up per-page JavaScript state or bootstrap client-side models. To install behavior, or to perform more complex operations when the page changes, avoid script elements and use the `turbolinks:load` event instead.
 
 Annotate `<script>` elements with `data-turbolinks-eval="false"` if you do not want Turbolinks to evaluate them after rendering. Note that this annotation will not prevent your browser from evaluating scripts on the initial page load.
+
+### Loading Your Application’s JavaScript Bundle
+
+Always make sure to load your application’s JavaScript bundle using `<script>` elements in the `<head>` of your document. Otherwise, Turbolinks will reload the bundle with every page change.
+
+```html
+<head>
+  ...
+  <script src="/application-cbd3cd4.js" defer></script>
+</head>
+```
+
+If you have traditionally placed application scripts at the end of `<body>` for performance reasons, consider using the [`<script defer>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-defer) attribute instead. It has [widespread browser support](https://caniuse.com/#feat=script-defer) and allows you to keep your scripts in `<head>` for Turbolinks compatibility.
+
+You should also consider configuring your asset packaging system to fingerprint each script so it has a new URL when its contents change. Then you can use the `data-turbolinks-track` attribute to force a full page reload when you deploy a new JavaScript bundle. See [Reloading When Assets Change](#reloading-when-assets-change) for information.
 
 ## Understanding Caching
 
