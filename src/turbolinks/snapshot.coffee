@@ -40,6 +40,9 @@ class Turbolinks.Snapshot
   isCacheable: ->
     @getCacheControlValue() isnt "no-cache"
 
+  isVisitable: ->
+    @getSetting("visit-control") isnt "reload"
+
   # Private
 
   getSetting: (name) ->

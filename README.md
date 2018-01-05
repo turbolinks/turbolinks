@@ -67,6 +67,7 @@ Your application can use the [`turbolinks` npm package](https://www.npmjs.com/pa
 [Advanced Usage](#advanced-usage)
 - [Displaying Progress](#displaying-progress)
 - [Reloading When Assets Change](#reloading-when-assets-change)
+- [Ensuring Specific Pages Trigger a Full Reload](#ensuring-specific-pages-trigger-a-full-reload)
 - [Setting a Root Location](#setting-a-root-location)
 - [Following Redirects](#following-redirects)
 - [Redirecting After a Form Submission](#redirecting-after-a-form-submission)
@@ -350,9 +351,16 @@ Annotate asset elements with `data-turbolinks-track="reload"` and include a vers
 </head>
 ```
 
-You can use asset tracking with any HTML element, such as `<link>`, `<script>`, or even `<meta>`. An element annotated with `data-turbolinks-track="reload"` will trigger a full reload if it changes in any way, e.g. if its attributes are not identical, or if the element is present on one page but not on the next.
+## Ensuring Specific Pages Trigger a Full Reload
 
-Note that Turbolinks will only consider tracked assets in `<head>` and not elsewhere on the page.
+If you want certain pages to always fully reload when they're navigated to, set the page's `visit-control` to `reload` using a special `<meta>` tag. This may be useful for pages with 3rd party JavaScript libraries that don't interact well with standard Turbolinks page changes.
+
+```html
+<head>
+  ...
+  <meta name="turbolinks-visit-control" name="reload">
+</head>
+```
 
 ## Setting a Root Location
 
