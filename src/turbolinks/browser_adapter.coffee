@@ -3,7 +3,6 @@
 
 class Turbolinks.BrowserAdapter
   {NETWORK_FAILURE, TIMEOUT_FAILURE} = Turbolinks.HttpRequest
-  PROGRESS_BAR_DELAY = 500
 
   constructor: (@controller) ->
     @progressBar = new Turbolinks.ProgressBar
@@ -48,7 +47,7 @@ class Turbolinks.BrowserAdapter
   # Private
 
   showProgressBarAfterDelay: ->
-    @progressBarTimeout = setTimeout(@showProgressBar, PROGRESS_BAR_DELAY)
+    @progressBarTimeout = setTimeout(@showProgressBar, @controller.progressBarDelay)
 
   showProgressBar: =>
     @progressBar.show()

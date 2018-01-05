@@ -75,6 +75,7 @@ Your application can use the [`turbolinks` npm package](https://www.npmjs.com/pa
 [API Reference](#api-reference)
 - [Turbolinks.visit](#turbolinksvisit)
 - [Turbolinks.clearCache](#turbolinksclearcache)
+- [Turbolinks.setProgressBarDelay](#turbolinkssetprogressbardelay)
 - [Turbolinks.supported](#turbolinkssupported)
 - [Full List of Events](#full-list-of-events)
 
@@ -314,7 +315,7 @@ Before each render, Turbolinks matches all permanent elements by `id` and transf
 
 During Turbolinks navigation, the browser will not display its native progress indicator. Turbolinks installs a CSS-based progress bar to provide feedback while issuing a request.
 
-The progress bar is enabled by default. It appears automatically for any page that takes longer than 500ms to load.
+The progress bar is enabled by default. It appears automatically for any page that takes longer than 500ms to load. (You can change this delay with the [`Turbolinks.setProgressBarDelay`]() method.)
 
 The progress bar is a `<div>` element with the class name `turbolinks-progress-bar`. Its default styles appear first in the document and can be overridden by rules that come later.
 
@@ -427,6 +428,17 @@ Turbolinks.clearCache()
 ```
 
 Removes all entries from the Turbolinks page cache. Call this when state has changed on the server that may affect cached pages.
+
+## Turbolinks.setProgressBarDelay
+
+Usage:
+```js
+Turbolinks.setProgressBarDelay(delayInMilliseconds)
+```
+
+Sets the delay after which the [progress bar](#displaying-progress) will appear during navigation, in milliseconds. The progress bar appears after 500ms by default.
+
+Note that this method has no effect when used with the iOS or Android adapters.
 
 ## Turbolinks.supported
 

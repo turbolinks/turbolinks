@@ -17,3 +17,6 @@
 
   clearCache: ->
     Turbolinks.controller.clearCache()
+
+  setProgressBarDelay: (delay) ->
+    Turbolinks.controller.setProgressBarDelay(delay)
