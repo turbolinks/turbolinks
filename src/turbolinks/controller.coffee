@@ -104,7 +104,7 @@ class Turbolinks.Controller
   # Scrolling
 
   scrollToAnchor: (anchor) ->
-    if element = document.getElementById(anchor)
+    if element = document.getElementById(anchor) || document.querySelector("a[name=#{anchor}]")
       @scrollToElement(element)
     else
       @scrollToPosition(x: 0, y: 0)
