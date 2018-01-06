@@ -100,6 +100,7 @@ class Turbolinks.Controller
       @notifyApplicationBeforeCachingSnapshot()
       snapshot = @view.getSnapshot()
       @cache.put(@lastRenderedLocation, snapshot.clone())
+      @notifyApplicationAfterCachingSnapshot()
 
   # Scrolling
 
@@ -176,6 +177,9 @@ class Turbolinks.Controller
 
   notifyApplicationBeforeCachingSnapshot: ->
     Turbolinks.dispatch("turbolinks:before-cache")
+
+  notifyApplicationAfterCachingSnapshot: ->
+    Turbolinks.dispatch("turbolinks:after-cache")
 
   notifyApplicationBeforeRender: (newBody) ->
     Turbolinks.dispatch("turbolinks:before-render", data: {newBody})
