@@ -261,7 +261,7 @@ To completely disable caching in your application, ensure every page contains a 
 
 You may be used to installing JavaScript behavior in response to the `window.onload`, `DOMContentLoaded`, or jQuery `ready` events. With Turbolinks, these events will fire only in response to the initial page load, not after any subsequent page changes. We compare two strategies for connecting JavaScript behavior to the DOM below.
 
-## Observing Navigation Events
+### Observing Navigation Events
 
 Turbolinks triggers a series of events during navigation. The most significant of these is the `turbolinks:load` event, which fires once on the initial page load, and again after every Turbolinks visit.
 
@@ -281,7 +281,7 @@ When possible, avoid using the `turbolinks:load` event to add other event listen
 
 See the [Full List of Events](#full-list-of-events) for more information.
 
-## Attaching Behavior With Stimulus
+### Attaching Behavior With Stimulus
 
 New DOM elements can appear on the page at any time by way of Ajax request handlers, WebSocket handlers, or client-side rendering operations, and these elements often need to be initialized as if they came from a fresh page load.
 
