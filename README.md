@@ -1,6 +1,6 @@
-# Turbolinks™
+# Turbolinks
 
-**Turbolinks makes navigating your web application faster.** Get the performance benefits of a single-page application without the added complexity of a client-side JavaScript framework. Use HTML to render your views on the server side and link to pages as usual. When you follow a link, Turbolinks automatically fetches the page, swaps in its `<body>`, and merges its `<head>`, all without incurring the cost of a full page load.
+**Turbolinks® makes navigating your web application faster.** Get the performance benefits of a single-page application without the added complexity of a client-side JavaScript framework. Use HTML to render your views on the server side and link to pages as usual. When you follow a link, Turbolinks automatically fetches the page, swaps in its `<body>`, and merges its `<head>`, all without incurring the cost of a full page load.
 
 ![Turbolinks](https://s3.amazonaws.com/turbolinks-docs/images/turbolinks.gif)
 
@@ -259,7 +259,7 @@ To completely disable caching in your application, ensure every page contains a 
 
 ## Installing JavaScript Behavior
 
-You may be used to installing JavaScript behavior in response to the `window.onload`, `DOMContentLoaded`, or jQuery `ready` events. With Turbolinks, these events will fire only in response to the initial page load, not after any subsequent page changes. We will compare two strategies for connecting JavaScript behavior to the DOM below.
+You may be used to installing JavaScript behavior in response to the `window.onload`, `DOMContentLoaded`, or jQuery `ready` events. With Turbolinks, these events will fire only in response to the initial page load, not after any subsequent page changes. We compare two strategies for connecting JavaScript behavior to the DOM below.
 
 ## Observing Navigation Events
 
@@ -376,7 +376,7 @@ To disable the progress bar entirely, set its `visibility` style to `hidden`:
 
 ## Reloading When Assets Change
 
-Turbolinks can track the URLs of asset elements in `<head>` from one page to the next, and automatically issue a full reload if they change. This ensures that users always have the latest versions of your application’s scripts and styles.
+Turbolinks can track the URLs of asset elements in `<head>` from one page to the next and automatically issue a full reload if they change. This ensures that users always have the latest versions of your application’s scripts and styles.
 
 Annotate asset elements with `data-turbolinks-track="reload"` and include a version identifier in your asset URLs. The identifier could be a number, a last-modified timestamp, or better, a digest of the asset’s contents, as in the following example.
 
@@ -390,7 +390,7 @@ Annotate asset elements with `data-turbolinks-track="reload"` and include a vers
 
 ## Ensuring Specific Pages Trigger a Full Reload
 
-If you want certain pages to always fully reload when they're navigated to, set the page's `visit-control` to `reload` using a special `<meta>` tag. This may be useful for pages with 3rd party JavaScript libraries that don't interact well with standard Turbolinks page changes.
+You can ensure visits to a certain page will always trigger a full reload by including a `<meta name="visit-control">` element in the page’s `<head>`.
 
 ```html
 <head>
@@ -398,6 +398,8 @@ If you want certain pages to always fully reload when they're navigated to, set 
   <meta name="turbolinks-visit-control" name="reload">
 </head>
 ```
+
+This setting may be useful as a workaround for third-party JavaScript libraries that don’t interact well with Turbolinks page changes.
 
 ## Setting a Root Location
 
@@ -543,4 +545,4 @@ Follow the instructions for _Building From Source_ above. Then run `bin/blade ru
 
 ---
 
-© 2017 Basecamp, LLC
+© 2018 Basecamp, LLC.
