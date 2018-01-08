@@ -48,6 +48,15 @@ navigationTest "following a same-origin anchored link", (assert, session, done) 
       assert.scrolledTo(session.element.document.getElementById('element-id'))
       done()
 
+navigationTest "following a same-origin link to named anchor", (assert, session, done) ->
+  session.clickSelector "#same-origin-anchored-link-named", (navigation) ->
+    session.waitForEvent "turbolinks:load", ->
+      assert.equal(navigation.location.pathname, "/fixtures/one.html")
+      assert.equal(navigation.location.hash, "#named-anchor")
+      assert.equal(navigation.action, "push")
+      assert.scrolledTo(session.element.document.querySelector('[name=named-anchor]'))
+      done()
+
 navigationTest "following a cross-origin unannotated link", (assert, session, done) ->
   session.clickSelector "#cross-origin-unannotated-link", (navigation) ->
     assert.equal(navigation.location, "about:blank")
