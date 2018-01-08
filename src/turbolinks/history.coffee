@@ -23,6 +23,14 @@ class Turbolinks.History
 
   # Event handlers
 
+  # Chrome < 34 and Safari < 10 dispatch an initial popstate event on page load.
+  # Ignore it by setting the pageLoaded after the page load is done (hence defer).
+  # Details: https://developer.mozilla.org/en/docs/Web/API/WindowEventHandlers/onpopstate
+
+  onPageLoad: (event) =>
+    Turbolinks.defer =>
+      @pageLoaded = true
+
   onPopState: (event) =>
     if @shouldHandlePopState()
       if turbolinks = event.state?.turbolinks
@@ -30,18 +38,13 @@ class Turbolinks.History
         restorationIdentifier = turbolinks.restorationIdentifier
         @delegate.historyPoppedToLocationWithRestorationIdentifier(location, restorationIdentifier)
 
-  onPageLoad: (event) =>
-    Turbolinks.defer =>
-      @pageLoaded = true
-
   # Private
 
   shouldHandlePopState: ->
-    # Safari dispatches a popstate event after window's load event, ignore it
     @pageIsLoaded()
 
   pageIsLoaded: ->
-    @pageLoaded or document.readyState is "complete"
+    @pageLoaded
 
   update: (method, location, restorationIdentifier) ->
     state = turbolinks: {restorationIdentifier}
