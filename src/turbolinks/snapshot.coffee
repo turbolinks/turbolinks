@@ -31,8 +31,11 @@ class Turbolinks.Snapshot
   getCacheControlValue: ->
     @getSetting("cache-control")
 
+  getElementForAnchor: (anchor) ->
+    try @body.querySelector("[id='#{anchor}'], a[name='#{anchor}']")
+
   hasAnchor: (anchor) ->
-    try @body.querySelector("[id='#{anchor}']")?
+    @getElementForAnchor(anchor)?
 
   isPreviewable: ->
     @getCacheControlValue() isnt "no-preview"
