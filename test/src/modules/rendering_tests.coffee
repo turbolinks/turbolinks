@@ -41,6 +41,27 @@ renderingTest "reloads when tracked elements change", (assert, session, done) ->
       assert.equal(navigation.action, "load")
       done()
 
+renderingTest "reloads when turbolinks-visit-control setting is reload", (assert, session, done) ->
+  responseReceived = false
+  session.waitForEvent "turbolinks:request-end", (event) ->
+    responseReceived = true
+
+  rendered = false
+  session.waitForEvent "turbolinks:render", (event) ->
+    rendered = true
+
+  session.clickSelector "#visit-control-reload-link", (navigation) ->
+    # Turbolinks calls pushState first, after issuing the request
+    # but before receiving the response. Wait again for the reload.
+    assert.equal(navigation.location.pathname, "/fixtures/visit_control_reload.html")
+    assert.equal(navigation.action, "push")
+    session.waitForNavigation (navigation) ->
+      assert.ok(responseReceived)
+      assert.notOk(rendered)
+      assert.equal(navigation.location.pathname, "/fixtures/visit_control_reload.html")
+      assert.equal(navigation.action, "load")
+      done()
+
 renderingTest "accumulates asset elements in head", (assert, session, done) ->
   originalElements = getAssetElements(session.element.document)
   session.clickSelector "#additional-assets-link", ->

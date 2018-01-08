@@ -8,7 +8,7 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
     @newBody = @newSnapshot.body
 
   render: (callback) ->
-    if @trackedElementsAreIdentical()
+    if @shouldRender()
       @mergeHead()
       @renderView =>
         @replaceBody()
@@ -27,6 +27,9 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
     @activateBodyScriptElements()
     @importBodyPermanentElements()
     @assignNewBody()
+
+  shouldRender: ->
+    @newSnapshot.isVisitable() and @trackedElementsAreIdentical()
 
   trackedElementsAreIdentical: ->
     @currentHeadDetails.getTrackedElementSignature() is @newHeadDetails.getTrackedElementSignature()
