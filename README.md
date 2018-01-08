@@ -353,7 +353,7 @@ Before each render, Turbolinks matches all permanent elements by `id` and transf
 
 During Turbolinks navigation, the browser will not display its native progress indicator. Turbolinks installs a CSS-based progress bar to provide feedback while issuing a request.
 
-The progress bar is enabled by default. It appears automatically for any page that takes longer than 500ms to load. (You can change this delay with the [`Turbolinks.setProgressBarDelay`]() method.)
+The progress bar is enabled by default. It appears automatically for any page that takes longer than 500ms to load. (You can change this delay with the [`Turbolinks.setProgressBarDelay`](#turbolinkssetprogressbardelay) method.)
 
 The progress bar is a `<div>` element with the class name `turbolinks-progress-bar`. Its default styles appear first in the document and can be overridden by rules that come later.
 
