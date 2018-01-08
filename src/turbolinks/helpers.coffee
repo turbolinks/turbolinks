@@ -38,10 +38,9 @@ Turbolinks.dispatch = (eventName, {target, cancelable, data} = {}) ->
   if event.cancelable and not preventDefaultSupported
     { preventDefault } = event
     event.preventDefault = ->
-      result = preventDefault.call(this)
       unless this.defaultPrevented
         Object.defineProperty(this, "defaultPrevented", get: -> true)
-      result
+      preventDefault.call(this)
 
   (target ? document).dispatchEvent(event)
   event
