@@ -53,15 +53,16 @@ Your application can use the [`turbolinks` npm package](https://www.npmjs.com/pa
 - [Disabling Turbolinks on Specific Links](#disabling-turbolinks-on-specific-links)
 
 [Building Your Turbolinks Application](#building-your-turbolinks-application)
-- [Running JavaScript When a Page Loads](#running-javascript-when-a-page-loads)
 - [Working with Script Elements](#working-with-script-elements)
   - [Loading Your Application’s JavaScript Bundle](#loading-your-applications-javascript-bundle)
 - [Understanding Caching](#understanding-caching)
   - [Preparing the Page to be Cached](#preparing-the-page-to-be-cached)
   - [Detecting When a Preview is Visible](#detecting-when-a-preview-is-visible)
   - [Opting Out of Caching](#opting-out-of-caching)
+- [Installing JavaScript Behavior](#installing-javascript-behavior)
+  - [Observing Navigation Events](#observing-navigation-events)
+  - [Attaching Behavior With Stimulus](#attaching-behavior-with-stimulus)
 - [Making Transformations Idempotent](#making-transformations-idempotent)
-- [Responding to Page Updates](#responding-to-page-updates)
 - [Persisting Elements Across Page Loads](#persisting-elements-across-page-loads)
 
 [Advanced Usage](#advanced-usage)
@@ -184,20 +185,6 @@ In particular, you can no longer depend on a full page load to reset your enviro
 
 With awareness and a little extra care, you can design your application to gracefully handle this constraint without tightly coupling it to Turbolinks.
 
-## Running JavaScript When a Page Loads
-
-You may be used to installing JavaScript behavior in response to the `window.onload`, `DOMContentLoaded`, or jQuery `ready` events. With Turbolinks, these events will fire only in response to the initial page load—not after any subsequent page changes.
-
-In many cases, you can simply adjust your code to listen for the `turbolinks:load` event, which fires once on the initial page load and again after every Turbolinks visit.
-
-```js
-document.addEventListener("turbolinks:load", function() {
-  // ...
-})
-```
-
-When possible, avoid using the `turbolinks:load` event to add event listeners directly to elements on the page body. Instead, consider using [event delegation](https://learn.jquery.com/events/event-delegation/) to register event listeners once on `document` or `window`.
-
 ## Working with Script Elements
 
 Your browser automatically loads and evaluates any `<script>` elements present on the initial page load.
@@ -270,6 +257,66 @@ To specify that a page should not be cached at all, use the `no-cache` directive
 
 To completely disable caching in your application, ensure every page contains a no-cache directive.
 
+## Installing JavaScript Behavior
+
+You may be used to installing JavaScript behavior in response to the `window.onload`, `DOMContentLoaded`, or jQuery `ready` events. With Turbolinks, these events will fire only in response to the initial page load, not after any subsequent page changes. We will compare two strategies for connecting JavaScript behavior to the DOM below.
+
+## Observing Navigation Events
+
+Turbolinks triggers a series of events during navigation. The most significant of these is the `turbolinks:load` event, which fires once on the initial page load, and again after every Turbolinks visit.
+
+You can observe the `turbolinks:load` event in place of `DOMContentLoaded` to set up JavaScript behavior after every page change:
+
+```js
+document.addEventListener("turbolinks:load", function() {
+  // ...
+})
+```
+
+Keep in mind that your application will not always be in a pristine state when this event is fired, and you may need to clean up behavior installed for the previous page.
+
+Also note that Turbolinks navigation may not be the only source of page updates in your application, so you may wish to move your initialization code into a separate function which you can call from `turbolinks:load` and anywhere else you may change the DOM.
+
+When possible, avoid using the `turbolinks:load` event to add other event listeners directly to elements on the page body. Instead, consider using [event delegation](https://learn.jquery.com/events/event-delegation/) to register event listeners once on `document` or `window`.
+
+See the [Full List of Events](#full-list-of-events) for more information.
+
+## Attaching Behavior With Stimulus
+
+New DOM elements can appear on the page at any time by way of Ajax request handlers, WebSocket handlers, or client-side rendering operations, and these elements often need to be initialized as if they came from a fresh page load.
+
+You can handle all of these updates, including updates from Turbolinks page loads, in a single place with the conventions and lifecycle callbacks provided by Turbolinks’ sister framework, [Stimulus](https://github.com/stimulusjs/stimulus).
+
+Stimulus lets you annotate your HTML with controller, action, and target attributes:
+
+```html
+<div data-controller="hello">
+  <input data-target="hello.name" type="text">
+  <button data-action="click->hello#greet">Greet</button>
+</div>
+```
+
+Implement a compatible controller and Stimulus connects it automatically:
+
+```js
+// hello_controller.js
+import { Controller } from "stimulus"
+
+export default class extends Controller {
+  greet() {
+    console.log(`Hello, ${this.name}!`)
+  }
+
+  get name() {
+    return this.targets.find("name").value
+  }
+}
+```
+
+Stimulus connects and disconnects these controllers and their associated event handlers whenever the document changes using the [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver) API. As a result, it handles Turbolinks page changes the same way it handles any other type of DOM update.
+
+See the [Stimulus repository on GitHub](https://github.com/stimulusjs/stimulus) for more information.
+
 ## Making Transformations Idempotent
 
 Often you’ll want to perform client-side transformations to HTML received from the server. For example, you might want to use the browser’s knowledge of the user’s current time zone to group a collection of elements by date.
@@ -283,16 +330,6 @@ To avoid this problem, make your transformation function _idempotent_. An idempo
 One technique for making a transformation idempotent is to keep track of whether you’ve already performed it by setting a `data` attribute on each processed element. When Turbolinks restores your page from cache, these attributes will still be present. Detect these attributes in your transformation function to determine which elements have already been processed.
 
 A more robust technique is simply to detect the transformation itself. In the date grouping example above, that means checking for the presence of a date divider before inserting a new one. This approach gracefully handles newly inserted elements that weren’t processed by the original transformation.
-
-## Responding to Page Updates
-
-Turbolinks may not be the only source of page updates in your application. New HTML can appear at any time from Ajax requests, WebSocket connections, or other client-side rendering operations, and this content will need to be initialized as if it came from a fresh page load.
-
-You can handle all of these updates, including updates from Turbolinks page loads, in a single place with the precise lifecycle callbacks provided by [`MutationObserver`](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver) and [Custom Elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements).
-
-In particular, these APIs give you callbacks when elements are attached to and removed from the document. You can use these callbacks to perform transformations and register or tear down behavior as soon as matching elements appear on the page, regardless of how they were added.
-
-By taking advantage of `MutationObserver`, Custom Elements, and [idempotent transformations](#making-transformations-idempotent), there’s little need to couple your application to Turbolinks’ events.
 
 ## Persisting Elements Across Page Loads
 
