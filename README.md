@@ -395,7 +395,7 @@ You can ensure visits to a certain page will always trigger a full reload by inc
 ```html
 <head>
   ...
-  <meta name="turbolinks-visit-control" name="reload">
+  <meta name="turbolinks-visit-control" content="reload">
 </head>
 ```
 
