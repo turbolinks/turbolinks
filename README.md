@@ -372,6 +372,12 @@ If form submission results in a state change on the server that affects cached p
 
 The Turbolinks Rails engine performs this optimization automatically for non-GET XHR requests that redirect with the `redirect_to` helper.
 
+## Custom Error Pages
+
+By default, Turbolinks replaces the entire `<html>` element if non-2xx status is returned from server. This prevents from accidentally replacing `<body>` with tree not returned by application code.
+
+To disable this behavior to create custom error pages, send the `Turbolinks-Status` header with value `OK`. With `turbolinks-rails` gem, `render` method of Rails controller will send this header automatically.
+
 ## Setting Custom HTTP Headers
 
 You can observe the `turbolinks:request-start` event to set custom headers on Turbolinks requests. Access the request’s XMLHttpRequest object via `event.data.xhr`, then call the [`setRequestHeader`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) method as many times as you wish.
