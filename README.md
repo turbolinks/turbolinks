@@ -390,7 +390,7 @@ Annotate asset elements with `data-turbolinks-track="reload"` and include a vers
 
 ## Ensuring Specific Pages Trigger a Full Reload
 
-You can ensure visits to a certain page will always trigger a full reload by including a `<meta name="visit-control">` element in the page’s `<head>`.
+You can ensure visits to a certain page will always trigger a full reload by including a `<meta name="turbolinks-visit-control">` element in the page’s `<head>`.
 
 ```html
 <head>
