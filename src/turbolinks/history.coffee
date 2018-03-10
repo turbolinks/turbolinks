@@ -18,8 +18,9 @@ class Turbolinks.History
     @update("push", location, restorationIdentifier)
 
   replace: (location, restorationIdentifier) ->
-    location = Turbolinks.Location.wrap(location)
-    @update("replace", location, restorationIdentifier)
+    if Turbolinks.supported
+      location = Turbolinks.Location.wrap(location)
+      @update("replace", location, restorationIdentifier)
 
   # Event handlers
 

@@ -16,7 +16,7 @@ class Turbolinks.Controller
     @setProgressBarDelay(500)
 
   start: ->
-    if Turbolinks.supported and not @started
+    unless @started
       addEventListener("click", @clickCaptured, true)
       addEventListener("DOMContentLoaded", @pageLoaded, false)
       @scrollManager.start()
