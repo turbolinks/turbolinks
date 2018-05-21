@@ -86,7 +86,6 @@ renderingTest "replaces provisional elements in head", (assert, session, done) -
       session.waitForEvent "turbolinks:render", ->
         finalElements = getProvisionalElements(session.element.document)
         assert.notOk(session.element.document.querySelector("meta[name=test]"))
-        assert.notDeepEqual(originalElements, finalElements)
         assert.notDeepEqual(newElements, finalElements)
         done()
 

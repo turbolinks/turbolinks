@@ -4,7 +4,7 @@
 
 class Turbolinks.View
   constructor: (@delegate) ->
-    @element = document.documentElement
+    @htmlElement = document.documentElement
 
   getRootLocation: ->
     @getSnapshot().getRootLocation()
@@ -13,7 +13,7 @@ class Turbolinks.View
     @getSnapshot().getElementForAnchor(anchor)
 
   getSnapshot: ->
-    Turbolinks.Snapshot.fromElement(@element)
+    Turbolinks.Snapshot.fromHTMLElement(@htmlElement)
 
   render: ({snapshot, error, isPreview}, callback) ->
     @markAsPreview(isPreview)
@@ -26,9 +26,9 @@ class Turbolinks.View
 
   markAsPreview: (isPreview) ->
     if isPreview
-      @element.setAttribute("data-turbolinks-preview", "")
+      @htmlElement.setAttribute("data-turbolinks-preview", "")
     else
-      @element.removeAttribute("data-turbolinks-preview")
+      @htmlElement.removeAttribute("data-turbolinks-preview")
 
   renderSnapshot: (snapshot, isPreview, callback) ->
     Turbolinks.SnapshotRenderer.render(@delegate, callback, @getSnapshot(), Turbolinks.Snapshot.wrap(snapshot), isPreview)

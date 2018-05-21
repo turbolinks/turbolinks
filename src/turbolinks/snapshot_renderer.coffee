@@ -1,10 +1,9 @@
 #= require ./renderer
-#= require ./head_details
 
 class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
   constructor: (@currentSnapshot, @newSnapshot, @isPreview) ->
-    @currentHeadDetails = new Turbolinks.HeadDetails @currentSnapshot.head
-    @newHeadDetails = new Turbolinks.HeadDetails @newSnapshot.head
+    @currentHeadDetails = @currentSnapshot.headDetails
+    @newHeadDetails = @newSnapshot.headDetails
     @newBody = @newSnapshot.body
 
   render: (callback) ->

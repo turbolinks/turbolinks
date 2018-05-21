@@ -1,13 +1,16 @@
 class Turbolinks.HeadDetails
-  constructor: (@element) ->
+  @fromHeadElement: (headElement) ->
+    new this headElement?.childNodes ? []
+
+  constructor: (childNodes) ->
     @elements = {}
-    for element in @element.childNodes when element.nodeType is Node.ELEMENT_NODE
-      key = element.outerHTML
+    for node in childNodes when node.nodeType is Node.ELEMENT_NODE
+      key = node.outerHTML
       data = @elements[key] ?=
-        type: elementType(element)
-        tracked: elementIsTracked(element)
+        type: elementType(node)
+        tracked: elementIsTracked(node)
         elements: []
-      data.elements.push(element)
+      data.elements.push(node)
 
   hasElementWithKey: (key) ->
     key of @elements
@@ -33,6 +36,16 @@ class Turbolinks.HeadDetails
         provisionalElements.push(elements[1...]...)
     provisionalElements
 
+  getMetaValue: (name) ->
+    @findMetaElementByName(name)?.getAttribute("content")
+
+  findMetaElementByName: (name) ->
+    element = undefined
+    for key, {elements} of @elements
+      if elementIsMetaElementWithName(elements[0], name)
+        element = elements[0]
+    element
+
   elementType = (element) ->
     if elementIsScript(element)
       "script"
@@ -49,3 +62,7 @@ class Turbolinks.HeadDetails
   elementIsStylesheet = (element) ->
     tagName = element.tagName.toLowerCase()
     tagName is "style" or (tagName is "link" and element.getAttribute("rel") is "stylesheet")
+
+  elementIsMetaElementWithName = (element, name) ->
+    tagName = element.tagName.toLowerCase()
+    tagName is "meta" and element.getAttribute("name") is name
