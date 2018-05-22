@@ -123,6 +123,20 @@ renderingTest "does not evaluate data-turbolinks-eval=false scripts", (assert, s
       assert.equal(session.element.window.bodyScriptEvaluationCount, null)
       done()
 
+renderingTest "preserves permanent elements", (assert, session, done) ->
+  permanentElement = do findPermanentElement = ->
+    session.element.document.getElementById("permanent")
+
+  assert.equal(permanentElement.textContent, "Rendering")
+  session.clickSelector "#permanent-element-link", ->
+    session.waitForEvent "turbolinks:render", ->
+      assert.equal(findPermanentElement(), permanentElement)
+      assert.equal(permanentElement.textContent, "Rendering")
+      session.goBack()
+      session.waitForEvent "turbolinks:render", ->
+        assert.equal(findPermanentElement(), permanentElement)
+        done()
+
 renderingTest "error pages", (assert, session, done) ->
   session.clickSelector "#nonexistent-link", ->
     session.waitForEvent "turbolinks:render", ->

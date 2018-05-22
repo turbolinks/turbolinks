@@ -51,8 +51,8 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
 
   importBodyPermanentElements: ->
     for replaceableElement in @getNewBodyPermanentElements()
-      if element = @findCurrentBodyPermanentElement(replaceableElement)
-        replaceableElement.parentNode.replaceChild(element, replaceableElement)
+      if permanentElement = @findCurrentBodyPermanentElement(replaceableElement)
+        importPermanentElement(permanentElement, replaceableElement)
 
   activateBodyScriptElements: ->
     for replaceableElement in @getNewBodyScriptElements()
@@ -88,3 +88,8 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
 
   findFirstAutofocusableElement: ->
     document.body.querySelector("[autofocus]")
+
+  importPermanentElement = (permanentElement, replaceableElement) ->
+    permanentElement.parentNode.replaceChild(permanentElement.cloneNode(true), permanentElement)
+    replaceableElement.parentNode.replaceChild(permanentElement, replaceableElement)
+    permanentElement
