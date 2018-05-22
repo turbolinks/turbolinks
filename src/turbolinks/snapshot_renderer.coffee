@@ -4,7 +4,7 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
   constructor: (@currentSnapshot, @newSnapshot, @isPreview) ->
     @currentHeadDetails = @currentSnapshot.headDetails
     @newHeadDetails = @newSnapshot.headDetails
-    @newBody = @newSnapshot.body
+    @newBody = @newSnapshot.bodyElement
 
   render: (callback) ->
     if @shouldRender()

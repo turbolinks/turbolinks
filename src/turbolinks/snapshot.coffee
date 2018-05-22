@@ -20,10 +20,10 @@ class Turbolinks.Snapshot
     headDetails = Turbolinks.HeadDetails.fromHeadElement(headElement)
     new this headDetails, bodyElement
 
-  constructor: (@headDetails, @body) ->
+  constructor: (@headDetails, @bodyElement) ->
 
   clone: ->
-    new @constructor @headDetails, @body.cloneNode(true)
+    new @constructor @headDetails, @bodyElement.cloneNode(true)
 
   getRootLocation: ->
     root = @getSetting("root") ? "/"
@@ -33,7 +33,7 @@ class Turbolinks.Snapshot
     @getSetting("cache-control")
 
   getElementForAnchor: (anchor) ->
-    try @body.querySelector("[id='#{anchor}'], a[name='#{anchor}']")
+    try @bodyElement.querySelector("[id='#{anchor}'], a[name='#{anchor}']")
 
   hasAnchor: (anchor) ->
     @getElementForAnchor(anchor)?
