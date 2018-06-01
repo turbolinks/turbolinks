@@ -35,6 +35,18 @@ class Turbolinks.Snapshot
   getElementForAnchor: (anchor) ->
     try @bodyElement.querySelector("[id='#{anchor}'], a[name='#{anchor}']")
 
+  getPermanentElements: ->
+    @bodyElement.querySelectorAll("[id][data-turbolinks-permanent]")
+
+  getPermanentElementById: (id) ->
+    @bodyElement.querySelector("##{id}[data-turbolinks-permanent]")
+
+  getPermanentElementsPresentInSnapshot: (snapshot) ->
+    element for element in @getPermanentElements() when snapshot.getPermanentElementById(element.id)
+
+  findFirstAutofocusableElement: ->
+    @bodyElement.querySelector("[autofocus]")
+
   hasAnchor: (anchor) ->
     @getElementForAnchor(anchor)?
 

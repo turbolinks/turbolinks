@@ -24,11 +24,10 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
     @copyNewHeadProvisionalElements()
 
   replaceBody: ->
-    permanentElements = @extractCurrentBodyPermanentElements()
+    placeholders = @relocateCurrentBodyPermanentElements()
     @activateNewBodyScriptElements()
     @assignNewBody()
-    @replaceNewBodyPermanentElements(permanentElements)
-    @replacePlaceholdersForPermanentElements(permanentElements)
+    @replacePlaceholderElementsWithClonedPermanentElements(placeholders)
 
   shouldRender: ->
     @newSnapshot.isVisitable() and @trackedElementsAreIdentical()
@@ -52,22 +51,18 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
     for element in @getNewHeadProvisionalElements()
       document.head.appendChild(element)
 
-  extractCurrentBodyPermanentElements: ->
-    for permanentElement in @getCurrentBodyPermanentElements() when @findNewBodyPermanentElementById(permanentElement.id)
+  relocateCurrentBodyPermanentElements: ->
+    for permanentElement in @getCurrentBodyPermanentElements()
       placeholder = createPlaceholderForPermanentElement(permanentElement)
-      replaceElementWithElement(permanentElement, placeholder)
-      permanentElement
+      newElement = @newSnapshot.getPermanentElementById(permanentElement.id)
+      replaceElementWithElement(permanentElement, placeholder.element)
+      replaceElementWithElement(newElement, permanentElement)
+      placeholder
 
-  replaceNewBodyPermanentElements: (permanentElements) ->
-    for permanentElement in permanentElements
-      if newElement = @findNewBodyPermanentElementById(permanentElement.id)
-        replaceElementWithElement(newElement, permanentElement)
-
-  replacePlaceholdersForPermanentElements: (permanentElements) ->
-    for permanentElement in permanentElements
-      if placeholder = @findPlaceholderById(permanentElement.id)
-        clonedElement = permanentElement.cloneNode(true)
-        replaceElementWithElement(placeholder, clonedElement)
+  replacePlaceholderElementsWithClonedPermanentElements: (placeholders) ->
+    for { element, permanentElement } in placeholders
+      clonedElement = permanentElement.cloneNode(true)
+      replaceElementWithElement(element, clonedElement)
 
   activateNewBodyScriptElements: ->
     for inertScriptElement in @getNewBodyScriptElements()
@@ -78,7 +73,7 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
     document.body = @newBody
 
   focusFirstAutofocusableElement: ->
-    @findFirstAutofocusableElement()?.focus()
+    @newSnapshot.findFirstAutofocusableElement()?.focus()
 
   getNewHeadStylesheetElements: ->
     @newHeadDetails.getStylesheetElementsNotInDetails(@currentHeadDetails)
@@ -93,27 +88,17 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
     @newHeadDetails.getProvisionalElements()
 
   getCurrentBodyPermanentElements: ->
-    @currentBody.querySelectorAll("[id][data-turbolinks-permanent]")
-
-  findNewBodyPermanentElementById: (id) ->
-    @newBody.querySelector("##{id}[data-turbolinks-permanent]")
-
-  findPlaceholderById: (id) ->
-    @currentBody.querySelector("meta[name=turbolinks-permanent-placeholder][content='#{id}']")
+    @currentSnapshot.getPermanentElementsPresentInSnapshot(@newSnapshot)
 
   getNewBodyScriptElements: ->
     @newBody.querySelectorAll("script")
 
-  findFirstAutofocusableElement: ->
-    @newBody.querySelector("[autofocus]")
-
 createPlaceholderForPermanentElement = (permanentElement) ->
-  placeholder = document.createElement("meta")
-  placeholder.setAttribute("name", "turbolinks-permanent-placeholder")
-  placeholder.setAttribute("content", permanentElement.id)
-  placeholder
+  element = document.createElement("meta")
+  element.setAttribute("name", "turbolinks-permanent-placeholder")
+  element.setAttribute("content", permanentElement.id)
+  { element, permanentElement }
 
 replaceElementWithElement = (fromElement, toElement) ->
   if parentElement = fromElement.parentNode
     parentElement.replaceChild(toElement, fromElement)
-    toElement
