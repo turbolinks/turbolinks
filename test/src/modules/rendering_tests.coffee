@@ -86,7 +86,6 @@ renderingTest "replaces provisional elements in head", (assert, session, done) -
       session.waitForEvent "turbolinks:render", ->
         finalElements = getProvisionalElements(session.element.document)
         assert.notOk(session.element.document.querySelector("meta[name=test]"))
-        assert.notDeepEqual(originalElements, finalElements)
         assert.notDeepEqual(newElements, finalElements)
         done()
 
@@ -124,6 +123,43 @@ renderingTest "does not evaluate data-turbolinks-eval=false scripts", (assert, s
       assert.equal(session.element.window.bodyScriptEvaluationCount, null)
       done()
 
+renderingTest "preserves permanent elements", (assert, session, done) ->
+  permanentElement = do findPermanentElement = ->
+    session.element.document.getElementById("permanent")
+
+  assert.equal(permanentElement.textContent, "Rendering")
+  session.clickSelector "#permanent-element-link", ->
+    session.waitForEvent "turbolinks:render", ->
+      assert.equal(findPermanentElement(), permanentElement)
+      assert.equal(permanentElement.textContent, "Rendering")
+      session.goBack()
+      session.waitForEvent "turbolinks:render", ->
+        assert.equal(findPermanentElement(), permanentElement)
+        done()
+
+renderingTest "before-cache event", (assert, session, done) ->
+  {body} = session.element.document
+  session.clickSelector "#same-origin-link", ->
+    session.waitForEvent "turbolinks:before-cache", ->
+      body.querySelector("h1").textContent = "Modified"
+    session.waitForEvent "turbolinks:render", ->
+      session.goBack()
+      session.waitForEvent "turbolinks:render", ->
+        assert.equal(body.querySelector("h1").textContent, "Modified")
+        done()
+
+renderingTest "mutation record as before-cache notification", (assert, session, done) ->
+  {documentElement, body} = session.element.document
+  session.clickSelector("#same-origin-link")
+  observe documentElement, childList: true, (stop, {removedNodes}) ->
+    if body in removedNodes
+      stop()
+      body.querySelector("h1").textContent = "Modified"
+      session.goBack()
+      session.waitForEvent "turbolinks:render", ->
+        assert.equal(body.querySelector("h1").textContent, "Modified")
+        done()
+
 renderingTest "error pages", (assert, session, done) ->
   session.clickSelector "#nonexistent-link", ->
     session.waitForEvent "turbolinks:render", ->
@@ -143,3 +179,10 @@ match = (element, selector) ->
   html = document.documentElement
   fn = html.matchesSelector ? html.webkitMatchesSelector ? html.msMatchesSelector ? html.mozMatchesSelector
   fn.call(element, selector)
+
+observe = (element, options, callback) ->
+  observer = new MutationObserver (records) ->
+    stop = -> observer.disconnect()
+    for record in records
+      callback(stop, record)
+  observer.observe(element, options)

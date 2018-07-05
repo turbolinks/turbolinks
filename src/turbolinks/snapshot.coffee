@@ -1,28 +1,29 @@
+#= require ./head_details
+
 class Turbolinks.Snapshot
   @wrap: (value) ->
     if value instanceof this
       value
+    else if typeof value == "string"
+      @fromHTMLString(value)
     else
-      @fromHTML(value)
+      @fromHTMLElement(value)
 
-  @fromHTML: (html) ->
-    element = document.createElement("html")
-    element.innerHTML = html
-    @fromElement(element)
+  @fromHTMLString: (html) ->
+    htmlElement = document.createElement("html")
+    htmlElement.innerHTML = html
+    @fromHTMLElement(htmlElement)
 
-  @fromElement: (element) ->
-    new this
-      head: element.querySelector("head")
-      body: element.querySelector("body")
+  @fromHTMLElement: (htmlElement) ->
+    headElement = htmlElement.querySelector("head")
+    bodyElement = htmlElement.querySelector("body") ? document.createElement("body")
+    headDetails = Turbolinks.HeadDetails.fromHeadElement(headElement)
+    new this headDetails, bodyElement
 
-  constructor: ({head, body}) ->
-    @head = head ? document.createElement("head")
-    @body = body ? document.createElement("body")
+  constructor: (@headDetails, @bodyElement) ->
 
   clone: ->
-    new Snapshot
-      head: @head.cloneNode(true)
-      body: @body.cloneNode(true)
+    new @constructor @headDetails, @bodyElement.cloneNode(true)
 
   getRootLocation: ->
     root = @getSetting("root") ? "/"
@@ -32,7 +33,19 @@ class Turbolinks.Snapshot
     @getSetting("cache-control")
 
   getElementForAnchor: (anchor) ->
-    try @body.querySelector("[id='#{anchor}'], a[name='#{anchor}']")
+    try @bodyElement.querySelector("[id='#{anchor}'], a[name='#{anchor}']")
+
+  getPermanentElements: ->
+    @bodyElement.querySelectorAll("[id][data-turbolinks-permanent]")
+
+  getPermanentElementById: (id) ->
+    @bodyElement.querySelector("##{id}[data-turbolinks-permanent]")
+
+  getPermanentElementsPresentInSnapshot: (snapshot) ->
+    element for element in @getPermanentElements() when snapshot.getPermanentElementById(element.id)
+
+  findFirstAutofocusableElement: ->
+    @bodyElement.querySelector("[autofocus]")
 
   hasAnchor: (anchor) ->
     @getElementForAnchor(anchor)?
@@ -49,5 +62,4 @@ class Turbolinks.Snapshot
   # Private
 
   getSetting: (name) ->
-    [..., element] = @head.querySelectorAll("meta[name='turbolinks-#{name}']")
-    element?.getAttribute("content")
+    @headDetails.getMetaValue("turbolinks-#{name}")
