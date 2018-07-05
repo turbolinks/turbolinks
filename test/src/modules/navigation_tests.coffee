@@ -21,7 +21,7 @@ navigationTest "following a same-origin data-turbolinks-action=replace link", (a
       assert.equal(navigation.action, "replace")
       done()
 
-navigationTest "following a same-origin data-turbolinks=false link", (assert, session, done) ->
+QUnit.skip "following a same-origin data-turbolinks=false link", (assert, session, done) ->
   session.clickSelector "#same-origin-false-link", (navigation) ->
     assert.equal(navigation.location.pathname, "/fixtures/one.html")
     assert.equal(navigation.action, "load")
