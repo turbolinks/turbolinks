@@ -70,7 +70,12 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
       replaceElementWithElement(inertScriptElement, activatedScriptElement)
 
   assignNewBody: ->
-    document.body = @newBody
+    existingRootElement = getRootElementOf document.body
+    newRootElement = getRootElementOf @newBody
+    if newRootElement and existingRootElement
+      replaceElementWithElement existingRootElement, newRootElement
+    else
+      document.body = @newBody
 
   focusFirstAutofocusableElement: ->
     @newSnapshot.findFirstAutofocusableElement()?.focus()
@@ -102,3 +107,6 @@ createPlaceholderForPermanentElement = (permanentElement) ->
 replaceElementWithElement = (fromElement, toElement) ->
   if parentElement = fromElement.parentNode
     parentElement.replaceChild(toElement, fromElement)
+
+getRootElementOf = (node) ->
+  node?.querySelector '[data-turbolinks-root]'
