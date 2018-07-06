@@ -102,8 +102,7 @@ renderingTest "evaluates head script elements once", (assert, session, done) ->
             assert.equal(session.element.window.headScriptEvaluationCount, 1)
             done()
 
-# Fails intermittently on CI. Skip for now.
-QUnit.skip "evaluates body script elements on each render", (assert, session, done) ->
+renderingTest "evaluates body script elements on each render", (assert, session, done) ->
   assert.equal(session.element.window.bodyScriptEvaluationCount, null)
   session.clickSelector "#body-script-link", ->
     session.waitForEvent "turbolinks:render", ->
