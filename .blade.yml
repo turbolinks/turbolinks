@@ -16,10 +16,3 @@ build:
 
 require:
   - sprockets/export
-
-plugins:
-  sauce_labs:
-    browsers:
-      Google Chrome:
-        os: Mac
-        version: -1

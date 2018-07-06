@@ -1,3 +1,5 @@
 language: ruby
 cache: bundler
+addons:
+  chrome: stable
 script: bin/ci

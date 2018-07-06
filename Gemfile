@@ -9,5 +9,3 @@ gem 'eco'
 gem 'uglifier'
 
 gem 'blade', '~> 0.7.1'
-gem 'blade-sauce_labs_plugin', '~> 0.7.2'
-gem 'selenium-webdriver', '~> 3.2.0'

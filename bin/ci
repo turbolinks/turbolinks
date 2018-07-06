@@ -1,7 +1,29 @@
 #!/usr/bin/env bash
 set -e
 
-$(base64 --decode <<< ZXhwb3J0IFNBVUNFX1VTRVJOQU1FPXR1cmJvbGlua3MK)
-$(base64 --decode <<< ZXhwb3J0IFNBVUNFX0FDQ0VTU19LRVk9YjQzNjE3MDgtZDA2NC00NzdmLThhOGEtMzVmMGUxNjk5ZDZjCg==)
+cleanup() {
+  try_to_kill $blade_pid
+  try_to_kill $chrome_pid
+}
 
-bin/blade ci
+try_to_kill() {
+  [ -n "$1" ] && { kill "$1" || true; }
+}
+
+unset blade_pid chrome_pid
+trap cleanup EXIT
+
+bin/blade ci &
+blade_pid=$!
+sleep 1
+
+if which google-chrome-stable > /dev/null; then
+  chrome="google-chrome-stable"
+else
+  chrome="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+fi
+
+"$chrome" --headless --no-sandbox --remote-debugging-port=9222 http://localhost:9876 &
+chrome_pid=$!
+
+wait $blade_pid
