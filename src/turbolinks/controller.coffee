@@ -141,7 +141,7 @@ class Turbolinks.Controller
 
   pageLoaded: =>
     @lastRenderedLocation = @location
-    @notifyApplicationAfterPageLoad()
+    @notifyApplicationAfterPageLoad(initialPageLoad: true)
 
   clickCaptured: =>
     removeEventListener("click", @clickBubbled, false)
@@ -184,8 +184,8 @@ class Turbolinks.Controller
   notifyApplicationAfterRender: ->
     Turbolinks.dispatch("turbolinks:render")
 
-  notifyApplicationAfterPageLoad: (timing = {}) ->
-    Turbolinks.dispatch("turbolinks:load", data: { url: @location.absoluteURL, timing })
+  notifyApplicationAfterPageLoad: ({timing , initialPageLoad} = {}) ->
+    Turbolinks.dispatch("turbolinks:load", data: { initialPageLoad: initialPageLoad, url: @location.absoluteURL, timing })
 
   # Private
 
@@ -204,7 +204,7 @@ class Turbolinks.Controller
     visit
 
   visitCompleted: (visit) ->
-    @notifyApplicationAfterPageLoad(visit.getTimingMetrics())
+    @notifyApplicationAfterPageLoad(timing: visit.getTimingMetrics(), initialPageLoad: false)
 
   clickEventIsSignificant: (event) ->
     not (
