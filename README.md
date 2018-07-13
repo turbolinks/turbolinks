@@ -434,7 +434,7 @@ Instead of submitting forms normally, submit them with XHR. In response to an XH
 
 If form submission results in a state change on the server that affects cached pages, consider clearing Turbolinks’ cache with [`Turbolinks.clearCache()`](#turbolinksclearcache).
 
-The Turbolinks Rails engine performs this optimization automatically for non-GET XHR requests that redirect with the `redirect_to` helper.
+The Turbolinks Rails engine performs this optimization automatically for non-GET XHR requests that redirect with the `redirect_to` helper. In this case, the default visit action is _replace_. If you want the _advance_ visit action, use `redirect_to url, {turbolinks: :advance}`.
 
 ## Setting Custom HTTP Headers
 
