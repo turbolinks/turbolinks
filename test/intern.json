@@ -1,0 +1,14 @@
+{
+  "functionalSuites": "test/**/*.ts",
+  "environments": [
+    {
+      "browserName": "chrome",
+      "goog:chromeOptions": {
+        "args": ["headless", "disable-gpu"]
+      }
+    }
+  ],
+  "plugins": [
+    "environment.js"
+  ]
+}
