@@ -3,6 +3,9 @@ import { TurbolinksTestCase } from "../lib/turbolinks_test_case"
 class NavigationTests extends TurbolinksTestCase {
   async setup() {
     await this.goToLocation("/test/fixtures/navigation.html")
+  }
+
+  async "test after loading the page"() {
     this.assert.equal(await this.pathname, "/test/fixtures/navigation.html")
     this.assert.equal(await this.visitAction, "load")
   }
