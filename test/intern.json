@@ -1,5 +1,5 @@
 {
-  "functionalSuites": "test/**/*.ts",
+  "functionalSuites": "test/cases/**/*.ts",
   "environments": [
     {
       "browserName": "chrome",
@@ -10,5 +10,6 @@
   ],
   "plugins": [
     "environment.js"
-  ]
+  ],
+  "defaultTimeout": 2500
 }

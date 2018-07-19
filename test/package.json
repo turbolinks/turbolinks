@@ -7,5 +7,9 @@
     "intern": "^4.2.2",
     "ts-node": "^7.0.0",
     "typescript": "^2.9.2"
+  },
+  "scripts": {
+    "serve": "intern serveOnly",
+    "test": "intern"
   }
 }
