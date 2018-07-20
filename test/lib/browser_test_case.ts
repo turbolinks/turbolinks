@@ -14,6 +14,10 @@ export class BrowserTestCase extends InternTestCase {
     return this.remote.goForward()
   }
 
+  async querySelector(selector: string) {
+    return this.remote.findByCssSelector(selector)
+  }
+
   async clickSelector(selector: string): Promise<void> {
     return this.remote.findByCssSelector(selector).click()
   }
