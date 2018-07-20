@@ -16,6 +16,7 @@ export class TurbolinksTestCase extends BrowserTestCase {
 
   async beforeTest() {
     this.lastPageIdentifier = await this.pageIdentifier
+    await this.eventLogChannel.drain()
   }
 
   get nextWindowHandle(): Promise<string> {
@@ -43,13 +44,13 @@ export class TurbolinksTestCase extends BrowserTestCase {
     return pageIdentifier == await this.pageIdentifier
   }
 
-  async nextEventNamed(eventName: string): Promise<EventLog> {
+  async nextEventNamed(eventName: string): Promise<any> {
     let record: EventLog | undefined
     while (!record) {
-      const records = await this.eventLogChannel.read()
+      const records = await this.eventLogChannel.read(1)
       record = records.find(([name]) => name == eventName)
     }
-    return record
+    return record[1]
   }
 
   get visitAction(): Promise<string> {

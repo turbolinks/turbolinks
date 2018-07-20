@@ -26,7 +26,7 @@ class NavigationTests extends TurbolinksTestCase {
 
   async "test following a same-origin data-turbolinks=false link"() {
     this.clickSelector("#same-origin-false-link")
-    await this.nextEventNamed("turbolinks:load")
+    await this.nextPageChange
     this.assert.equal(await this.pathname, "/test/fixtures/one.html")
     this.assert.equal(await this.visitAction, "load")
   }

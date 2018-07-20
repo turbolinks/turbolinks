@@ -10,10 +10,14 @@ export class RemoteChannel<T> {
     this.identifier = identifier
   }
 
-  async read(): Promise<T[]> {
-    const records = await this.newRecords
+  async read(length?: number): Promise<T[]> {
+    const records = (await this.newRecords).slice(0, length)
     this.index += records.length
     return records
+  }
+
+  async drain(): Promise<void> {
+    await this.read()
   }
 
   private get newRecords(): Promise<T[]> {
