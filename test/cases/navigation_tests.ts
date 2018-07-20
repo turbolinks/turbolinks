@@ -51,7 +51,7 @@ class NavigationTests extends TurbolinksTestCase {
     this.assert.equal(await this.pathname, "/test/fixtures/one.html")
     this.assert.equal(await this.hash, "#element-id")
     this.assert.equal(await this.visitAction, "advance")
-    this.assert(await this.isScrolledTo("#element-id"))
+    this.assert(await this.isScrolledToSelector("#element-id"))
   }
 
   async "test following a same-origin link to a named anchor"() {
@@ -60,7 +60,7 @@ class NavigationTests extends TurbolinksTestCase {
     this.assert.equal(await this.pathname, "/test/fixtures/one.html")
     this.assert.equal(await this.hash, "#named-anchor")
     this.assert.equal(await this.visitAction, "advance")
-    this.assert(await this.isScrolledTo("[name=named-anchor]"))
+    this.assert(await this.isScrolledToSelector("[name=named-anchor]"))
   }
 
   async "test following a cross-origin unannotated link"() {

@@ -22,7 +22,7 @@ export class BrowserTestCase extends InternTestCase {
     return this.evaluate(() => ({ x: window.scrollX, y: window.scrollY }))
   }
 
-  async isScrolledTo(selector: string): Promise<boolean> {
+  async isScrolledToSelector(selector: string): Promise<boolean> {
     const { y: pageY } = await this.scrollPosition
     const { y: elementY } = await this.remote.findByCssSelector(selector).getPosition()
     const offset = pageY - elementY
