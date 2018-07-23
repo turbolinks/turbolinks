@@ -11,6 +11,6 @@
   },
   "scripts": {
     "serve": "intern serveOnly",
-    "test": "intern"
+    "test": "NODE_OPTIONS=--inspect intern"
   }
 }
