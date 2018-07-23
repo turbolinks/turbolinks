@@ -5,6 +5,7 @@
   "private": true,
   "devDependencies": {
     "intern": "^4.2.2",
+    "leadfoot": "^1.7.6",
     "ts-node": "^7.0.0",
     "typescript": "^2.9.2"
   },

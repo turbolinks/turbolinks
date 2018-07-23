@@ -1,8 +1,4 @@
 (function(eventNames) {
-  addEventListener("turbolinks:load", function() {
-    window.pageIdentifier = Turbolinks.controller.currentVisit.identifier
-  })
-
   window.eventLogs = []
 
   for (var i = 0; i < eventNames.length; i++) {

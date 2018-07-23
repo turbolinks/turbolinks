@@ -1,4 +1,5 @@
 import { InternTestCase } from "./intern_test_case"
+import { Element } from "@theintern/leadfoot"
 
 export class BrowserTestCase extends InternTestCase {
   async goToLocation(location: string): Promise<void> {
@@ -35,5 +36,25 @@ export class BrowserTestCase extends InternTestCase {
 
   async evaluate<T>(callback: () => T): Promise<T> {
     return await this.remote.execute(callback)
+  }
+
+  get head(): Promise<Element> {
+    return this.evaluate(() => document.head as any)
+  }
+
+  get body(): Promise<Element> {
+    return this.evaluate(() => document.body as any)
+  }
+
+  get location(): Promise<string> {
+    return this.evaluate(() => location.toString())
+  }
+
+  get pathname(): Promise<string> {
+    return this.evaluate(() => location.pathname)
+  }
+
+  get hash(): Promise<string> {
+    return this.evaluate(() => location.hash)
   }
 }

@@ -59,10 +59,6 @@ export class RenderingTests extends TurbolinksTestCase {
   async "test error pages"() {
 
   }
-
-  get body() {
-    return this.evaluate(() => document.body)
-  }
 }
 
 RenderingTests.registerSuite()
