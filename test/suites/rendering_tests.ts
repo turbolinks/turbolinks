@@ -3,7 +3,7 @@ import { Element } from "@theintern/leadfoot"
 
 export class RenderingTests extends TurbolinksTestCase {
   async setup() {
-    await this.goToLocation("/test/fixtures/rendering.html")
+    await this.goToLocation("/fixtures/rendering.html")
   }
 
   async "test triggers before-render and render events"() {
@@ -20,14 +20,14 @@ export class RenderingTests extends TurbolinksTestCase {
   async "test reloads when tracked elements change"() {
     this.clickSelector("#tracked-asset-change-link")
     await this.nextBody
-    this.assert.equal(await this.pathname, "/test/fixtures/tracked_asset_change.html")
+    this.assert.equal(await this.pathname, "/fixtures/tracked_asset_change.html")
     this.assert.equal(await this.visitAction, "load")
   }
 
   async "test reloads when turbolinks-visit-control setting is reload"() {
     this.clickSelector("#visit-control-reload-link")
     await this.nextBody
-    this.assert.equal(await this.pathname, "/test/fixtures/visit_control_reload.html")
+    this.assert.equal(await this.pathname, "/fixtures/visit_control_reload.html")
     this.assert.equal(await this.visitAction, "load")
   }
 

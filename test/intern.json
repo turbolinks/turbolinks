@@ -1,5 +1,5 @@
 {
-  "functionalSuites": "test/suites/**/*.ts",
+  "functionalSuites": "suites/**/*.ts",
   "environments": [
     {
       "browserName": "chrome",

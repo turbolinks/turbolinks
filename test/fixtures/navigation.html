@@ -3,23 +3,23 @@
   <head>
     <meta charset="utf-8">
     <title>Turbolinks</title>
-    <script src="/test/fixtures/turbolinks.js" data-turbolinks-track="reload"></script>
-    <script src="/test/fixtures/test.js"></script>
+    <script src="/fixtures/turbolinks.js" data-turbolinks-track="reload"></script>
+    <script src="/fixtures/test.js"></script>
   </head>
   <body>
     <section>
       <h1>Navigation</h1>
-      <p><a id="same-origin-unannotated-link" href="/test/fixtures/one.html">Same-origin unannotated link</a></p>
-      <p><a id="same-origin-replace-link" href="/test/fixtures/one.html" data-turbolinks-action="replace">Same-origin data-turbolinks-action=replace link</a></p>
-      <p><a id="same-origin-false-link" href="/test/fixtures/one.html" data-turbolinks="false">Same-origin data-turbolinks=false link</a></p>
-      <p data-turbolinks="false"><a id="same-origin-unannotated-link-inside-false-container" href="/test/fixtures/one.html">Same-origin unannotated link inside data-turbolinks=false container</a></p>
-      <p data-turbolinks="false"><a id="same-origin-true-link-inside-false-container" href="/test/fixtures/one.html" data-turbolinks="true">Same-origin data-turbolinks=true link inside data-turbolinks=false container</a></p>
-      <p><a id="same-origin-anchored-link" href="/test/fixtures/one.html#element-id">Same-origin anchored link</a></p>
-      <p><a id="same-origin-anchored-link-named" href="/test/fixtures/one.html#named-anchor">Same-origin link to named anchor</a></p>
+      <p><a id="same-origin-unannotated-link" href="/fixtures/one.html">Same-origin unannotated link</a></p>
+      <p><a id="same-origin-replace-link" href="/fixtures/one.html" data-turbolinks-action="replace">Same-origin data-turbolinks-action=replace link</a></p>
+      <p><a id="same-origin-false-link" href="/fixtures/one.html" data-turbolinks="false">Same-origin data-turbolinks=false link</a></p>
+      <p data-turbolinks="false"><a id="same-origin-unannotated-link-inside-false-container" href="/fixtures/one.html">Same-origin unannotated link inside data-turbolinks=false container</a></p>
+      <p data-turbolinks="false"><a id="same-origin-true-link-inside-false-container" href="/fixtures/one.html" data-turbolinks="true">Same-origin data-turbolinks=true link inside data-turbolinks=false container</a></p>
+      <p><a id="same-origin-anchored-link" href="/fixtures/one.html#element-id">Same-origin anchored link</a></p>
+      <p><a id="same-origin-anchored-link-named" href="/fixtures/one.html#named-anchor">Same-origin link to named anchor</a></p>
       <p><a id="cross-origin-unannotated-link" href="about:blank">Cross-origin unannotated link</a></p>
-      <p><a id="same-origin-targeted-link" href="/test/fixtures/one.html" target="_blank">Same-origin targeted link</a></p>
-      <p><a id="same-origin-download-link" href="/test/fixtures/one.html" download="one.html">Same-origin download link</a></p>
-      <svg width="600" height="100" viewbox="-300 -50 600 100"><text><a id="same-origin-link-inside-svg-element" href="/test/fixtures/one.html">Same-origin link inside SVG element</a></text></svg>
+      <p><a id="same-origin-targeted-link" href="/fixtures/one.html" target="_blank">Same-origin targeted link</a></p>
+      <p><a id="same-origin-download-link" href="/fixtures/one.html" download="one.html">Same-origin download link</a></p>
+      <svg width="600" height="100" viewbox="-300 -50 600 100"><text><a id="same-origin-link-inside-svg-element" href="/fixtures/one.html">Same-origin link inside SVG element</a></text></svg>
       <svg width="600" height="100" viewbox="-300 -50 600 100"><text><a id="cross-origin-link-inside-svg-element" href="about:blank">Cross-origin link inside SVG element</a></text></svg>
     </section>
   </body>

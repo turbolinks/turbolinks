@@ -2,12 +2,12 @@ import { TurbolinksTestCase } from "../lib/turbolinks_test_case"
 
 export class VisitTests extends TurbolinksTestCase {
   async setup() {
-    this.goToLocation("/test/fixtures/visit.html")
+    this.goToLocation("/fixtures/visit.html")
   }
 
   async "test programmatically visiting a same-origin location"() {
     const urlBeforeVisit = await this.location
-    await this.visitLocation("/test/fixtures/one.html")
+    await this.visitLocation("/fixtures/one.html")
 
     const urlAfterVisit = await this.location
     this.assert.notEqual(urlBeforeVisit, urlAfterVisit)
