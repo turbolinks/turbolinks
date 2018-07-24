@@ -4,7 +4,7 @@
     {
       "browserName": "chrome",
       "goog:chromeOptions": {
-        "args": ["headless", "disable-gpu"]
+        "args": ["headless", "no-sandbox", "disable-gpu", "disable-dev-shm-usage", "verbose"]
       }
     }
   ],
