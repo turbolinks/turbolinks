@@ -2,13 +2,6 @@ import { BrowserTestCase } from "./browser_test_case"
 import { RemoteChannel } from "./remote_channel"
 import { Element } from "@theintern/leadfoot"
 
-declare global {
-  interface Window {
-    Turbolinks: any
-    pageIdentifier: string | undefined
-  }
-}
-
 type EventLog = [string, any]
 
 export class TurbolinksTestCase extends BrowserTestCase {
@@ -74,5 +67,11 @@ export class TurbolinksTestCase extends BrowserTestCase {
 
   drainEventLog() {
     return this.eventLogChannel.drain()
+  }
+}
+
+declare global {
+  interface Window {
+    Turbolinks: any
   }
 }

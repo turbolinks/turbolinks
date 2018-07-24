@@ -15,6 +15,10 @@ export class BrowserTestCase extends InternTestCase {
     return this.remote.goForward()
   }
 
+  async hasSelector(selector: string) {
+    return (await this.remote.findAllByCssSelector(selector)).length > 0
+  }
+
   async querySelector(selector: string) {
     return this.remote.findByCssSelector(selector)
   }
