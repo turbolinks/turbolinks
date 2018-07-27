@@ -541,7 +541,17 @@ $ bin/blade build
 
 ## Running Tests
 
-Follow the instructions for _Building From Source_ above. Then run `bin/blade runner` and visit the displayed URL in your browser. The Turbolinks test suite will start automatically.
+The Turbolinks test suite is written in [TypeScript](https://www.typescriptlang.org) with the [Intern testing library](https://theintern.io).
+
+To run the tests, first make sure you have the [Yarn package manager](https://yarnpkg.com) installed. Follow the instructions for _Building From Source_ above, then run the following commands:
+
+```
+$ cd test
+$ yarn install
+$ yarn test
+```
+
+If you are testing changes to the Turbolinks source, remember to run `bin/blade build` before each test run.
 
 ---
 

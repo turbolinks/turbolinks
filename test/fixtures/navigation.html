@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title>Turbolinks</title>
-    <script src="/turbolinks.js" data-turbolinks-track="reload"></script>
+    <script src="/fixtures/turbolinks.js" data-turbolinks-track="reload"></script>
+    <script src="/fixtures/test.js"></script>
   </head>
   <body>
     <section>
@@ -18,8 +19,8 @@
       <p><a id="cross-origin-unannotated-link" href="about:blank">Cross-origin unannotated link</a></p>
       <p><a id="same-origin-targeted-link" href="/fixtures/one.html" target="_blank">Same-origin targeted link</a></p>
       <p><a id="same-origin-download-link" href="/fixtures/one.html" download="one.html">Same-origin download link</a></p>
-      <svg><text><a id="same-origin-link-inside-svg-element" href="/fixtures/one.html">Same-origin link inside SVG element</a></text></svg>
-      <svg><text><a id="cross-origin-link-inside-svg-element" href="about:blank">Cross-origin link inside SVG element</a></text></svg>
+      <svg width="600" height="100" viewbox="-300 -50 600 100"><text><a id="same-origin-link-inside-svg-element" href="/fixtures/one.html">Same-origin link inside SVG element</a></text></svg>
+      <svg width="600" height="100" viewbox="-300 -50 600 100"><text><a id="cross-origin-link-inside-svg-element" href="about:blank">Cross-origin link inside SVG element</a></text></svg>
     </section>
   </body>
 </html>
