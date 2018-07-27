@@ -17,6 +17,16 @@ export class RenderingTests extends TurbolinksTestCase {
     this.assert(await newBody.equals(await this.body))
   }
 
+  async "test triggers before-render and render events for error pages"() {
+    this.clickSelector("#nonexistent-link")
+    const { newBody } = await this.nextEventNamed("turbolinks:before-render")
+
+    this.assert.equal(await newBody.getVisibleText(), "404 Not Found: /nonexistent")
+
+    await this.nextEventNamed("turbolinks:render")
+    this.assert(await newBody.equals(await this.body))
+  }
+
   async "test reloads when tracked elements change"() {
     this.clickSelector("#tracked-asset-change-link")
     await this.nextBody
