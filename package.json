@@ -1,6 +1,6 @@
 {
   "name": "turbolinks",
-  "version": "5.1.1",
+  "version": "5.2.0-beta.1",
   "description": "Turbolinks makes navigating your web application faster",
   "main": "dist/turbolinks.js",
   "files": [
@@ -9,9 +9,6 @@
   ],
   "directories": {
     "test": "test"
-  },
-  "scripts": {
-    "test": "bin/blade runner"
   },
   "repository": {
     "type": "git",
@@ -22,7 +19,7 @@
     "browser",
     "pushstate"
   ],
-  "author": "packagethief, sstephenson",
+  "author": "javan, packagethief, sstephenson",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/turbolinks/turbolinks/issues"
