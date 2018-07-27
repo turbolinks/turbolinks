@@ -551,6 +551,8 @@ $ yarn install
 $ yarn test
 ```
 
+If you are testing changes to the Turbolinks source, remember to run `bin/blade build` before each test run.
+
 ---
 
 © 2018 Basecamp, LLC.
