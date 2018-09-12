@@ -237,6 +237,9 @@ class Turbolinks.Controller
   locationIsVisitable: (location) ->
     location.isPrefixedBy(@view.getRootLocation()) and location.isHTML()
 
+  locationIsSamePageAnchor: (location) ->
+    location.anchor? and location.requestURL is @location.requestURL
+
   getCurrentRestorationData: ->
     @getRestorationDataForIdentifier(@restorationIdentifier)
 

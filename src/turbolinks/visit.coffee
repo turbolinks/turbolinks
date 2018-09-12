@@ -59,7 +59,7 @@ class Turbolinks.Visit
       isPreview = @shouldIssueRequest()
       @render ->
         @cacheSnapshot()
-        if @locationHasSamePageAnchor()
+        if @locationIsSamePageAnchor()
           @performScroll()
           @adapter.visitRendered?(this)
         else
@@ -87,7 +87,7 @@ class Turbolinks.Visit
       @followedRedirect = true
 
   goToSamePageAnchor: ->
-    if @locationHasSamePageAnchor()
+    if @locationIsSamePageAnchor()
       @render ->
         @cacheSnapshot()
         @performScroll()
@@ -155,13 +155,13 @@ class Turbolinks.Visit
   shouldIssueRequest: ->
     if @action is "restore"
       not @hasCachedSnapshot()
-    else if @locationHasSamePageAnchor()
+    else if @locationIsSamePageAnchor()
       false
     else
       true
 
-  locationHasSamePageAnchor: ->
-    @location.anchor? and @location.requestURL is @referrer.requestURL
+  locationIsSamePageAnchor: ->
+    @controller.locationIsSamePageAnchor(@location)
 
   cacheSnapshot: ->
     unless @snapshotCached
