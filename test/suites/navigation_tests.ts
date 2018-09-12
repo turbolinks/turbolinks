@@ -63,6 +63,13 @@ class NavigationTests extends TurbolinksTestCase {
     this.assert(await this.isScrolledToSelector("[name=named-anchor]"))
   }
 
+  async "test following a same-page anchored link"() {
+    this.clickSelector("#same-page-anchored-link")
+    this.assert.equal(await this.pathname, "/fixtures/navigation.html")
+    this.assert.equal(await this.hash, "#element-id")
+    this.assert(await this.isScrolledToSelector("#element-id"))
+  }
+
   async "test following a cross-origin unannotated link"() {
     this.clickSelector("#cross-origin-unannotated-link")
     await this.nextBody
