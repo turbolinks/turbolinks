@@ -42,6 +42,7 @@ Your application can use the [`turbolinks` npm package](https://www.npmjs.com/pa
     var Turbolinks = require("turbolinks")
     Turbolinks.start()
     ```
+The npm package alone does not provide server-side support for Turbolinks redirection. See [Following Redirects](#following-redirects) for details on adding support.
 
 #### Table of Contents
 
