@@ -423,7 +423,7 @@ When you visit location `/one` and the server redirects you to location `/two`, 
 
 However, Turbolinks makes requests using `XMLHttpRequest`, which transparently follows redirects. There’s no way for Turbolinks to tell whether a request resulted in a redirect without additional cooperation from the server.
 
-To work around this problem, send the `Turbolinks-Location` header in response to a visit that was redirected, and Turbolinks will replace the browser’s topmost history entry with the value you provide.
+To work around this problem, send the `Turbolinks-Location` header in the final response to a visit that was redirected, and Turbolinks will replace the browser’s topmost history entry with the value you provide.
 
 The Turbolinks Rails engine sets `Turbolinks-Location` automatically when using `redirect_to` in response to a Turbolinks visit.
 
