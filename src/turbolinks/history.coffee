@@ -5,12 +5,15 @@ class Turbolinks.History
     unless @started
       addEventListener("popstate", @onPopState, false)
       addEventListener("load", @onPageLoad, false)
+      @initialScrollRestoration = history.scrollRestoration
+      @setScrollRestoration('manual')
       @started = true
 
   stop: ->
     if @started
       removeEventListener("popstate", @onPopState, false)
       removeEventListener("load", @onPageLoad, false)
+      @setScrollRestoration(@initialScrollRestoration)
       @started = false
 
   push: (location, restorationIdentifier) ->
@@ -46,3 +49,7 @@ class Turbolinks.History
   update: (method, location, restorationIdentifier) ->
     state = turbolinks: {restorationIdentifier}
     history[method + "State"](state, null, location)
+
+  setScrollRestoration: (value) ->
+    if 'scrollRestoration' of history
+      history.scrollRestoration = value
