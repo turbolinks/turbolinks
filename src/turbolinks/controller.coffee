@@ -3,14 +3,19 @@
 #= require ./history
 #= require ./view
 #= require ./scroll_manager
+#= require ./session_storage
 #= require ./snapshot_cache
 #= require ./visit
 
 class Turbolinks.Controller
+  SCROLL_POSITION = "scroll-position"
+  VIEW_INVALIDATED = "view-invalidated"
+
   constructor: ->
     @history = new Turbolinks.History this
     @view = new Turbolinks.View this
     @scrollManager = new Turbolinks.ScrollManager this
+    @sessionStorage = new Turbolinks.SessionStorage
     @restorationData = {}
     @clearCache()
     @setProgressBarDelay(500)
@@ -19,6 +24,7 @@ class Turbolinks.Controller
     if Turbolinks.supported and not @started
       addEventListener("click", @clickCaptured, true)
       addEventListener("DOMContentLoaded", @pageLoaded, false)
+      addEventListener("beforeunload", @beforePageUnloaded, false)
       @scrollManager.start()
       @startHistory()
       @started = true
@@ -31,6 +37,7 @@ class Turbolinks.Controller
     if @started
       removeEventListener("click", @clickCaptured, true)
       removeEventListener("DOMContentLoaded", @pageLoaded, false)
+      removeEventListener("beforeunload", @beforePageUnloaded, false)
       @scrollManager.stop()
       @stopHistory()
       @started = false
@@ -122,12 +129,31 @@ class Turbolinks.Controller
     restorationData = @getCurrentRestorationData()
     restorationData.scrollPosition = scrollPosition
 
+  persistScrollPosition: ->
+    @sessionStorage.set(SCROLL_POSITION, {
+      location: @location.toString(),
+      x: @scrollManager.position.x,
+      y: @scrollManager.position.y
+    })
+
+  restorePersistedScrollPosition: (location) ->
+    persistedPosition = @sessionStorage.get(SCROLL_POSITION)
+    viewInvalidated = @sessionStorage.get(VIEW_INVALIDATED)
+
+    if persistedPosition?.location is @location.toString() and not viewInvalidated
+      @scrollManager.scrollToPosition(x: persistedPosition.x, y: persistedPosition.y)
+
+    @sessionStorage.remove(SCROLL_POSITION)
+    @sessionStorage.remove(VIEW_INVALIDATED)
+
+
   # View
 
   render: (options, callback) ->
     @view.render(options, callback)
 
   viewInvalidated: ->
+    @sessionStorage.set(VIEW_INVALIDATED, true)
     @adapter.pageInvalidated()
 
   viewWillRender: (newBody) ->
@@ -141,7 +167,11 @@ class Turbolinks.Controller
 
   pageLoaded: =>
     @lastRenderedLocation = @location
+    @restorePersistedScrollPosition()
     @notifyApplicationAfterPageLoad()
+
+  beforePageUnloaded: =>
+    @persistScrollPosition()
 
   clickCaptured: =>
     removeEventListener("click", @clickBubbled, false)
