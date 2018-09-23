@@ -97,7 +97,7 @@ class Turbolinks.Controller
   cacheSnapshot: ->
     if @shouldCacheSnapshot()
       @notifyApplicationBeforeCachingSnapshot()
-      snapshot = @view.getSnapshot()
+      snapshot = @view.getSnapshotForCache()
       location = @lastRenderedLocation
       Turbolinks.defer =>
         @cache.put(location, snapshot.clone())

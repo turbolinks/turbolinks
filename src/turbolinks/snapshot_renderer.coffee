@@ -26,6 +26,7 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
   replaceBody: ->
     placeholders = @relocateCurrentBodyPermanentElements()
     @activateNewBodyScriptElements()
+    @restoreAutoplayAttributes() unless @isPreview
     @assignNewBody()
     @replacePlaceholderElementsWithClonedPermanentElements(placeholders)
 
@@ -63,6 +64,10 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
     for { element, permanentElement } in placeholders
       clonedElement = permanentElement.cloneNode(true)
       replaceElementWithElement(element, clonedElement)
+
+  restoreAutoplayAttributes: ->
+    for id in @newSnapshot.autoplayElementIds
+      @newSnapshot.getMediaElementById(id).setAttribute("autoplay", "")
 
   activateNewBodyScriptElements: ->
     for inertScriptElement in @getNewBodyScriptElements()

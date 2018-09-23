@@ -15,6 +15,11 @@ class Turbolinks.View
   getSnapshot: ->
     Turbolinks.Snapshot.fromHTMLElement(@htmlElement)
 
+  getSnapshotForCache: ->
+    snapshot = Turbolinks.Snapshot.fromHTMLElement(@htmlElement)
+    snapshot.prepareAutoplayElementsForCloning()
+    snapshot
+
   render: ({snapshot, error, isPreview}, callback) ->
     @markAsPreview(isPreview)
     if snapshot?

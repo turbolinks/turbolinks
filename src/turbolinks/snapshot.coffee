@@ -20,10 +20,11 @@ class Turbolinks.Snapshot
     headDetails = Turbolinks.HeadDetails.fromHeadElement(headElement)
     new this headDetails, bodyElement
 
-  constructor: (@headDetails, @bodyElement) ->
+  constructor: (@headDetails, @bodyElement, options = {}) ->
+    @autoplayElementIds = options.autoplayElementIds || []
 
   clone: ->
-    new @constructor @headDetails, @bodyElement.cloneNode(true)
+    new @constructor @headDetails, @bodyElement.cloneNode(true), { @autoplayElementIds }
 
   getRootLocation: ->
     root = @getSetting("root") ? "/"
@@ -35,6 +36,9 @@ class Turbolinks.Snapshot
   getElementForAnchor: (anchor) ->
     try @bodyElement.querySelector("[id='#{anchor}'], a[name='#{anchor}']")
 
+  getMediaElementById: (id) ->
+    @bodyElement.querySelector("audio[id='#{id}'], video[id='#{id}']")
+
   getPermanentElements: ->
     @bodyElement.querySelectorAll("[id][data-turbolinks-permanent]")
 
@@ -43,6 +47,14 @@ class Turbolinks.Snapshot
 
   getPermanentElementsPresentInSnapshot: (snapshot) ->
     element for element in @getPermanentElements() when snapshot.getPermanentElementById(element.id)
+
+  getAutoplayElements: ->
+    @bodyElement.querySelectorAll("audio[id][autoplay], video[id][autoplay]")
+
+  prepareAutoplayElementsForCloning: ->
+    for element in @getAutoplayElements()
+      @autoplayElementIds.push(element.id)
+      element.removeAttribute('autoplay')
 
   findFirstAutofocusableElement: ->
     @bodyElement.querySelector("[autofocus]")
