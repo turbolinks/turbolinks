@@ -57,4 +57,4 @@ class Turbolinks.BrowserAdapter
     clearTimeout(@progressBarTimeout)
 
   reload: ->
-    window.location.reload()
+    window.location.href = window.location.href
