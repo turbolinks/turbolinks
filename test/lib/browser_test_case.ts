@@ -15,6 +15,10 @@ export class BrowserTestCase extends InternTestCase {
     return this.remote.goForward()
   }
 
+  async refresh(): Promise<void> {
+    return this.remote.refresh()
+  }
+
   async hasSelector(selector: string) {
     return (await this.remote.findAllByCssSelector(selector)).length > 0
   }
@@ -36,6 +40,10 @@ export class BrowserTestCase extends InternTestCase {
     const { y: elementY } = await this.remote.findByCssSelector(selector).getPosition()
     const offset = pageY - elementY
     return offset > -1 && offset < 1
+  }
+
+  async scrollToSelector(selector: string): Promise<void> {
+    return this.remote.moveMouseTo(await this.remote.findByCssSelector(selector))
   }
 
   async evaluate<T>(callback: () => T): Promise<T> {
