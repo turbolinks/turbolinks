@@ -70,7 +70,7 @@ class Turbolinks.SnapshotRenderer extends Turbolinks.Renderer
       replaceElementWithElement(inertScriptElement, activatedScriptElement)
 
   assignNewBody: ->
-    document.body = @newBody
+    replaceElementWithElement(document.body, @newBody)
 
   focusFirstAutofocusableElement: ->
     @newSnapshot.findFirstAutofocusableElement()?.focus()
