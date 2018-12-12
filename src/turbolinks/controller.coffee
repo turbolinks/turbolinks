@@ -50,7 +50,7 @@ class Turbolinks.Controller
   startVisitToLocationWithAction: (location, action, restorationIdentifier) ->
     if Turbolinks.supported
       restorationData = @getRestorationDataForIdentifier(restorationIdentifier)
-      @startVisit(location, action, {restorationData})
+      @startVisit(location, action, {restorationIdentifier, restorationData})
     else
       window.location = location
 
