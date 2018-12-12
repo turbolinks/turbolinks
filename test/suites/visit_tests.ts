@@ -16,8 +16,9 @@ export class VisitTests extends TurbolinksTestCase {
     const { url: urlFromBeforeVisitEvent } = await this.nextEventNamed("turbolinks:before-visit")
     this.assert.equal(urlFromBeforeVisitEvent, urlAfterVisit)
 
-    const { url: urlFromVisitEvent } = await this.nextEventNamed("turbolinks:visit")
+    const { url: urlFromVisitEvent, action: actionFromVisitEvent } = await this.nextEventNamed("turbolinks:visit")
     this.assert.equal(urlFromVisitEvent, urlAfterVisit)
+    this.assert.equal(actionFromVisitEvent, 'advance')
   }
 
   async "test programmatically visiting a cross-origin location falls back to window.location"() {
