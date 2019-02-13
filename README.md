@@ -17,8 +17,6 @@ Turbolinks works in all modern desktop and mobile browsers. It depends on the [H
 
 ## Installation
 
-Include [`dist/turbolinks.js`](dist/turbolinks.js) in your application’s JavaScript bundle.
-
 Turbolinks automatically initializes itself when loaded via a standalone `<script>` tag or a traditional concatenated JavaScript bundle. If you load Turbolinks as a CommonJS or AMD module, first require the module, then call the provided `start()` function.
 
 ### Installation Using Ruby on Rails
@@ -532,28 +530,27 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 ## Building From Source
 
-Turbolinks is written in [CoffeeScript](https://github.com/jashkenas/coffee-script) and compiled to JavaScript with [Blade](https://github.com/javan/blade). To build from source you’ll need a recent version of Ruby. From the root of your Turbolinks directory, issue the following commands to build the distributable files in `dist/`:
+Turbolinks is written in [TypeScript](https://www.typescriptlang.org). To build from source, first make sure you have the [Yarn package manager](https://yarnpkg.com) installed. Then issue the following commands to build the distributable files in `dist/`:
 
 ```
-$ gem install bundler
-$ bundle install
-$ bin/blade build
+$ yarn install
+$ yarn build
 ```
+
+Include the resulting [`dist/turbolinks.js`](dist/turbolinks.js) file in your application’s JavaScript bundle.
 
 ## Running Tests
 
-The Turbolinks test suite is written in [TypeScript](https://www.typescriptlang.org) with the [Intern testing library](https://theintern.io).
+Turbolinks is tested with the [Intern testing library](https://theintern.io).
 
-To run the tests, first make sure you have the [Yarn package manager](https://yarnpkg.com) installed. Follow the instructions for _Building From Source_ above, then run the following commands:
+To run the test suite, follow the instructions for _Building From Source_ above, then run:
 
 ```
-$ cd test
-$ yarn install
 $ yarn test
 ```
 
-If you are testing changes to the Turbolinks source, remember to run `bin/blade build` before each test run.
+If you are testing changes to the Turbolinks source, remember to run `yarn build` before each test run. Or, run `yarn watch` to build automatically as you work.
 
 ---
 
-© 2018 Basecamp, LLC.
+© 2019 Basecamp, LLC.

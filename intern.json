@@ -1,0 +1,13 @@
+{
+  "basePath": "src/tests/",
+  "functionalSuites": "dist/tests.js",
+  "environments": [
+    {
+      "browserName": "chrome",
+      "goog:chromeOptions": {
+        "args": ["headless", "no-sandbox", "disable-gpu", "disable-dev-shm-usage", "verbose"]
+      }
+    }
+  ],
+  "defaultTimeout": 2500
+}
