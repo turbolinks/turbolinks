@@ -124,10 +124,15 @@ export class Visit {
       const isPreview = this.shouldIssueRequest()
       this.render(() => {
         this.cacheSnapshot()
-        this.controller.render({ snapshot, isPreview }, this.performScroll)
-        this.adapter.visitRendered(this)
-        if (!isPreview) {
-          this.complete()
+        if (this.locationIsSamePageAnchor()) {
+          this.performScroll()
+          this.adapter.visitRendered(this)
+        } else {
+          this.controller.render({ snapshot, isPreview }, this.performScroll)
+          this.adapter.visitRendered(this)
+          if (!isPreview) {
+            this.complete()
+          }
         }
       })
     }
@@ -156,6 +161,16 @@ export class Visit {
       this.location = this.redirectedToLocation
       this.controller.replaceHistoryWithLocationAndRestorationIdentifier(this.redirectedToLocation, this.restorationIdentifier)
       this.followedRedirect = true
+    }
+  }
+
+  goToSamePageAnchor() {
+    if (this.locationIsSamePageAnchor()) {
+      this.render(() => {
+        this.cacheSnapshot()
+        this.performScroll()
+        this.adapter.visitRendered(this)
+      })
     }
   }
 
@@ -240,10 +255,19 @@ export class Visit {
       case "restore": return this.controller.pushHistoryWithLocationAndRestorationIdentifier
     }
   }
-    shouldIssueRequest() {
-    return this.action == "restore"
-      ? !this.hasCachedSnapshot()
-      : true
+
+  shouldIssueRequest() {
+    if (this.action == "restore") {
+      return !this.hasCachedSnapshot()
+    } else if (this.locationIsSamePageAnchor()) {
+      return false
+    } else {
+      return true
+    }
+  }
+
+  locationIsSamePageAnchor() {
+    return this.controller.locationIsSamePageAnchor(this.location)
   }
 
   cacheSnapshot() {
