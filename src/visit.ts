@@ -36,6 +36,7 @@ export class Visit {
   frame?: number
   historyChanged = false
   location: Location
+  isSamePage: boolean
   progress = 0
   referrer?: Location
   redirectedToLocation?: Location
@@ -49,6 +50,7 @@ export class Visit {
   constructor(controller: Controller, location: Location, action: Action, restorationIdentifier: string = uuid()) {
     this.controller = controller
     this.location = location
+    this.isSamePage = this.controller.locationIsSamePageAnchor(this.location)
     this.action = action
     this.adapter = controller.adapter
     this.restorationIdentifier = restorationIdentifier
@@ -124,7 +126,7 @@ export class Visit {
       const isPreview = this.shouldIssueRequest()
       this.render(() => {
         this.cacheSnapshot()
-        if (this.locationIsSamePageAnchor()) {
+        if (this.isSamePage) {
           this.performScroll()
           this.adapter.visitRendered(this)
         } else {
@@ -165,7 +167,7 @@ export class Visit {
   }
 
   goToSamePageAnchor() {
-    if (this.locationIsSamePageAnchor()) {
+    if (this.isSamePage) {
       this.render(() => {
         this.cacheSnapshot()
         this.performScroll()
@@ -259,15 +261,11 @@ export class Visit {
   shouldIssueRequest() {
     if (this.action == "restore") {
       return !this.hasCachedSnapshot()
-    } else if (this.locationIsSamePageAnchor()) {
+    } else if (this.isSamePage) {
       return false
     } else {
       return true
     }
-  }
-
-  locationIsSamePageAnchor() {
-    return this.controller.locationIsSamePageAnchor(this.location)
   }
 
   cacheSnapshot() {
