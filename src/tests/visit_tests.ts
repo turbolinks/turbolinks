@@ -1,4 +1,5 @@
 import { TurbolinksTestCase } from "./helpers/turbolinks_test_case"
+import { get } from "http"
 
 export class VisitTests extends TurbolinksTestCase {
   async setup() {
@@ -26,6 +27,19 @@ export class VisitTests extends TurbolinksTestCase {
   async "test programmatically visiting a cross-origin location falls back to window.location"() {
     const urlBeforeVisit = await this.location
     await this.visitLocation("about:blank")
+
+    const urlAfterVisit = await this.location
+    this.assert.notEqual(urlBeforeVisit, urlAfterVisit)
+    this.assert.equal(await this.visitAction, "load")
+  }
+
+  async "test visiting a location served with a non-HTML content type"() {
+    const urlBeforeVisit = await this.location
+    await this.visitLocation("/fixtures/svg")
+
+    const url = await this.remote.getCurrentUrl()
+    const contentType = await contentTypeOfURL(url)
+    this.assert.equal(contentType, "image/svg+xml")
 
     const urlAfterVisit = await this.location
     this.assert.notEqual(urlBeforeVisit, urlAfterVisit)
@@ -63,6 +77,12 @@ export class VisitTests extends TurbolinksTestCase {
       event.preventDefault()
     }, false))
   }
+}
+
+function contentTypeOfURL(url: string): Promise<string | undefined> {
+  return new Promise(resolve => {
+    get(url, ({ headers }) => resolve(headers["content-type"]))
+  })
 }
 
 VisitTests.registerSuite()
