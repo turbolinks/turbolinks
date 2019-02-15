@@ -100,7 +100,7 @@ export class HttpRequest {
   }
 
   notifyApplicationAfterRequestEnd() {
-    dispatch("turbolinks:request-end", { data: { url: this.url, xhr: this.xhr } })
+    return dispatch("turbolinks:request-end", { data: { url: this.url, xhr: this.xhr } })
   }
 
   // Private
@@ -123,8 +123,10 @@ export class HttpRequest {
 
   endRequest(callback: (xhr: XMLHttpRequest) => void = () => {}) {
     if (this.xhr) {
-      this.notifyApplicationAfterRequestEnd()
-      callback(this.xhr)
+      const event = this.notifyApplicationAfterRequestEnd()
+      if (!event.defaultPrevented) {
+        callback(this.xhr)
+      }
       this.destroy()
     }
   }
