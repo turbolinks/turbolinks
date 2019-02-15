@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-set -e
-
-bin/blade build
-cd test
-yarn install
-exec yarn test
