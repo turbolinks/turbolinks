@@ -100,7 +100,7 @@ export class HttpRequest {
   }
 
   notifyApplicationAfterRequestEnd() {
-    return dispatch("turbolinks:request-end", { data: { url: this.url, xhr: this.xhr } })
+    return dispatch("turbolinks:request-end", { data: { url: this.url, xhr: this.xhr }, cancelable: true })
   }
 
   // Private
