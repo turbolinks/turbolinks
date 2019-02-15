@@ -4,17 +4,22 @@ import { History } from "./history"
 import { Location, Locatable } from "./location"
 import { RenderCallback } from "./renderer"
 import { ScrollManager } from "./scroll_manager"
+import { SessionStorage } from "./session_storage"
 import { SnapshotCache } from "./snapshot_cache"
 import { Action, Position, isAction } from "./types"
 import { closest, defer, dispatch, uuid } from "./util"
 import { RenderOptions, View } from "./view"
 import { Visit } from "./visit"
+import { PersistedPosition } from './types'
 
 export type RestorationData = { scrollPosition?: Position }
 export type RestorationDataMap = { [uuid: string]: RestorationData }
 export type TimingData = {}
 export type VisitOptions = { action: Action }
 export type VisitProperties = { restorationIdentifier: string, restorationData: RestorationData, historyChanged: boolean }
+
+const SCROLL_POSITION = "turbolinks-scroll-position"
+const VIEW_INVALIDATED = "turbolinks-view-invalidated"
 
 export class Controller {
   static supported = !!(
@@ -27,6 +32,7 @@ export class Controller {
   readonly history = new History(this)
   readonly restorationData: RestorationDataMap = {}
   readonly scrollManager = new ScrollManager(this)
+  readonly sessionStorage = new SessionStorage
   readonly view = new View(this)
 
   cache = new SnapshotCache(10)
@@ -42,6 +48,7 @@ export class Controller {
     if (Controller.supported && !this.started) {
       addEventListener("click", this.clickCaptured, true)
       addEventListener("DOMContentLoaded", this.pageLoaded, false)
+      addEventListener("beforeunload", this.beforePageUnloaded, false)
       this.scrollManager.start()
       this.startHistory()
       this.started = true
@@ -57,6 +64,7 @@ export class Controller {
     if (this.started) {
       removeEventListener("click", this.clickCaptured, true)
       removeEventListener("DOMContentLoaded", this.pageLoaded, false)
+      removeEventListener("beforeunload", this.beforePageUnloaded, false)
       this.scrollManager.stop()
       this.stopHistory()
       this.started = false
@@ -176,6 +184,27 @@ export class Controller {
     restorationData.scrollPosition = position
   }
 
+  persistScrollPosition() {
+    const position: PersistedPosition = {
+      location: this.location.toString(),
+      x: this.scrollManager.position.x,
+      y: this.scrollManager.position.y
+    }
+    this.sessionStorage.set(SCROLL_POSITION, position)
+  }
+
+  restorePersistedScrollPosition() {
+    const persistedPosition: PersistedPosition = this.sessionStorage.get(SCROLL_POSITION)
+    const viewInvalidated = this.sessionStorage.get(VIEW_INVALIDATED)
+
+    if (persistedPosition && persistedPosition.location == this.location.toString() && !viewInvalidated) {
+      this.scrollManager.scrollToPosition({ x: persistedPosition.x, y: persistedPosition.y })
+    }
+
+    this.sessionStorage.remove(SCROLL_POSITION)
+    this.sessionStorage.remove(VIEW_INVALIDATED)
+  }
+
   // View
 
   render(options: Partial<RenderOptions>, callback: RenderCallback) {
@@ -183,6 +212,7 @@ export class Controller {
   }
 
   viewInvalidated() {
+    this.sessionStorage.set(VIEW_INVALIDATED, true)
     this.adapter.pageInvalidated()
   }
 
@@ -199,7 +229,12 @@ export class Controller {
 
   pageLoaded = () => {
     this.lastRenderedLocation = this.location
+    this.restorePersistedScrollPosition()
     this.notifyApplicationAfterPageLoad()
+  }
+
+  beforePageUnloaded = () => {
+    this.persistScrollPosition()
   }
 
   clickCaptured = () => {
