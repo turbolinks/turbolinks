@@ -9,6 +9,7 @@ type HistoryMethod = (state: any, title: string, url?: string | null | undefined
 
 export class History {
   readonly delegate: HistoryDelegate
+  initialScrollRestoration!: ScrollRestoration
   started = false
   pageLoaded = false
 
@@ -20,6 +21,8 @@ export class History {
     if (!this.started) {
       addEventListener("popstate", this.onPopState, false)
       addEventListener("load", this.onPageLoad, false)
+      this.initialScrollRestoration = history.scrollRestoration
+      this.setScrollRestoration('manual')
       this.started = true
     }
   }
@@ -28,6 +31,7 @@ export class History {
     if (this.started) {
       removeEventListener("popstate", this.onPopState, false)
       removeEventListener("load", this.onPageLoad, false)
+      this.setScrollRestoration(this.initialScrollRestoration)
       this.started = false
     }
   }
@@ -74,4 +78,11 @@ export class History {
     const state = { turbolinks: { restorationIdentifier } }
     method.call(history, state, "", location.absoluteURL)
   }
+
+  setScrollRestoration(value: ScrollRestoration) {
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = value
+    }
+  }
+
 }
