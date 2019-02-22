@@ -537,7 +537,7 @@ $ yarn install
 $ yarn build
 ```
 
-Include the resulting [`dist/turbolinks.js`](dist/turbolinks.js) file in your application’s JavaScript bundle.
+Include the resulting `dist/turbolinks.js` file in your application’s JavaScript bundle.
 
 ## Running Tests
 
