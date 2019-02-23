@@ -112,7 +112,6 @@ export class HttpRequest {
 
     xhr.open("GET", this.url, true)
     xhr.timeout = timeout
-    xhr.setRequestHeader("Accept", "text/html, application/xhtml+xml")
     xhr.setRequestHeader("Turbolinks-Referrer", referrer)
     xhr.onprogress = this.requestProgressed
     xhr.onload = this.requestLoaded
