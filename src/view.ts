@@ -25,6 +25,12 @@ export class View {
     return Snapshot.fromHTMLElement(this.htmlElement)
   }
 
+  getSnapshotForCache(): Snapshot {
+    const snapshot = Snapshot.fromHTMLElement(this.htmlElement)
+    snapshot.prepareAutoplayElementsForCloning()
+    return snapshot
+  }
+
   render({ snapshot, error, isPreview }: Partial<RenderOptions>, callback: RenderCallback) {
     this.markAsPreview(isPreview)
     if (snapshot) {
