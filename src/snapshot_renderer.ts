@@ -58,8 +58,20 @@ export class SnapshotRenderer extends Renderer {
   replaceBody() {
     const placeholders = this.relocateCurrentBodyPermanentElements()
     this.activateNewBodyScriptElements()
+    if (!this.isPreview) {
+      this.restoreAutoplayAttributes()
+    }
     this.assignNewBody()
     this.replacePlaceholderElementsWithClonedPermanentElements(placeholders)
+  }
+
+  restoreAutoplayAttributes() {
+    for (const id of this.newSnapshot.autoplayElementIds) {
+      const element = this.newSnapshot.getMediaElementById(id)
+      if (element) {
+        element.setAttribute("autoplay", "")
+      }
+    }
   }
 
   shouldRender() {

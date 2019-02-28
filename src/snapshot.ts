@@ -2,6 +2,10 @@ import { HeadDetails } from "./head_details"
 import { Location } from "./location"
 import { array } from "./util"
 
+export type SnapshotOptions = {
+  autoplayElementIds?: string[]
+}
+
 export class Snapshot {
   static wrap(value: Snapshot | string | HTMLHtmlElement) {
     if (value instanceof this) {
@@ -28,14 +32,16 @@ export class Snapshot {
 
   readonly headDetails: HeadDetails
   readonly bodyElement: HTMLBodyElement
+  readonly autoplayElementIds: string[]
 
-  constructor(headDetails: HeadDetails, bodyElement: HTMLBodyElement) {
+  constructor(headDetails: HeadDetails, bodyElement: HTMLBodyElement, options: SnapshotOptions = {}) {
     this.headDetails = headDetails
     this.bodyElement = bodyElement
+    this.autoplayElementIds = options.autoplayElementIds || []
   }
 
   clone(): Snapshot {
-    return new Snapshot(this.headDetails, this.bodyElement.cloneNode(true))
+    return new Snapshot(this.headDetails, this.bodyElement.cloneNode(true), { autoplayElementIds: this.autoplayElementIds })
   }
 
   getRootLocation() {
@@ -55,6 +61,10 @@ export class Snapshot {
     }
   }
 
+  getMediaElementById(id: string) {
+    return this.bodyElement.querySelector(`audio[id='${id}'], video[id='${id}']`)
+  }
+
   getPermanentElements() {
     return array(this.bodyElement.querySelectorAll("[id][data-turbolinks-permanent]"))
   }
@@ -65,6 +75,17 @@ export class Snapshot {
 
   getPermanentElementsPresentInSnapshot(snapshot: Snapshot) {
     return this.getPermanentElements().filter(({ id }) => snapshot.getPermanentElementById(id))
+  }
+
+  getAutoplayElements() {
+    return array(this.bodyElement.querySelectorAll("audio[id][autoplay], video[id][autoplay]"))
+  }
+
+  prepareAutoplayElementsForCloning() {
+    for(const element of this.getAutoplayElements()) {
+      this.autoplayElementIds.push(element.id)
+      element.removeAttribute('autoplay')
+    }
   }
 
   findFirstAutofocusableElement() {
