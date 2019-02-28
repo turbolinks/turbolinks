@@ -1,15 +1,13 @@
 {
   "name": "turbolinks",
-  "version": "5.2.0",
+  "version": "5.3.0-beta.0",
   "description": "Turbolinks makes navigating your web application faster",
+  "module": "dist/index.js",
   "main": "dist/turbolinks.js",
+  "types": "dist/index.d.ts",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
-  "directories": {
-    "test": "test"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/turbolinks/turbolinks.git"
@@ -24,5 +22,19 @@
   "bugs": {
     "url": "https://github.com/turbolinks/turbolinks/issues"
   },
-  "homepage": "https://github.com/turbolinks/turbolinks#readme"
+  "homepage": "https://github.com/turbolinks/turbolinks#readme",
+  "devDependencies": {
+    "intern": "^4.4.1",
+    "leadfoot": "^1.7.6",
+    "rollup": "^1.1.2",
+    "rollup-plugin-typescript2": "^0.19.2",
+    "typescript": "^3.3.1"
+  },
+  "scripts": {
+    "clean": "rm -fr dist",
+    "build": "tsc -b && rollup -c",
+    "watch": "rollup -wc",
+    "start": "intern serveOnly",
+    "test": "NODE_OPTIONS=--inspect intern"
+  }
 }

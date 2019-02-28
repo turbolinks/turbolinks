@@ -1,0 +1,36 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Turbolinks: Build dist directory",
+      "type": "shell",
+      "command": "yarn build",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [
+        "$tsc"
+      ]
+    },
+    {
+      "label": "Turbolinks: Run tests",
+      "type": "shell",
+      "dependsOn": "Turbolinks: Build dist directory",
+      "command": "yarn test",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Turbolinks: Start dev server",
+      "type": "shell",
+      "dependsOn": "Turbolinks: Build dist directory",
+      "command": "yarn start",
+      "problemMatcher": []
+    }
+  ]
+}

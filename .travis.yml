@@ -1,9 +1,11 @@
 dist: trusty
 sudo: false
 cache:
-- bundler
 - yarn
-script: bin/ci
+before_script:
+- yarn install
+- yarn build
+script: yarn test
 addons:
   apt:
     sources:
