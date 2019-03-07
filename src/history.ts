@@ -46,7 +46,7 @@ export class History {
     if (this.shouldHandlePopState()) {
       const { turbolinks } = event.state
       if (turbolinks) {
-        const location = Location.wrap(window.location.toString())
+        const location = Location.currentLocation
         const { restorationIdentifier } = turbolinks
         this.delegate.historyPoppedToLocationWithRestorationIdentifier(location, restorationIdentifier)
       }
