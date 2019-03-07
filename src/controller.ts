@@ -145,8 +145,8 @@ export class Controller {
     if (this.shouldCacheSnapshot()) {
       this.notifyApplicationBeforeCachingSnapshot()
       const snapshot = this.view.getSnapshot()
-      const location = this.lastRenderedLocation
-      defer(() => this.cache.put(location!, snapshot.clone()))
+      const location = this.lastRenderedLocation || Location.currentLocation
+      defer(() => this.cache.put(location, snapshot.clone()))
     }
   }
 
