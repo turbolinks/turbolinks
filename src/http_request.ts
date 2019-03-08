@@ -5,7 +5,8 @@ export type StatusCode = number
 
 export enum SystemStatusCode {
   networkFailure = 0,
-  timeoutFailure = -1
+  timeoutFailure = -1,
+  contentTypeMismatch = -2
 }
 
 export interface HttpRequestDelegate {
@@ -65,12 +66,18 @@ export class HttpRequest {
 
   requestLoaded = () => {
     this.endRequest(xhr => {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        const redirectedToLocation = Location.wrap(xhr.getResponseHeader("Turbolinks-Location") )
-        this.delegate.requestCompletedWithResponse(xhr.responseText, redirectedToLocation)
+      const contentType = xhr.getResponseHeader("Content-Type")
+      if (contentTypeIsHTML(contentType)) {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          const redirectedToLocation = Location.wrap(xhr.getResponseHeader("Turbolinks-Location"))
+          this.delegate.requestCompletedWithResponse(xhr.responseText, redirectedToLocation)
+        } else {
+          this.failed = true
+          this.delegate.requestFailedWithStatusCode(xhr.status, xhr.responseText)
+        }
       } else {
         this.failed = true
-        this.delegate.requestFailedWithStatusCode(xhr.status, xhr.responseText)
+        this.delegate.requestFailedWithStatusCode(SystemStatusCode.contentTypeMismatch)
       }
     })
   }
@@ -138,4 +145,8 @@ export class HttpRequest {
     this.setProgress(1)
     this.delegate.requestFinished()
   }
+}
+
+function contentTypeIsHTML(contentType: string | null) {
+  return (contentType || "").match(/^text\/html|^application\/xhtml\+xml/)
 }

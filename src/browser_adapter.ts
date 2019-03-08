@@ -49,6 +49,7 @@ export class BrowserAdapter implements Adapter {
     switch (statusCode) {
       case SystemStatusCode.networkFailure:
       case SystemStatusCode.timeoutFailure:
+      case SystemStatusCode.contentTypeMismatch:
         return this.reload()
       default:
         return visit.loadResponse()
