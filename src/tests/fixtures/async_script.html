@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Turbolinks</title>
+    <script src="/fixtures/test.js"></script>
+    <script>
+      addEventListener("DOMContentLoaded", function() {
+        setTimeout(function() {
+          var script = document.createElement("script")
+          script.src = "/fixtures/turbolinks.js"
+          script.setAttribute("async", "")
+          document.head.appendChild(script)
+        }, 1)
+      })
+    </script>
+  </head>
+  <body>
+    <section>
+      <h1>Async script</h1>
+      <p><a href="async_script_2.html" id="async-link">Async script 2</a></p>
+    </section>
+  </body>
+</html>

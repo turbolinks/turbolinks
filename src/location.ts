@@ -1,6 +1,10 @@
 export type Locatable = Location | string
 
 export class Location {
+  static get currentLocation() {
+    return this.wrap(window.location.toString())
+  }
+
   static wrap(locatable: Locatable): Location
   static wrap(locatable?: Locatable | null): Location | undefined
   static wrap(locatable: Locatable) {
