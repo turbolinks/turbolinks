@@ -123,7 +123,7 @@ export class SnapshotRenderer extends Renderer {
   }
 
   assignNewBody() {
-    document.body = this.newBody
+    replaceElementWithElement(document.body, this.newBody)
   }
 
   focusFirstAutofocusableElement() {
