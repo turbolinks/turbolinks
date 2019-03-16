@@ -9,6 +9,7 @@ import { Action, Position, isAction } from "./types"
 import { closest, defer, dispatch, uuid } from "./util"
 import { RenderOptions, View } from "./view"
 import { Visit } from "./visit"
+import { RootSelector } from "./root_selector"
 
 export type RestorationData = { scrollPosition?: Position }
 export type RestorationDataMap = { [uuid: string]: RestorationData }
@@ -35,6 +36,7 @@ export class Controller {
   lastRenderedLocation?: Location
   location!: Location
   progressBarDelay = 500
+  rootSelector: RootSelector
   restorationIdentifier!: string
   started = false
 
@@ -90,6 +92,10 @@ export class Controller {
 
   setProgressBarDelay(delay: number) {
     this.progressBarDelay = delay
+  }
+
+  setRootSelector(rootSelector: RootSelector) {
+    this.rootSelector = rootSelector
   }
 
   // History
@@ -179,6 +185,7 @@ export class Controller {
   // View
 
   render(options: Partial<RenderOptions>, callback: RenderCallback) {
+    if (this.rootSelector) options = {...options, rootSelector: this.rootSelector}
     this.view.render(options, callback)
   }
 

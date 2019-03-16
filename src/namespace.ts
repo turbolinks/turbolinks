@@ -1,5 +1,7 @@
 import { Controller, VisitOptions } from "./controller"
 import { Locatable } from "./location"
+import { RootSelector } from "./root_selector"
+
 
 const controller = new Controller
 
@@ -20,6 +22,10 @@ export default {
 
   setProgressBarDelay(delay: number) {
     controller.setProgressBarDelay(delay)
+  },
+
+  setRootSelector(selector: RootSelector) {
+    controller.setRootSelector(selector)
   },
 
   start() {

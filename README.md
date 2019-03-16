@@ -69,6 +69,7 @@ The npm package alone does not provide server-side support for Turbolinks redire
 - [Reloading When Assets Change](#reloading-when-assets-change)
 - [Ensuring Specific Pages Trigger a Full Reload](#ensuring-specific-pages-trigger-a-full-reload)
 - [Setting a Root Location](#setting-a-root-location)
+- [Changing the Root Replacement Element from `<body>`](#changing-the-root-replacement-element-from-body)
 - [Following Redirects](#following-redirects)
 - [Redirecting After a Form Submission](#redirecting-after-a-form-submission)
 - [Setting Custom HTTP Headers](#setting-custom-http-headers)
@@ -414,6 +415,33 @@ Include a `<meta name="turbolinks-root">` element in your pages’ `<head>` to s
   <meta name="turbolinks-root" content="/app">
 </head>
 ```
+
+## Changing the Root Replacement Element from `<body>`
+
+By default, Turbolinks replaces the entire body on each render.  This is the best approach for the vast majority of cases, but it can cause problems, particularly with external scripts that setup an iFrame sitting at bottom of the body tag.
+
+You can change this behaviour with the `setRootSelector` function.
+
+```javascript
+  Turbolinks.setRootSelector('#my-root')
+```
+
+```html
+  ...
+  <body>
+    <div id="my-root">
+      ...
+    </div>
+
+    <div>This won't be replaced</div>
+
+    <iframe></iframe><!-- nor will this -->
+  </body>
+```
+
+If the specified element can't be found, Turbolinks falls back to replacing the entire body.
+
+CAUTION, If you set this option, particularly for iFrame persistence, then you will have to manage the elements sitting outside the turbolinks replacement root yourself.
 
 ## Following Redirects
 
