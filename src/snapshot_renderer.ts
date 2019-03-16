@@ -1,6 +1,7 @@
 import { HeadDetails } from "./head_details"
 import { RenderCallback, RenderDelegate, Renderer } from "./renderer"
 import { Snapshot } from "./snapshot"
+import { RootSelector, assignBody } from "./root_selector"
 import { array } from "./util"
 
 export { RenderCallback, RenderDelegate } from "./renderer"
@@ -17,12 +18,13 @@ export class SnapshotRenderer extends Renderer {
   readonly newHeadDetails: HeadDetails
   readonly newBody: HTMLBodyElement
   readonly isPreview: boolean
+  readonly rootSelector: RootSelector
 
-  static render(delegate: RenderDelegate, callback: RenderCallback, currentSnapshot: Snapshot, newSnapshot: Snapshot, isPreview: boolean) {
-    return new this(delegate, currentSnapshot, newSnapshot, isPreview).render(callback)
+  static render(delegate: RenderDelegate, callback: RenderCallback, currentSnapshot: Snapshot, newSnapshot: Snapshot, isPreview: boolean, rootSelector: RootSelector) {
+    return new this(delegate, currentSnapshot, newSnapshot, isPreview, rootSelector).render(callback)
   }
 
-  constructor(delegate: RenderDelegate, currentSnapshot: Snapshot, newSnapshot: Snapshot, isPreview: boolean) {
+  constructor(delegate: RenderDelegate, currentSnapshot: Snapshot, newSnapshot: Snapshot, isPreview: boolean, rootSelector: RootSelector) {
     super()
     this.delegate = delegate
     this.currentSnapshot = currentSnapshot
@@ -31,6 +33,7 @@ export class SnapshotRenderer extends Renderer {
     this.newHeadDetails = newSnapshot.headDetails
     this.newBody = newSnapshot.bodyElement
     this.isPreview = isPreview
+    this.rootSelector = rootSelector
   }
 
   render(callback: RenderCallback) {
@@ -108,6 +111,10 @@ export class SnapshotRenderer extends Renderer {
     }, [] as Placeholder[])
   }
 
+  assignNewBody() {
+    assignBody(this.newBody, this.rootSelector)
+  }
+
   replacePlaceholderElementsWithClonedPermanentElements(placeholders: Placeholder[]) {
     for (const { element, permanentElement } of placeholders) {
       const clonedElement = permanentElement.cloneNode(true)
@@ -120,10 +127,6 @@ export class SnapshotRenderer extends Renderer {
       const activatedScriptElement = this.createScriptElement(inertScriptElement)
       replaceElementWithElement(inertScriptElement, activatedScriptElement)
     }
-  }
-
-  assignNewBody() {
-    replaceElementWithElement(document.body, this.newBody)
   }
 
   focusFirstAutofocusableElement() {
