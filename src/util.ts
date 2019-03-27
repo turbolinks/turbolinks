@@ -6,7 +6,7 @@ export const closest = (() => {
   const html = document.documentElement
 
   type MatchesSelector = (this: Element, selector: string) => boolean
-  const match: MatchesSelector = html.matches
+  const match: MatchesSelector = (html as any).matches
     || (html as any).webkitMatchesSelector
     || (html as any).msMatchesSelector
     || (html as any).mozMatchesSelector
