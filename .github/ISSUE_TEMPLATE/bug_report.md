@@ -11,6 +11,8 @@ assignees: ''
 A clear and concise description of what the bug is.
 
 **To Reproduce**
+A minimal demonstration of the issue can be *really* helpful, and will speed up our reponse time. Try remixing the Turbolinks demo on Glitch: https://turbolinks-demo.glitch.me/
+
 Steps to reproduce the behavior:
 1. Go to '...'
 2. Click on '....'
