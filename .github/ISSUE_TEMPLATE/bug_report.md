@@ -25,7 +25,7 @@ A clear and concise description of what you expected to happen.
 **Details (please complete the following information):**
  - Operating System: [e.g. macOS, iOS, Windows]
  - Browser [e.g. Firefox, Chrome, Safari]
- - Version [e.g. v5.2.0]
+ - Turbolinks Version [e.g. v5.2.0]
 
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
