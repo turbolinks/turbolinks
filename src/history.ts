@@ -47,11 +47,11 @@ export class History {
     if (!event.state) return
 
     const { turbolinks } = event.state
-    if (turbolinks) {
-      const location = Location.currentLocation
-      const { restorationIdentifier } = turbolinks
-      this.delegate.historyPoppedToLocationWithRestorationIdentifier(location, restorationIdentifier)
-    }
+    if (!turbolinks) return
+    
+    const location = Location.currentLocation
+    const { restorationIdentifier } = turbolinks
+    this.delegate.historyPoppedToLocationWithRestorationIdentifier(location, restorationIdentifier)
   }
 
   onPageLoad = (event: Event) => {
