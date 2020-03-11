@@ -43,14 +43,15 @@ export class History {
   // Event handlers
 
   onPopState = (event: PopStateEvent) => {
-    if (this.shouldHandlePopState()) {
-      const { turbolinks } = event.state
-      if (turbolinks) {
-        const location = Location.currentLocation
-        const { restorationIdentifier } = turbolinks
-        this.delegate.historyPoppedToLocationWithRestorationIdentifier(location, restorationIdentifier)
-      }
-    }
+    if (!this.shouldHandlePopState()) return
+    if (!event.state) return
+
+    const { turbolinks } = event.state
+    if (!turbolinks) return
+    
+    const location = Location.currentLocation
+    const { restorationIdentifier } = turbolinks
+    this.delegate.historyPoppedToLocationWithRestorationIdentifier(location, restorationIdentifier)
   }
 
   onPageLoad = (event: Event) => {
