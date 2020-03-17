@@ -302,12 +302,10 @@ Implement a compatible controller and Stimulus connects it automatically:
 import { Controller } from "stimulus"
 
 export default class extends Controller {
-  greet() {
-    console.log(`Hello, ${this.name}!`)
-  }
+  static targets = ["name"]
 
-  get name() {
-    return this.targets.find("name").value
+  greet() {
+    console.log(`Hello, ${this.nameTarget.value}!`)
   }
 }
 ```
