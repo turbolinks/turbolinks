@@ -100,6 +100,9 @@ export class SnapshotRenderer extends Renderer {
       if (newElement) {
         const placeholder = createPlaceholderForPermanentElement(permanentElement)
         replaceElementWithElement(permanentElement, placeholder.element)
+        if (isShallowPermanent(permanentElement)) {
+          adoptChildren(newElement, permanentElement)
+        }
         replaceElementWithElement(newElement, permanentElement)
         return [...placeholders, placeholder]
       } else {
@@ -111,6 +114,10 @@ export class SnapshotRenderer extends Renderer {
   replacePlaceholderElementsWithClonedPermanentElements(placeholders: Placeholder[]) {
     for (const { element, permanentElement } of placeholders) {
       const clonedElement = permanentElement.cloneNode(true)
+      if (isShallowPermanent(permanentElement)) {
+        clonedElement.innerHTML = ''
+        adoptChildren(element, clonedElement)
+      }
       replaceElementWithElement(element, clonedElement)
     }
   }
@@ -162,6 +169,9 @@ function createPlaceholderForPermanentElement(permanentElement: PermanentElement
   const element = document.createElement("meta")
   element.setAttribute("name", "turbolinks-permanent-placeholder")
   element.setAttribute("content", permanentElement.id)
+  if (isShallowPermanent(permanentElement)) {
+    adoptChildren(permanentElement, element)
+  }
   return { element, permanentElement }
 }
 
@@ -170,6 +180,16 @@ function replaceElementWithElement(fromElement: Element, toElement: Element) {
   if (parentElement) {
     return parentElement.replaceChild(toElement, fromElement)
   }
+}
+
+function adoptChildren(fromElement: Element, toElement: Element) {
+  while (fromElement.childNodes.length > 0) {
+    toElement.appendChild(fromElement.childNodes[0])
+  }
+}
+
+function isShallowPermanent(element: Element) {
+  return element.getAttribute('data-turbolinks-permanent') === 'shallow'
 }
 
 function elementIsFocusable(element: any): element is { focus: () => void } {

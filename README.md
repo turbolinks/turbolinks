@@ -346,6 +346,24 @@ You can avoid this problem by marking the counter element as permanent. Designat
 
 Before each render, Turbolinks matches all permanent elements by `id` and transfers them from the original page to the new page, preserving their data and event listeners.
 
+### Shallow Persistence
+
+Sometimes you want to maintain object identity across page loads, **but still have its content updated**.
+
+For example, consider a mobile sidebar that *slides in* upon clicking a button, and then *slides out* after clicking a navigation link. Clicking that link will load a new page, but under normal circumstances, turbolinks will **interrupt** your sidebar's slide out animation, since it **replaces** that element with a brand new one.
+
+On the other hand, you still want your navigation to be **updated by the server**. This is important for e.g. highlighting the active link, without needing to duplicate your logic in JavaScript.
+
+This is the use case for `data-turbolinks-permanent="shallow"`:
+
+```html
+<div id="sidebar-menu" data-turbolinks-permanent="shallow">
+  <% my_nav_links.each do |link| %>
+    ...
+  <% end %>
+</div>
+```
+
 # Advanced Usage
 
 ## Displaying Progress

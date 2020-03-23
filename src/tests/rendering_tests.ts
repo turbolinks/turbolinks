@@ -124,6 +124,24 @@ export class RenderingTests extends TurbolinksTestCase {
     this.assert(await permanentElement.equals(await this.permanentElement))
   }
 
+  async "test preserves shallow permanent elements, updating their content"() {
+    let shallowPermanentElement = await this.shallowPermanentElement
+    this.assert.equal(await shallowPermanentElement.getVisibleText(), "One")
+    this.assert.equal(await shallowPermanentElement.getAttribute('data-foo'), "one")
+
+    this.clickSelector("#permanent-element-link")
+    await this.nextEventNamed("turbolinks:render")
+    this.assert(await shallowPermanentElement.equals(await this.shallowPermanentElement))
+    this.assert.equal(await shallowPermanentElement.getVisibleText(), "Two")
+    this.assert.equal(await shallowPermanentElement.getAttribute('data-foo'), "one")
+
+    this.goBack()
+    await this.nextEventNamed("turbolinks:render")
+    this.assert(await shallowPermanentElement.equals(await this.shallowPermanentElement))
+    this.assert.equal(await shallowPermanentElement.getVisibleText(), "One")
+    this.assert.equal(await shallowPermanentElement.getAttribute('data-foo'), "one")
+  }
+
   async "test before-cache event"() {
     this.beforeCache(body => body.innerHTML = "Modified")
     this.clickSelector("#same-origin-link")
@@ -163,6 +181,10 @@ export class RenderingTests extends TurbolinksTestCase {
 
   get permanentElement(): Promise<Element> {
     return this.querySelector("#permanent")
+  }
+
+  get shallowPermanentElement(): Promise<Element> {
+    return this.querySelector("#permanent-shallow")
   }
 
   get headScriptEvaluationCount(): Promise<number | undefined> {
