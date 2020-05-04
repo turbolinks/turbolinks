@@ -499,7 +499,8 @@ Detects whether Turbolinks is supported in the current browser (see [Supported B
 
 ## Full List of Events
 
-Turbolinks emits events that allow you to track the navigation lifecycle and respond to page loading. Except where noted, Turbolinks fires events on the `document` object.
+Turbolinks emits events that allow you to track the navigation lifecycle and respond to page loading. Except where noted, Turbolinks fires events on the `document` object.  
+Note that `event.data` (when offered) is not available if you use jQuery's `$(document).on` method. Prefer `document.addEventListener`.
 
 * `turbolinks:click` fires when you click a Turbolinks-enabled link. The clicked element is the event target. Access the requested location with `event.data.url`. Cancel this event to let the click fall through to the browser as normal navigation.
 
