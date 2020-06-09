@@ -41,7 +41,11 @@ export class Controller {
   start() {
     if (Controller.supported && !this.started) {
       addEventListener("click", this.clickCaptured, true)
-      addEventListener("DOMContentLoaded", this.pageLoaded, false)
+      if (document.readyState !== "loading") {
+        this.pageLoaded();
+      } else {
+        addEventListener("DOMContentLoaded", this.pageLoaded, false)
+      }
       this.scrollManager.start()
       this.startHistory()
       this.started = true
