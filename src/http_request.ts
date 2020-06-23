@@ -32,8 +32,6 @@ export class HttpRequest {
 
   constructor(delegate: HttpRequestDelegate, location: Location, referrer?: Location) {
     this.delegate = delegate
-    this.location = location
-    this.referrer = referrer
     this.location = Location.wrap(location)
     this.referrer = Location.wrap(referrer)
     this.url = location.absoluteURL
