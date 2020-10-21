@@ -19,6 +19,17 @@ Turbolinks works in all modern desktop and mobile browsers. It depends on the [H
 
 Turbolinks automatically initializes itself when loaded via a standalone `<script>` tag or a traditional concatenated JavaScript bundle. If you load Turbolinks as a CommonJS or AMD module, first require the module, then call the provided `start()` function.
 
+### CDN
+
+You can use Turbolinks from [cdnjs](https://cdnjs.com/libraries/turbolinks) to get started quickly.
+
+1. Include the `<script>` tag in your `<head>` element:
+    ```html
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js"></script>
+    </head>
+    ```
+
 ### Installation Using Ruby on Rails
 
 Your Ruby on Rails application can use the [`turbolinks` RubyGem](https://github.com/turbolinks/turbolinks-rails) to install Turbolinks. This gem contains a Rails engine which integrates seamlessly with the Rails asset pipeline.
