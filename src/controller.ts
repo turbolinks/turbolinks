@@ -97,8 +97,7 @@ export class Controller {
   startHistory() {
     this.location = Location.currentLocation
     this.restorationIdentifier = uuid()
-    this.history.start()
-    this.history.replace(this.location, this.restorationIdentifier)
+    this.history.start(this.location, this.restorationIdentifier)
   }
 
   stopHistory() {
