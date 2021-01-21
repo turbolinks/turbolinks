@@ -66,6 +66,21 @@ export class VisitTests extends TurbolinksTestCase {
     await this.goBack()
     this.assert(await this.changedBody)
   }
+  
+  async "test cancelling a request-end event"() {
+    const urlBeforeVisit = await this.location
+    
+    this.remote.execute(() => addEventListener("turbolinks:request-end", function eventListener(event) {
+      removeEventListener("turbolinks:request-end", eventListener, false)
+      event.preventDefault()
+    }, false))
+  
+    await this.visitLocation("/fixtures/one.html")
+    const urlAfterVisit = await this.location
+    
+    this.assert.notEqual(urlBeforeVisit, urlAfterVisit) // History should have changed
+    this.assert(!await this.changedBody) // But Turbolinks shouldn't have actually rendered
+  }
 
   async visitLocation(location: string) {
     this.remote.execute((location: string) => window.Turbolinks.visit(location), [location])
