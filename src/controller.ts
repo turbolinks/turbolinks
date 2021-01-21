@@ -327,6 +327,10 @@ export class Controller {
     return location.isPrefixedBy(this.view.getRootLocation()) && location.isHTML()
   }
 
+  locationIsSamePageAnchor(location: Location) {
+    return typeof location.anchor != "undefined" && location.requestURL == this.location.requestURL
+  }
+
   getCurrentRestorationData(): RestorationData {
     return this.getRestorationDataForIdentifier(this.restorationIdentifier)
   }

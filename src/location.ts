@@ -20,18 +20,19 @@ export class Location {
   readonly anchor?: string
 
   constructor(url: string) {
-    const linkWithAnchor = document.createElement("a")
-    linkWithAnchor.href = url
+    const link = document.createElement("a")
+    link.href = url
 
-    this.absoluteURL = linkWithAnchor.href
+    this.absoluteURL = link.href
 
-    const anchorLength = linkWithAnchor.hash.length
-    if (anchorLength < 2) {
-      this.requestURL = this.absoluteURL
-    } else {
-      this.requestURL = this.absoluteURL.slice(0, -anchorLength)
-      this.anchor = linkWithAnchor.hash.slice(1)
+    const anchorMatch = this.absoluteURL.match(/#(.*)$/)
+    if (anchorMatch) {
+      this.anchor = anchorMatch[1]
     }
+
+    this.requestURL = typeof this.anchor == "undefined"
+      ? this.absoluteURL
+      : this.absoluteURL.slice(0, -(this.anchor.length + 1))
   }
 
   getOrigin() {

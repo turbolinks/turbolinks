@@ -36,6 +36,7 @@ export class Visit {
   frame?: number
   historyChanged = false
   location: Location
+  isSamePage: boolean
   progress = 0
   referrer?: Location
   redirectedToLocation?: Location
@@ -49,6 +50,7 @@ export class Visit {
   constructor(controller: Controller, location: Location, action: Action, restorationIdentifier: string = uuid()) {
     this.controller = controller
     this.location = location
+    this.isSamePage = this.controller.locationIsSamePageAnchor(this.location)
     this.action = action
     this.adapter = controller.adapter
     this.restorationIdentifier = restorationIdentifier
@@ -124,10 +126,15 @@ export class Visit {
       const isPreview = this.shouldIssueRequest()
       this.render(() => {
         this.cacheSnapshot()
-        this.controller.render({ snapshot, isPreview }, this.performScroll)
-        this.adapter.visitRendered(this)
-        if (!isPreview) {
-          this.complete()
+        if (this.isSamePage) {
+          this.performScroll()
+          this.adapter.visitRendered(this)
+        } else {
+          this.controller.render({ snapshot, isPreview }, this.performScroll)
+          this.adapter.visitRendered(this)
+          if (!isPreview) {
+            this.complete()
+          }
         }
       })
     }
@@ -156,6 +163,16 @@ export class Visit {
       this.location = this.redirectedToLocation
       this.controller.replaceHistoryWithLocationAndRestorationIdentifier(this.redirectedToLocation, this.restorationIdentifier)
       this.followedRedirect = true
+    }
+  }
+
+  goToSamePageAnchor() {
+    if (this.isSamePage) {
+      this.render(() => {
+        this.cacheSnapshot()
+        this.performScroll()
+        this.adapter.visitRendered(this)
+      })
     }
   }
 
@@ -240,10 +257,15 @@ export class Visit {
       case "restore": return this.controller.pushHistoryWithLocationAndRestorationIdentifier
     }
   }
-    shouldIssueRequest() {
-    return this.action == "restore"
-      ? !this.hasCachedSnapshot()
-      : true
+
+  shouldIssueRequest() {
+    if (this.action == "restore") {
+      return !this.hasCachedSnapshot()
+    } else if (this.isSamePage) {
+      return false
+    } else {
+      return true
+    }
   }
 
   cacheSnapshot() {
