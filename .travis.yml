@@ -1,5 +1,4 @@
-dist: trusty
-sudo: false
+dist: xenial
 cache:
 - yarn
 before_script:
