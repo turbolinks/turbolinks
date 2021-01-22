@@ -142,6 +142,47 @@ export class RenderingTests extends TurbolinksTestCase {
     this.assert(await body.getVisibleText(), "Modified")
   }
 
+   async "test replaces entire body when nav from normal => custom root"() {
+    const lastBodyId = (await this.body).elementId
+
+    this.clickSelector("#custom-root-selector-link")
+    await this.nextEventNamed('turbolinks:load')
+
+    const thisBodyId = (await this.body).elementId
+    this.assert.notEqual(lastBodyId, thisBodyId)
+  }
+
+  async "test replaces entire body when nav from custom root => normal"() {
+    await this.goToLocation("/fixtures/custom_root_selector.html")
+
+    const lastBodyId = (await this.body).elementId
+
+    this.clickSelector("#rendering-link")
+    await this.nextEventNamed('turbolinks:load')
+
+    const thisBodyId = (await this.body).elementId
+    this.assert.notEqual(lastBodyId, thisBodyId)
+  }
+
+   async "test replaces only custom root with custom root specified throughout"() {
+    await this.goToLocation("/fixtures/custom_root_selector.html")
+
+    const lastBodyId  = (await this.body).elementId
+    const lastOutside = await (await this.querySelector('#rendered-by')).getVisibleText()
+    const lastInside  = await (await this.querySelector('h1')).getVisibleText()
+
+    this.clickSelector("#custom-root-selector-link-2")
+    await this.nextEventNamed('turbolinks:load')
+
+    const thisBodyId  = (await this.body).elementId
+    const thisOutside = await (await this.querySelector('#rendered-by')).getVisibleText()
+    const thisInside  = await (await this.querySelector('h1')).getVisibleText()
+
+    this.assert.equal(lastBodyId, thisBodyId)
+    this.assert.notEqual(lastInside, thisInside)
+    this.assert.equal(lastOutside, thisOutside)
+  }
+
   async "test error pages"() {
     this.clickSelector("#nonexistent-link")
     const body = await this.nextBody

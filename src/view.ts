@@ -2,8 +2,9 @@ import { ErrorRenderer } from "./error_renderer"
 import { Location } from "./location"
 import { Snapshot } from "./snapshot"
 import { RenderCallback, RenderDelegate, SnapshotRenderer } from "./snapshot_renderer"
+import { RootSelector } from "./root_selector"
 
-export type RenderOptions = { snapshot: Snapshot, error: string, isPreview: boolean }
+export type RenderOptions = { snapshot: Snapshot, error: string, isPreview: boolean, rootSelector: RootSelector }
 
 export class View {
   readonly delegate: RenderDelegate
@@ -25,10 +26,10 @@ export class View {
     return Snapshot.fromHTMLElement(this.htmlElement)
   }
 
-  render({ snapshot, error, isPreview }: Partial<RenderOptions>, callback: RenderCallback) {
+  render({ snapshot, error, isPreview, rootSelector}: Partial<RenderOptions>, callback: RenderCallback) {
     this.markAsPreview(isPreview)
     if (snapshot) {
-      this.renderSnapshot(snapshot, isPreview, callback)
+      this.renderSnapshot(snapshot, isPreview, callback, rootSelector)
     } else {
       this.renderError(error, callback)
     }
@@ -44,8 +45,8 @@ export class View {
     }
   }
 
-  renderSnapshot(snapshot: Snapshot, isPreview: boolean | undefined, callback: RenderCallback) {
-    SnapshotRenderer.render(this.delegate, callback, this.getSnapshot(), snapshot, isPreview || false)
+  renderSnapshot(snapshot: Snapshot, isPreview: boolean | undefined, callback: RenderCallback, rootSelector: RootSelector) {
+    SnapshotRenderer.render(this.delegate, callback, this.getSnapshot(), snapshot, isPreview || false, rootSelector)
   }
 
   renderError(error: string | undefined, callback: RenderCallback) {

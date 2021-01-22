@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Custom root selector 2</title>
+    <script src="/fixtures/turbolinks.js" data-turbolinks-track="reload"></script>
+    <script src="/fixtures/test.js"></script>
+    <script>
+      Turbolinks.setRootSelector('[data-turbolinks-root]');
+    </script>
+  </head>
+  <body>
+    <main data-turbolinks-root>
+      <section>
+        <h1>Custom root selector 2</h1>
+        <p><a id="custom-root-selector-link" href="/fixtures/custom_root_selector.html">Custom root selector</a></p>
+      </section>
+    </main>
+
+    <footer>
+      <h2>Not replaced</h2>
+      <p>rendered by: <span id="rendered-by">custom_root_selector_2.html</span></p>
+    </footer>
+  </body>
+</html>
