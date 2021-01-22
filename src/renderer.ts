@@ -28,6 +28,8 @@ export abstract class Renderer {
     } else {
       const createdScriptElement = document.createElement("script")
       createdScriptElement.textContent = element.textContent
+      // @ts-ignore
+      createdScriptElement.nonce = element['nonce']
       createdScriptElement.async = false
       copyElementAttributes(createdScriptElement, element)
       return createdScriptElement
