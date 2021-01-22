@@ -46,6 +46,8 @@ Your application can use the [`turbolinks` npm package](https://www.npmjs.com/pa
     ```
 The npm package alone does not provide server-side support for Turbolinks redirection. See [Following Redirects](#following-redirects) for details on adding support.
 
+The [turbolinks-location](https://www.npmjs.com/package/turbolinks-location) package provides server-side support for Turbolinks redirection.
+
 #### Table of Contents
 
 [Navigating with Turbolinks](#navigating-with-turbolinks)
@@ -428,6 +430,8 @@ However, Turbolinks makes requests using `XMLHttpRequest`, which transparently f
 To work around this problem, send the `Turbolinks-Location` header in the final response to a visit that was redirected, and Turbolinks will replace the browser’s topmost history entry with the value you provide.
 
 The Turbolinks Rails engine sets `Turbolinks-Location` automatically when using `redirect_to` in response to a Turbolinks visit.
+
+The [turbolinks-location](https://www.npmjs.com/package/turbolinks-location) Node package provides server-side support for Turbolinks redirection.
 
 ## Redirecting After a Form Submission
 
