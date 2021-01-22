@@ -99,6 +99,22 @@ export class NavigationTests extends TurbolinksTestCase {
     this.assert.equal(await this.visitAction, "load")
   }
 
+  async "test following a link to a page which reloads"() {
+    await this.scrollToSelector("#page-invalidated-link")
+    this.clickSelector("#page-invalidated-link")
+    await this.nextBody
+    this.assert.equal(await this.pathname, "/fixtures/tracked_asset_change.html")
+    this.assert.equal(await this.visitAction, "load")
+    this.assert.deepEqual(await this.scrollPosition, { x: 0, y: 0 })
+  }
+
+  async "test refreshing a scrolled page"() {
+    await this.scrollToSelector("#page-invalidated-link")
+    const positionBeforeRefresh = await this.scrollPosition
+    await this.refresh()
+    this.assert.deepEqual(await this.scrollPosition, positionBeforeRefresh)
+  }
+
   async "test clicking the back button"() {
     this.clickSelector("#same-origin-unannotated-link")
     await this.nextBody

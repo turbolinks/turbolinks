@@ -6,10 +6,12 @@ export interface ScrollManagerDelegate {
 
 export class ScrollManager {
   readonly delegate: ScrollManagerDelegate
+  position: Position
   started = false
 
   constructor(delegate: ScrollManagerDelegate) {
     this.delegate = delegate
+    this.position = { x: window.pageXOffset, y: window.pageYOffset }
   }
 
   start() {
@@ -42,6 +44,7 @@ export class ScrollManager {
   // Private
 
   updatePosition(position: Position) {
+    this.position = position
     this.delegate.scrollPositionChanged(position)
   }
 }
