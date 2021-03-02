@@ -524,6 +524,8 @@ Note that when using jQuery, the data on the event must be accessed as `$event.o
 
 * `turbolinks:load` fires once after the initial page load, and again after every Turbolinks visit. Access visit timing metrics with the `event.data.timing` object.
 
+* `turbolinks:before-unload` fires for `onbeforeunload` and just before `before-render`. Use this method to destroy any persistent page specific JS.
+
 # Contributing to Turbolinks
 
 Turbolinks is open-source software, freely distributable under the terms of an [MIT-style license](LICENSE). The [source code is hosted on GitHub](https://github.com/turbolinks/turbolinks).

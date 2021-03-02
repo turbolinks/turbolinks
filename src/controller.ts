@@ -42,6 +42,9 @@ export class Controller {
     if (Controller.supported && !this.started) {
       addEventListener("click", this.clickCaptured, true)
       addEventListener("DOMContentLoaded", this.pageLoaded, false)
+      addEventListener("onbeforeunload", function(){
+        dispatch('turbolinks:before-unload')
+      });
       this.scrollManager.start()
       this.startHistory()
       this.started = true
@@ -250,6 +253,7 @@ export class Controller {
   }
 
   notifyApplicationBeforeRender(newBody: HTMLBodyElement) {
+    dispatch("turbolinks:before-unload")
     return dispatch("turbolinks:before-render", { data: { newBody }})
   }
 

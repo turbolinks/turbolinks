@@ -77,6 +77,37 @@ export class VisitTests extends TurbolinksTestCase {
       event.preventDefault()
     }, false))
   }
+
+  async "test before-unload event"() {
+    this.remote.execute(
+      () => addEventListener("turbolinks:before-unload", function eventListener(event) {
+        removeEventListener("turbolinks:before-unload", eventListener, false)
+        document.body.innerHTML = "Modified"
+      }, false)
+    );
+
+    await this.goToLocation("/fixtures/navigation.html")
+
+    this.assert.equal(document.body.innerHTML, "Modified")
+
+    this.remote.execute(
+      () => addEventListener("turbolinks:before-unload", function eventListener(event) {
+        removeEventListener("turbolinks:before-unload", eventListener, false)
+        document.body.innerHTML = "Modified2"
+      }, false)
+    );
+
+    this.remote.execute(
+      () => {
+        var event = document.createEvent("Events");
+        event.initEvent("onbeforeunload", true, false);
+        document.dispatchEvent(event);
+      }
+    );
+
+    this.assert.equal(document.body.innerHTML, "Modified2")
+  }
+
 }
 
 function contentTypeOfURL(url: string): Promise<string | undefined> {
