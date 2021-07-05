@@ -1,6 +1,6 @@
 # Turbolinks is no longer under active development
 
-Please note that Turbolinks is no longer under active development. It has been superseded by a new framework called [Turbo](https://github.com/hotwired/turbo), which is part of the [Hotwire](https://hotwire.dev) umbrella.
+Please note that Turbolinks is no longer under active development. It has been superseded by a new framework called [Turbo](https://github.com/hotwired/turbo), which is part of the [Hotwire](https://hotwired.dev) umbrella.
 
 # Turbolinks
 
